@@ -6,21 +6,21 @@ function logout() {
     window.location.replace("/logout");
 }
 
-function login(event) {
-    event.preventDefault();
-    const layout = document.getElementById("main-dashboard-layout");
-    const loginScr = document.getElementById("login-screen");
-
-    if (loginScr) {
-        loginScr.classList.add("d-none");
-        loginScr.classList.remove("d-flex");
-    }
-    if (layout) {
-        layout.classList.remove("d-none");
-        layout.classList.add("d-flex");
-    }
-    showToast(`Welcome back, ${userProfile.name}!`);
-}
+// function login(event) {
+//     event.preventDefault();
+//     const layout = document.getElementById("main-dashboard-layout");
+//     const loginScr = document.getElementById("login-screen");
+//
+//     if (loginScr) {
+//         loginScr.classList.add("d-none");
+//         loginScr.classList.remove("d-flex");
+//     }
+//     if (layout) {
+//         layout.classList.remove("d-none");
+//         layout.classList.add("d-flex");
+//     }
+//     showToast(`Welcome back, ${userProfile.name}!`);
+// }
 
 // Profile Update Handling
 function saveProfile(event) {
@@ -66,6 +66,6 @@ function saveProfile(event) {
     showToast("Profile updated successfully!");
 }
 
-window.login = login;
+// window.login = login;
 window.logout = logout;
 window.saveProfile = saveProfile;
