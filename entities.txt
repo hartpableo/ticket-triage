@@ -7,10 +7,6 @@ User
 - otp
 - otp_expiry
 - title
-- status
-- avatar_color
-- created_at
-- updated_at
 
 Client
 - id
