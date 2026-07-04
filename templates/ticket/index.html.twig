@@ -3,17 +3,16 @@
 {% block page_title %}Tickets Queue{% endblock %}
 
 {% block dashboard_content %}
-    <!-- VIEW: TICKETS -->
     <div id="view-tickets" class="view-content active-view">
-        <!-- Today Date Banner Indicator -->
         <div class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
             <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
             <span class="text-muted small">
-                Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">July 4, 2026</strong>.
+                Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">
+                    {{- 'now'|date('d M, Y') -}}
+                </strong>.
             </span>
         </div>
 
-        <!-- Overview Stats Row -->
         <div class="row g-3 mb-4">
             <div class="col-6 col-md-3">
                 <div class="dashboard-card d-flex align-items-center">
