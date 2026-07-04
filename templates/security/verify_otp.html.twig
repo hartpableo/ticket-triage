@@ -1,6 +1,6 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Log in - {{ app_name }}{% endblock %}
+{% block title %}Verify Code - {{ app_name }}{% endblock %}
 
 {% block body %}
 <div class="d-flex flex-column min-vh-100 align-items-center justify-content-center px-3 py-5 bg-dark-subtle">
@@ -14,17 +14,15 @@
 
     <!-- Centered Card -->
     <div class="card shadow-lg border-secondary-subtle rounded-4 p-4 p-sm-5" style="width: 100%; max-width: 440px;">
-        <h1 class="h3 fw-bold mb-2 text-center">Sign In</h1>
-        <p class="text-center text-body-secondary small mb-4">Enter your email and we'll send a one-time passcode (OTP) to your inbox.</p>
+        <div class="mb-4 text-center">
+            <span class="badge bg-warning-subtle text-warning border border-warning-subtle py-2 px-3 rounded-pill fs-7 fw-semibold">
+                <i class="bi bi-shield-lock-fill me-1"></i> Two-Factor Check
+            </span>
+        </div>
 
-        {# Display Authentication Error #}
-        {% if error %}
-            <div class="alert alert-danger d-flex align-items-center gap-2 mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill fs-5"></i>
-                <div class="small">{{ error.messageKey|trans(error.messageData, 'security') }}</div>
-            </div>
-        {% endif %}
-
+        <h1 class="h3 fw-bold mb-2 text-center">Enter verification code</h1>
+        <p class="text-center text-body-secondary small mb-4">We sent a 6-digit verification code to <strong>{{ email }}</strong>.</p>
+        
         {# Display Flash Messages #}
         {% for label, messages in app.flashes %}
             {% for message in messages %}
@@ -41,25 +39,32 @@
             {% endfor %}
         {% endfor %}
 
-        <form method="post">
+        <form method="post" action="{{ path('app_login_verify') }}">
             <div class="mb-4">
-                <label for="email" class="form-label fw-medium text-body-secondary small">Work Email</label>
-                <div class="input-group">
-                    <span class="input-group-text bg-body border-secondary-subtle"><i class="bi bi-envelope text-muted"></i></span>
-                    <input type="email" name="email" id="email" class="form-control border-secondary-subtle py-2.5" placeholder="alex@agency.com" required autofocus autocomplete="email">
-                </div>
+                <label for="otp" class="form-label fw-medium text-body-secondary small text-center w-100">6-Digit Code</label>
+                <input type="text" name="otp" id="otp" class="form-control border-secondary-subtle py-3 text-center fs-3 tracking-widest fw-bold" placeholder="000000" maxlength="6" pattern="[0-9]{6}" required autofocus autocomplete="one-time-code">
             </div>
 
-            <button class="btn btn-primary w-100 py-2.5 fw-semibold fs-6 d-flex align-items-center justify-content-center gap-2" type="submit">
-                <span>Send Verification Code</span>
-                <i class="bi bi-arrow-right"></i>
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate_otp') }}">
+
+            <button class="btn btn-success w-100 py-2.5 fw-semibold fs-6 d-flex align-items-center justify-content-center gap-2" type="submit">
+                <span>Verify & Authenticate</span>
+                <i class="bi bi-check2-all"></i>
             </button>
         </form>
-
+        
         <div class="mt-4 text-center">
-            <span class="text-body-secondary small">Don't have an account? </span>
-            <a href="{{ path('app_register') }}" class="text-primary text-decoration-none fw-semibold small">Sign up now &rarr;</a>
+            <a href="{{ path('app_login') }}" class="text-secondary text-decoration-none fw-medium small"><i class="bi bi-arrow-left me-1"></i> Back to login</a>
         </div>
     </div>
 </div>
+
+<style>
+.tracking-widest {
+    letter-spacing: 0.25em;
+}
+#otp::placeholder {
+    letter-spacing: normal;
+}
+</style>
 {% endblock %}

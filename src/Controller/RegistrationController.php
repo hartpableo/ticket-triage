@@ -15,8 +15,6 @@ use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
-use function Symfony\Component\Dotenv\getenv;
-
 final class RegistrationController extends AbstractController {
     public function __construct(
         private readonly UserRepository             $userRepository,
@@ -50,6 +48,7 @@ final class RegistrationController extends AbstractController {
             if (empty($user)) {
                 $user = new User();
                 $user->setEmail($email);
+                $user->setIsVerified(FALSE);
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
             }
@@ -63,17 +62,15 @@ final class RegistrationController extends AbstractController {
                 ]
             );
 
-            $email = (new Email())
-                ->from(getenv('APP_SYSTEM_EMAIL'))
+            $email = new Email()
+                ->from($this->getParameter('system.email'))
                 ->to($user->getEmail())
                 ->subject('Verify your email address')
-                ->html(
-                    sprintf('
+                ->html(\sprintf('
                         <h1>Hello!</h1>
-                        <p>Please verify your email by clicking the link below:</p>
-                        <p><a href="%s">Verify</a></p>,
-                    ', $signature->getSignedUrl())
-                );
+                        <div>Please verify your email by clicking the link below:</div>
+                        <div><a href="%s">Verify</a></div>
+                    ', $signature->getSignedUrl()));
 
             try {
                 $this->mailer->send($email);
@@ -90,6 +87,7 @@ final class RegistrationController extends AbstractController {
         return $this->render('registration/register.html.twig');
     }
 
+    #[Route('/verify/email', name: 'app_verify_email')]
     public function verifyUserEmail(
         Request $request,
     ): RedirectResponse {
