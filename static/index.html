@@ -4,18 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ticket Triage - Agency Admin Dashboard</title>
-  
+
   <!-- Bootstrap 5 CSS CDN provided by user -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-  
+
   <!-- Bootstrap Icons CDN for clean UI icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-  
+
   <!-- Google Font: Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  
+
   <style>
     :root {
       --primary: #4f46e5;
@@ -35,7 +35,7 @@
       <span>Ticket Triage</span>
       <span class="badge bg-secondary ms-2 small-badge">Admin</span>
     </div>
-    
+
     <div class="sidebar-nav flex-grow-1">
       <a href="#" class="sidebar-link active" onclick="switchView('tickets', this)">
         <i class="bi bi-ticket-perforated"></i>
@@ -65,7 +65,7 @@
         <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">AD</div>
         <div>
           <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">Alex Developer</div>
-          <div class="text-muted sidebar-display-title" id="sidebar-display-title">Agency Admin</div>
+          <div class="sidebar-display-title" id="sidebar-display-title">Agency Admin</div>
         </div>
       </div>
       <button class="btn btn-outline-light btn-sm border-0 p-1" onclick="logout()" title="Logout">
@@ -76,7 +76,7 @@
 
   <!-- Main Content Area -->
   <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
-    
+
     <!-- Topbar Header -->
     <header class="topbar d-flex align-items-center justify-content-between px-4">
       <div class="d-flex align-items-center">
@@ -85,7 +85,7 @@
         </button>
         <h4 class="mb-0 fw-semibold text-dark fs-5" id="page-title">Tickets Queue</h4>
       </div>
-      
+
       <div class="d-flex align-items-center gap-3">
         <div class="border-start ps-3 d-lg-none">
           <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials">AD</div>
@@ -121,7 +121,7 @@
 
     <!-- Scrollable content view wrapper -->
     <div class="flex-grow-1 overflow-auto p-4">
-      
+
       <!-- VIEW: TICKETS -->
       <div id="view-tickets" class="view-content active-view">
         <!-- Today Date Banner Indicator -->
@@ -145,7 +145,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="col-6 col-md-3">
             <div class="dashboard-card d-flex align-items-center">
               <div class="card-icon bg-danger-subtle text-danger me-3">
@@ -157,7 +157,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="col-6 col-md-3">
             <div class="dashboard-card d-flex align-items-center">
               <div class="card-icon bg-warning-subtle text-warning me-3">
@@ -169,7 +169,7 @@
               </div>
             </div>
           </div>
-          
+
           <div class="col-6 col-md-3">
             <div class="dashboard-card d-flex align-items-center">
               <div class="card-icon bg-success-subtle text-success me-3">
@@ -193,7 +193,7 @@
                 <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search tickets..." onkeyup="applyFilters()">
               </div>
             </div>
-            
+
             <!-- Filter Client -->
             <div class="col-6 col-md-2">
               <select id="filter-client" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
@@ -203,7 +203,7 @@
                 <option value="Greenfield Real Estate">Greenfield Real Estate</option>
               </select>
             </div>
-            
+
             <!-- Filter Status -->
             <div class="col-6 col-md-2">
               <select id="filter-status" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
@@ -215,7 +215,7 @@
                 <option value="Closed">Closed</option>
               </select>
             </div>
-            
+
             <!-- Filter Priority -->
             <div class="col-6 col-md-2">
               <select id="filter-priority" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
@@ -226,7 +226,7 @@
                 <option value="Low">Low</option>
               </select>
             </div>
-            
+
             <!-- Add Ticket Trigger -->
             <div class="col-6 col-md-2 text-md-end">
               <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
@@ -266,7 +266,7 @@
 
       <!-- VIEW: ANALYTICS -->
       <div id="view-analytics" class="view-content">
-        
+
         <!-- Timeframe Selector Header Bar -->
         <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 bg-white p-3 rounded-3 border border-light-subtle shadow-sm">
           <div class="d-flex align-items-center">
@@ -380,7 +380,7 @@
             <i class="bi bi-arrow-left me-1"></i> Back to Queue
           </button>
         </div>
-        
+
         <div class="row g-4">
           <!-- Left Column: Details & Discussion thread -->
           <div class="col-lg-8">
@@ -389,7 +389,7 @@
                 <h3 class="fw-bold mb-0 text-dark" id="detail-ticket-title">Ticket Subject</h3>
                 <span class="badge bg-light text-secondary border px-3 py-2" id="detail-ticket-id">TKT-000</span>
               </div>
-              
+
               <div class="mb-2">
                 <h6 class="fw-semibold text-muted text-uppercase small mb-2">Original Request Description</h6>
                 <div class="detail-description-box" id="detail-description">
@@ -447,7 +447,7 @@
           <div class="col-lg-4">
             <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
               <h5 class="fw-bold mb-3 text-dark">Ticket Settings</h5>
-              
+
               <div class="mb-3">
                 <label class="form-label text-muted small fw-semibold">Status</label>
                 <select class="form-select" id="detail-status-select" onchange="updateDetailTicketStatus()">
@@ -458,7 +458,7 @@
                   <option value="Closed">Closed</option>
                 </select>
               </div>
-              
+
               <div class="mb-3">
                 <label class="form-label text-muted small fw-semibold">Priority</label>
                 <select class="form-select" id="detail-priority-select" onchange="updateDetailTicketPriority()">
@@ -468,7 +468,7 @@
                   <option value="Low">Low</option>
                 </select>
               </div>
-              
+
               <div class="mb-3">
                 <label class="form-label text-muted small fw-semibold">Assign Agent</label>
                 <select class="form-select" id="detail-assignee-select" onchange="updateDetailTicketAssignee()">
@@ -479,7 +479,7 @@
 
             <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
               <h5 class="fw-bold mb-3 text-dark">Ticket Metadata</h5>
-              
+
               <div class="d-flex justify-content-between mb-2">
                 <span class="text-muted small">Client Name</span>
                 <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
@@ -581,7 +581,7 @@
                     <span class="text-muted small">Generated automatically from your initials.</span>
                   </div>
                 </div>
-                
+
                 <div class="row g-3">
                   <div class="col-md-6">
                     <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
@@ -650,7 +650,7 @@
       <h3 class="fw-bold mt-2 text-dark">Ticket Triage</h3>
       <p class="text-muted small">Sign in to your agency portal</p>
     </div>
-    
+
     <form onsubmit="login(event)">
       <div class="mb-3">
         <label for="login-email" class="form-label fw-semibold text-dark">Email address</label>
@@ -681,7 +681,7 @@
             <label for="new-title" class="form-label fw-semibold">Subject / Issue Title</label>
             <input type="text" class="form-control" id="new-title" required placeholder="e.g. SSL Certificate Expired">
           </div>
-          
+
           <div class="row g-3 mb-3">
             <div class="col-md-6">
               <label for="new-client" class="form-label fw-semibold">Client Site</label>
@@ -751,7 +751,7 @@
             <label for="client-name-input" class="form-label fw-semibold">Client / Company Name</label>
             <input type="text" class="form-control" id="client-name-input" required placeholder="e.g. Acme Corp">
           </div>
-          
+
           <div class="mb-3">
             <label for="client-domain-input" class="form-label fw-semibold">Allowed Domain (for CORS widget security)</label>
             <div class="input-group">
