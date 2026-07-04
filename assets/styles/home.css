@@ -1,0 +1,85 @@
+body {
+    font-family: 'Inter', sans-serif;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+/* Browser Mockup Layout */
+.mock-browser {
+    border-radius: 0.75rem;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.browser-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+}
+
+.browser-address {
+    font-size: 0.8rem;
+    max-width: 280px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.browser-content {
+    height: 340px;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Simulated support widget trigger button */
+.simulated-widget-trigger {
+    position: absolute;
+    bottom: 15px;
+    right: 15px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 10;
+}
+
+.simulated-widget-trigger:hover, .simulated-widget-trigger:focus {
+    transform: scale(1.1);
+    outline: none;
+}
+
+/* Simulated Support widget card */
+.simulated-widget-card {
+    position: absolute;
+    bottom: 80px;
+    right: 15px;
+    width: 280px;
+    transform: scale(0.9) translateY(10px);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    z-index: 10;
+}
+
+.simulated-widget-card.active {
+    transform: scale(1) translateY(0);
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Hide helper hint when widget is open */
+.simulated-widget-card.active ~ #sim-widget-hint {
+    display: none !important;
+}
+
+/* Bouncing indicator arrow */
+@keyframes bounce-diagonal {
+    0%, 100% {
+        transform: translate(0, 0);
+    }
+    50% {
+        transform: translate(5px, 5px);
+    }
+}
