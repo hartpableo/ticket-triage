@@ -4,10 +4,12 @@
 
 {% block dashboard_content %}
     <div id="view-tickets" class="view-content active-view">
-        <div class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
+        <div
+            class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
             <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
             <span class="text-muted small">
-                Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">
+                Metrics display shown below represents ticket activities for the current day: <strong class="text-dark"
+                                                                                                      id="today-date-str">
                     {{- 'now'|date('d M, Y') -}}
                 </strong>.
             </span>
@@ -69,14 +71,17 @@
                 <!-- Search bar -->
                 <div class="col-12 col-md-4">
                     <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                        <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search tickets..." onkeyup="applyFilters()">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i
+                                class="bi bi-search"></i></span>
+                        <input type="text" id="search-input" class="form-control bg-light border-start-0"
+                               placeholder="Search tickets..." onkeyup="applyFilters()">
                     </div>
                 </div>
 
                 <!-- Filter Client -->
                 <div class="col-6 col-md-2">
-                    <select id="filter-client" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                    <select id="filter-client" class="form-select bg-light border-light-subtle"
+                            onchange="applyFilters()">
                         <option value="">All Clients</option>
                         <option value="Aura Cosmetics">Aura Cosmetics</option>
                         <option value="Vertex SaaS">Vertex SaaS</option>
@@ -84,21 +89,23 @@
                     </select>
                 </div>
 
-                <!-- Filter Status -->
+                {# Filter Status #}
                 <div class="col-6 col-md-2">
-                    <select id="filter-status" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                    <select id="filter-status" class="form-select bg-light border-light-subtle"
+                            onchange="applyFilters()">
                         <option value="">All Statuses</option>
-                        <option value="Open">Open</option>
-                        <option value="In Progress">In Progress</option>
-                        <option value="Pending Client">Pending Client</option>
-                        <option value="Resolved">Resolved</option>
-                        <option value="Closed">Closed</option>
+                        {% for status in enum_cases('App\\Enum\\TicketStatusEnum') %}
+                            <option
+                                value="{{ status.value }}"
+                            >{{ status.label() }}</option>
+                        {% endfor %}
                     </select>
                 </div>
 
                 <!-- Filter Priority -->
                 <div class="col-6 col-md-2">
-                    <select id="filter-priority" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                    <select id="filter-priority" class="form-select bg-light border-light-subtle"
+                            onchange="applyFilters()">
                         <option value="">All Priorities</option>
                         <option value="Critical">Critical</option>
                         <option value="High">High</option>
