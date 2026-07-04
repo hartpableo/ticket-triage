@@ -30,16 +30,16 @@ function renderTicketsTable(dataToRender = tickets) {
       : '--';
 
     tr.innerHTML = `
-      <td class="fw-semibold text-muted text-nowrap">${ticket.id}</td>
-      <td>
-        <div class="fw-semibold text-dark text-truncate" style="max-width: 250px;">${ticket.title}</div>
-        <div class="text-muted text-truncate text-nowrap mt-1" style="font-size: 0.75rem; max-width: 250px;">${ticket.description}</div>
+      <td class="fw-semibold text-muted text-nowrap" data-label="ID">${ticket.id}</td>
+      <td data-label="Subject">
+        <div class="fw-semibold text-dark text-truncate subject-title" style="max-width: 250px;">${ticket.title}</div>
+        <div class="text-muted text-truncate text-nowrap mt-1 subject-desc" style="font-size: 0.75rem; max-width: 250px;">${ticket.description}</div>
       </td>
-      <td><span class="text-secondary fw-medium">${ticket.client}</span></td>
-      <td><span class="badge-custom ${statusClass}">${ticket.status}</span></td>
-      <td><span class="badge-custom ${priorityClass}">${ticket.priority}</span></td>
-      <td>
-        <div class="d-flex align-items-center gap-2">
+      <td data-label="Client"><span class="text-secondary fw-medium">${ticket.client}</span></td>
+      <td data-label="Status"><span class="badge-custom ${statusClass}">${ticket.status}</span></td>
+      <td data-label="Priority"><span class="badge-custom ${priorityClass}">${ticket.priority}</span></td>
+      <td data-label="Assigned To">
+        <div class="d-flex align-items-center gap-2 justify-content-end justify-content-md-start">
           <div class="avatar bg-light text-muted border text-uppercase" style="width: 26px; height: 26px; font-size: 0.7rem;">${initials}</div>
           <span class="text-secondary small fw-medium">${ticket.assignee}</span>
         </div>
@@ -74,12 +74,12 @@ function renderClientsTable() {
     selectHtml += `</select>`;
     
     tr.innerHTML = `
-      <td class="fw-semibold text-dark">${client.name}</td>
-      <td><code>${client.domain}</code></td>
-      <td>${statusBadge}</td>
-      <td class="fw-semibold">${client.tickets}</td>
-      <td>${selectHtml}</td>
-      <td>
+      <td class="fw-semibold text-dark" data-label="Client Name">${client.name}</td>
+      <td data-label="Widget Domain"><code>${client.domain}</code></td>
+      <td data-label="Status">${statusBadge}</td>
+      <td class="fw-semibold" data-label="Open Tickets">${client.tickets}</td>
+      <td data-label="Assigned Agent">${selectHtml}</td>
+      <td data-label="Actions">
         <button class="btn btn-light btn-sm border" onclick="selectWidgetSnippet('${client.name}', '${client.key}', '${client.domain}')">
           <i class="bi bi-code-slash me-1"></i> Get Script
         </button>

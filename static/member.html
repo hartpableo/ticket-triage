@@ -21,262 +21,19 @@
       --primary: #0d9488; /* Teal branding for members to distinguish from Indigo admin */
       --primary-hover: #0f766e;
       --primary-light: #ccfbf1;
-      --secondary: #64748b;
-      --bg-main: #f8fafc;
-      --bg-card: #ffffff;
-      --sidebar-bg: #0f172a;
-      --sidebar-color: #94a3b8;
-      --sidebar-active: #ffffff;
-      --sidebar-active-bg: #1e293b;
-      --text-main: #0f172a;
-      --text-muted: #64748b;
-      --border-color: #e2e8f0;
-
-      --status-open-bg: #e0e7ff;
-      --status-open-text: #3730a3;
-      --status-progress-bg: #f3e8ff;
-      --status-progress-text: #6b21a8;
-      --status-pending-bg: #fef3c7;
-      --status-pending-text: #92400e;
-      --status-resolved-bg: #dcfce7;
-      --status-resolved-text: #166534;
-      --status-closed-bg: #f1f5f9;
-      --status-closed-text: #334155;
-
-      --priority-critical-bg: #ffe4e6;
-      --priority-critical-text: #991b1b;
-      --priority-high-bg: #ffedd5;
-      --priority-high-text: #9a3412;
-      --priority-medium-bg: #fef9c3;
-      --priority-medium-text: #854d0e;
-      --priority-low-bg: #e0f2fe;
-      --priority-low-text: #0369a1;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background-color: var(--bg-main);
-      color: var(--text-main);
-      overflow-x: hidden;
-    }
-
-    /* Layout */
-    .sidebar {
-      width: 260px;
-      background-color: var(--sidebar-bg);
-      flex-shrink: 0;
-      transition: all 0.3s ease;
-      z-index: 100;
-    }
-
-    .sidebar-logo {
-      font-size: 1.25rem;
-      font-weight: 700;
-      padding: 1.5rem 1rem;
-      color: #ffffff;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      letter-spacing: -0.025em;
-    }
-
-    .sidebar-link {
-      display: flex;
-      align-items: center;
-      padding: 0.75rem 1.5rem;
-      color: var(--sidebar-color);
-      text-decoration: none;
-      font-weight: 500;
-      font-size: 0.925rem;
-      transition: all 0.2s ease;
-      border-left: 3px solid transparent;
-    }
-
-    .sidebar-link i {
-      margin-right: 0.75rem;
-      font-size: 1.1rem;
-    }
-
-    .sidebar-link:hover {
-      color: #ffffff;
-      background-color: rgba(255, 255, 255, 0.03);
-    }
-
-    .sidebar-link.active {
-      color: #ffffff;
-      background-color: var(--sidebar-active-bg);
-      border-left-color: var(--primary);
-    }
-
-    .topbar {
-      height: 70px;
-      background-color: #ffffff;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    /* Cards & Components */
-    .dashboard-card {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      padding: 1.25rem;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-      transition: transform 0.2s, box-shadow 0.2s;
-    }
-
-    .dashboard-card:hover {
-      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
-    }
-
-    .card-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 10px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.35rem;
-    }
-
-    .table-container {
-      background: #ffffff;
-      border: 1px solid var(--border-color);
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    }
-
-    .table th {
-      font-weight: 600;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      color: var(--text-muted);
-      background-color: #f8fafc;
-      border-bottom: 1px solid var(--border-color);
-      padding: 1rem 1.25rem;
-    }
-
-    .table td {
-      padding: 1rem 1.25rem;
-      vertical-align: middle;
-      font-size: 0.875rem;
-      border-bottom: 1px solid var(--border-color);
-    }
-
-    .table tbody tr {
-      cursor: pointer;
-      transition: background-color 0.15s ease;
-    }
-
-    .table tbody tr:hover {
-      background-color: #f8fafc;
-    }
-
-    /* Badges */
-    .badge-custom {
-      font-weight: 600;
-      font-size: 0.75rem;
-      padding: 0.35em 0.65em;
-      border-radius: 20px;
-      display: inline-block;
-    }
-
-    .status-open { background-color: var(--status-open-bg); color: var(--status-open-text); }
-    .status-progress { background-color: var(--status-progress-bg); color: var(--status-progress-text); }
-    .status-pending { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
-    .status-resolved { background-color: var(--status-resolved-bg); color: var(--status-resolved-text); }
-    .status-closed { background-color: var(--status-closed-bg); color: var(--status-closed-text); }
-
-    .priority-critical { background-color: var(--priority-critical-bg); color: var(--priority-critical-text); }
-    .priority-high { background-color: var(--priority-high-bg); color: var(--priority-high-text); }
-    .priority-medium { background-color: var(--priority-medium-bg); color: var(--priority-medium-text); }
-    .priority-low { background-color: var(--priority-low-bg); color: var(--priority-low-text); }
-
-    /* Timeline styles */
-    .timeline {
-      position: relative;
-      padding-left: 0.5rem;
-    }
-
-    .timeline-item {
-      position: relative;
-      padding-left: 2rem;
-      padding-bottom: 1.75rem;
-    }
-
-    .timeline-item::before {
-      content: "";
-      position: absolute;
-      left: 7px;
-      top: 24px;
-      bottom: 0;
-      width: 2px;
-      background-color: var(--border-color);
-    }
-
-    .timeline-item:last-child::before {
-      display: none;
-    }
-
-    .timeline-badge {
-      position: absolute;
-      left: 0;
-      top: 6px;
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      background-color: var(--primary);
-      border: 3px solid #ffffff;
-      box-shadow: 0 0 0 2px var(--border-color);
-    }
-
-    .timeline-badge.system {
-      background-color: var(--secondary);
-    }
-
-    .timeline-badge.internal {
-      background-color: #f59e0b;
-    }
-
-    /* Avatars */
-    .avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background-color: #e2e8f0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-
-    /* Toast Container styling */
-    .toast-container-custom {
-      position: fixed;
-      bottom: 24px;
-      right: 24px;
-      z-index: 1100;
-    }
-
-    /* Subviews visibility helper */
-    .view-content {
-      display: none;
-    }
-    .view-content.active-view {
-      display: block;
     }
   </style>
+  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-<div id="main-dashboard-layout" class="d-flex" style="min-height: 100vh;">
+<div id="main-dashboard-layout" class="d-flex" style="min-height: 100dvh;">
   <!-- Sidebar -->
   <aside class="sidebar d-none d-lg-flex flex-column text-white">
     <div class="sidebar-logo d-flex align-items-center">
       <i class="bi bi-shield-check text-primary me-2 fs-4"></i>
       <span>Ticket Triage</span>
-      <span class="badge bg-primary ms-2" style="font-size: 0.65rem;">Member</span>
+      <span class="badge bg-primary ms-2 small-badge">Member</span>
     </div>
 
     <div class="sidebar-nav flex-grow-1">
@@ -297,10 +54,10 @@
     <!-- Sidebar Profile with Logout -->
     <div class="p-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
       <div class="d-flex align-items-center">
-        <div class="avatar bg-primary text-white me-2 text-uppercase" id="sidebar-avatar-initials" style="font-size: 0.8rem; font-weight: 700;">SC</div>
+        <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">SC</div>
         <div>
-          <div class="fw-semibold text-white fs-7" style="font-size: 0.85rem;" id="sidebar-display-name">Sarah Connor</div>
-          <div class="text-muted" style="font-size: 0.75rem;" id="sidebar-display-title">Senior Developer</div>
+          <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">Sarah Connor</div>
+          <div class="text-muted sidebar-display-title" id="sidebar-display-title">Senior Developer</div>
         </div>
       </div>
       <button class="btn btn-outline-light btn-sm border-0 p-1" onclick="logout()" title="Logout">
@@ -369,7 +126,7 @@
                 <i class="bi bi-ticket"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Total Tickets</div>
+                <div class="text-muted card-label text-uppercase">Total Tickets</div>
                 <h3 class="fw-bold mb-0 mt-1" id="stat-total">0</h3>
               </div>
             </div>
@@ -381,7 +138,7 @@
                 <i class="bi bi-envelope-open"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Open / Active</div>
+                <div class="text-muted card-label text-uppercase">Open / Active</div>
                 <h3 class="fw-bold mb-0 mt-1" id="stat-open">0</h3>
               </div>
             </div>
@@ -393,7 +150,7 @@
                 <i class="bi bi-hourglass-split"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Pending Client</div>
+                <div class="text-muted card-label text-uppercase">Pending Client</div>
                 <h3 class="fw-bold mb-0 mt-1" id="stat-pending">0</h3>
               </div>
             </div>
@@ -405,7 +162,7 @@
                 <i class="bi bi-check-circle"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Resolved</div>
+                <div class="text-muted card-label text-uppercase">Resolved</div>
                 <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">0</h3>
               </div>
             </div>
@@ -510,7 +267,7 @@
                 <i class="bi bi-clock-history"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Avg Response Time</div>
+                <div class="text-muted card-label text-uppercase">Avg Response Time</div>
                 <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-response">18m</h3>
               </div>
             </div>
@@ -521,7 +278,7 @@
                 <i class="bi bi-check-all"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Avg Resolution Time</div>
+                <div class="text-muted card-label text-uppercase">Avg Resolution Time</div>
                 <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-resolution">4.2h</h3>
               </div>
             </div>
@@ -532,7 +289,7 @@
                 <i class="bi bi-percent"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Resolution Rate</div>
+                <div class="text-muted card-label text-uppercase">Resolution Rate</div>
                 <h3 class="fw-bold mb-0 mt-1" id="kpi-resolution-rate">94.2%</h3>
               </div>
             </div>
@@ -543,7 +300,7 @@
                 <i class="bi bi-emoji-smile"></i>
               </div>
               <div>
-                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Client Satisfaction</div>
+                <div class="text-muted card-label text-uppercase">Client Satisfaction</div>
                 <h3 class="fw-bold mb-0 mt-1" id="kpi-client-satisfaction">4.9/5</h3>
               </div>
             </div>
@@ -555,7 +312,7 @@
           <div class="col-lg-8">
             <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
               <h5 class="fw-bold mb-4 text-dark text-nowrap" id="chart-title">Today's Hourly Ticket Volume</h5>
-              <div class="d-flex align-items-end justify-content-between h-75 mt-3 px-2" style="min-height: 220px;" id="analytics-chart-bars">
+              <div class="d-flex align-items-end justify-content-between h-75 mt-3 px-2" id="analytics-chart-bars">
                 <!-- Loaded dynamically based on timeframe -->
               </div>
             </div>
@@ -614,7 +371,7 @@
 
               <div class="mb-2">
                 <h6 class="fw-semibold text-muted text-uppercase small mb-2">Original Request Description</h6>
-                <div class="p-3 rounded-3 text-dark mb-2" id="detail-description" style="font-size: 0.95rem; background-color: #fafafa; border: 1px solid var(--border-color); white-space: pre-line;">
+                <div class="detail-description-box" id="detail-description">
                   Description text...
                 </div>
                 <div id="detail-description-attachments" class="d-flex flex-wrap gap-2"></div>
@@ -644,7 +401,7 @@
                         <i class="bi bi-play-btn me-1"></i> Attach Recording
                       </button>
                     </div>
-                    <button class="btn btn-link btn-sm text-danger p-0 d-none" id="clear-attachments-btn" type="button" onclick="clearAttachments()" style="text-decoration: none; font-size: 0.8rem;">
+                    <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link" id="clear-attachments-btn" type="button" onclick="clearAttachments()">
                       <i class="bi bi-trash3 me-1"></i> Clear all
                     </button>
                   </div>
@@ -729,7 +486,7 @@
               <h5 class="fw-bold mb-4 text-dark">My Agent Profile</h5>
               <form onsubmit="saveProfile(event)">
                 <div class="d-flex align-items-center mb-4 gap-3">
-                  <div class="avatar bg-primary text-white text-uppercase fs-4 fw-bold" id="profile-avatar-preview" style="width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">SC</div>
+                  <div class="avatar bg-primary text-white text-uppercase profile-avatar-large" id="profile-avatar-preview">SC</div>
                   <div>
                     <h6 class="mb-0 fw-semibold text-dark">Profile Photo / Avatar</h6>
                     <span class="text-muted small">Generated automatically from your initials.</span>
@@ -770,7 +527,7 @@
      LOGOUT SCREEN MOCKUP
      ============================================== -->
 <div id="login-screen" class="d-none min-vh-100 bg-light align-items-center justify-content-center w-100">
-  <div class="card border border-light-subtle rounded-3 p-4 shadow bg-white" style="width: 400px; max-width: 90%;">
+  <div class="card border border-light-subtle rounded-3 p-4 shadow bg-white login-card">
     <div class="text-center mb-4">
       <i class="bi bi-shield-check text-primary fs-1"></i>
       <h3 class="fw-bold mt-2 text-dark">Ticket Triage</h3>

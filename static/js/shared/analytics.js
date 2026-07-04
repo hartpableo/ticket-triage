@@ -213,7 +213,7 @@ function createChartBar(label, count, height) {
   col.className = 'text-center w-100 d-flex flex-column align-items-center';
   col.innerHTML = `
     <span class="small fw-semibold text-muted mb-2">${count}</span>
-    <div class="bg-primary rounded-top" style="width: 32px; height: ${height}px; opacity: 0.9;"></div>
+    <div class="bg-primary rounded-top chart-bar-element" style="height: ${height}px; opacity: 0.9;"></div>
     <span class="small text-muted mt-2 fw-medium">${label}</span>
   `;
   return col;
