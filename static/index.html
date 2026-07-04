@@ -1,14 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ticket Triage - Agency Admin Dashboard</title>
+  <title>Ticket Triage - Self-Hosted support desk for modern agencies</title>
 
-  <!-- Bootstrap 5 CSS CDN provided by user -->
+  <!-- Bootstrap 5 CSS CDN (consistent with other templates) -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
 
-  <!-- Bootstrap Icons CDN for clean UI icons -->
+  <!-- Bootstrap Icons -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
   <!-- Google Font: Inter -->
@@ -17,874 +17,479 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
   <style>
-    :root {
-      --primary: #4f46e5;
-      --primary-hover: #4338ca;
-      --primary-light: #e0e7ff;
+    body {
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
+
+    /* Browser Mockup Layout */
+    .mock-browser {
+      border-radius: 0.75rem;
+      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      overflow: hidden;
+    }
+
+    .browser-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+    }
+
+    .browser-address {
+      font-size: 0.8rem;
+      max-width: 280px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .browser-content {
+      height: 340px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Simulated support widget trigger button */
+    .simulated-widget-trigger {
+      position: absolute;
+      bottom: 15px;
+      right: 15px;
+      width: 52px;
+      height: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 10;
+    }
+
+    .simulated-widget-trigger:hover, .simulated-widget-trigger:focus {
+      transform: scale(1.1);
+      outline: none;
+    }
+
+    /* Simulated Support widget card */
+    .simulated-widget-card {
+      position: absolute;
+      bottom: 80px;
+      right: 15px;
+      width: 280px;
+      transform: scale(0.9) translateY(10px);
+      opacity: 0;
+      pointer-events: none;
+      transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      z-index: 10;
+    }
+
+    .simulated-widget-card.active {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* Hide helper hint when widget is open */
+    .simulated-widget-card.active ~ #sim-widget-hint {
+      display: none !important;
+    }
+
+    /* Bouncing indicator arrow */
+    @keyframes bounce-diagonal {
+      0%, 100% {
+        transform: translate(0, 0);
+      }
+      50% {
+        transform: translate(5px, 5px);
+      }
     }
   </style>
-  <link rel="stylesheet" href="css/dashboard.css">
 </head>
 <body>
 
-<div id="main-dashboard-layout" class="d-flex" style="min-height: 100dvh;">
-  <!-- Sidebar -->
-  <aside class="sidebar d-none d-lg-flex flex-column text-white">
-    <div class="sidebar-logo d-flex align-items-center">
-      <i class="bi bi-shield-check text-primary me-2 fs-4"></i>
-      <span>Ticket Triage</span>
-      <span class="badge bg-secondary ms-2 small-badge">Admin</span>
-    </div>
-
-    <div class="sidebar-nav flex-grow-1">
-      <a href="#" class="sidebar-link active" onclick="switchView('tickets', this)">
-        <i class="bi bi-ticket-perforated"></i>
-        <span>Tickets</span>
+  <!-- ==============================================
+       NAVIGATION
+       ============================================== -->
+  <nav class="navbar navbar-expand-lg bg-body-tertiary border-bottom" aria-label="Main Navigation">
+    <div class="container py-2">
+      <a class="navbar-brand d-flex align-items-center fw-bold text-body fs-4" href="#">
+        <i class="bi bi-shield-check text-primary me-2 fs-3" aria-hidden="true"></i>
+        <span>Ticket Triage</span>
       </a>
-      <a href="#" class="sidebar-link" onclick="switchView('analytics', this)">
-        <i class="bi bi-bar-chart-line"></i>
-        <span>Analytics</span>
-      </a>
-      <a href="#" class="sidebar-link" onclick="switchView('clients', this)">
-        <i class="bi bi-building"></i>
-        <span>Clients</span>
-      </a>
-      <a href="#" class="sidebar-link" onclick="switchView('team', this)">
-        <i class="bi bi-people"></i>
-        <span>Team</span>
-      </a>
-      <a href="#" class="sidebar-link" onclick="switchView('settings', this)">
-        <i class="bi bi-gear"></i>
-        <span>Settings</span>
-      </a>
-    </div>
-
-    <!-- Sidebar Profile with Logout -->
-    <div class="p-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center">
-        <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">AD</div>
-        <div>
-          <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">Alex Developer</div>
-          <div class="sidebar-display-title" id="sidebar-display-title">Agency Admin</div>
-        </div>
-      </div>
-      <button class="btn btn-outline-light btn-sm border-0 p-1" onclick="logout()" title="Logout">
-        <i class="bi bi-box-arrow-right fs-5 text-danger"></i>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#landingNav" aria-controls="landingNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
-    </div>
-  </aside>
-
-  <!-- Main Content Area -->
-  <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
-
-    <!-- Topbar Header -->
-    <header class="topbar d-flex align-items-center justify-content-between px-4">
-      <div class="d-flex align-items-center">
-        <button class="btn btn-outline-secondary btn-sm d-lg-none me-3" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSidebar" aria-expanded="false" aria-controls="mobileSidebar">
-          <i class="bi bi-list"></i>
-        </button>
-        <h4 class="mb-0 fw-semibold text-dark fs-5" id="page-title">Tickets Queue</h4>
+      <div class="collapse navbar-collapse" id="landingNav">
+        <ul class="navbar-nav ms-auto align-items-lg-center gap-3 mt-3 mt-lg-0">
+          <li class="nav-item">
+            <a class="nav-link px-3 fs-6" href="#features">Features</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 fs-6" href="#demo-section">Interactive Demo</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 fs-6" href="admin.html">Agency Dashboard</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link px-3 fs-6" href="member.html">Client Portal</a>
+          </li>
+          <li class="nav-item ms-lg-2">
+            <a class="btn btn-outline-secondary px-4 py-2 fs-6" href="#signup-section">Sign Up</a>
+          </li>
+        </ul>
       </div>
+    </div>
+  </nav>
 
-      <div class="d-flex align-items-center gap-3">
-        <div class="border-start ps-3 d-lg-none">
-          <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials">AD</div>
+  <!-- ==============================================
+       MAIN CONTENT
+       ============================================== -->
+  <main id="main-content">
+    
+    <!-- Hero Section -->
+    <header class="container mt-4 mt-lg-5 mb-5" id="signup-section">
+      <div class="row align-items-center g-5">
+        
+        <!-- Headline & Text Info (Left Col) -->
+        <div class="col-lg-7">
+          <div class="mb-4">
+            <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-2 px-3 rounded-pill fs-6 fw-semibold">
+              <i class="bi bi-rocket-takeoff-fill me-1" aria-hidden="true"></i> Self-Hosted Support Desk
+            </span>
+          </div>
+          <h1 class="display-4 fw-bold mb-4 lh-sm text-body">
+            Client support, <br>triaged <span class="text-info">without friction.</span>
+          </h1>
+          <p class="lead text-body-secondary mb-4 fs-5">
+            An open-source support system built for design, development, and digital marketing agencies. Let clients submit bugs and tasks directly from their own website dashboards.
+          </p>
         </div>
+
+        <!-- Sign Up Form Card (Right Col) -->
+        <div class="col-lg-5">
+          <div class="card p-4 p-md-5 shadow border text-start">
+            <h2 class="h4 fw-bold mb-4 text-body d-flex align-items-center gap-2">
+              <i class="bi bi-lightning-charge-fill text-info" aria-hidden="true"></i> Get Started in Seconds
+            </h2>
+            
+            <div id="signup-form-container">
+              <form onsubmit="handleSignup(event)">
+                <div class="row g-3 mb-3">
+                  <div class="col-md-6">
+                    <label for="reg-name" class="form-label fw-semibold text-body-secondary">Your Name</label>
+                    <input type="text" class="form-control py-2" id="reg-name" placeholder="Alex Dev" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="reg-agency" class="form-label fw-semibold text-body-secondary">Agency Name</label>
+                    <input type="text" class="form-control py-2" id="reg-agency" placeholder="PixelCraft Agency" required>
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="reg-email" class="form-label fw-semibold text-body-secondary">Work Email</label>
+                  <input type="email" class="form-control py-2" id="reg-email" placeholder="alex@agency.com" required>
+                </div>
+                <div class="mb-4">
+                  <label for="reg-password" class="form-label fw-semibold text-body-secondary">Create Password</label>
+                  <input type="password" class="form-control py-2" id="reg-password" placeholder="••••••••" required>
+                </div>
+                
+                <button type="submit" id="signup-submit-btn" class="btn btn-primary w-100 py-3 mt-1 fw-bold fs-6">
+                  Create Free Instance
+                </button>
+              </form>
+              <div class="text-center mt-4">
+                <span class="text-body-secondary">Already have an instance? </span>
+                <a href="admin.html" class="text-info text-decoration-none fw-semibold">Launch Admin Dashboard &rarr;</a>
+              </div>
+            </div>
+
+            <!-- Dynamic success block -->
+            <div id="signup-success-container" class="d-none text-center py-4" aria-live="polite">
+              <div class="success-checkmark mb-3">
+                <i class="bi bi-check-lg" aria-hidden="true"></i>
+              </div>
+              <h3 class="h3 fw-bold text-body mb-2">Instance Provisioned!</h3>
+              <p class="text-body-secondary px-3 mb-4">
+                Welcome aboard, <strong id="success-user-name" class="text-body">Alex</strong>. We've set up your sandbox for <strong id="success-agency-name" class="text-body">PixelCraft Agency</strong>.
+              </p>
+              <div class="mt-2">
+                <a href="admin.html" class="btn btn-primary py-3 px-5 fw-bold fs-6">
+                  Enter Agency Admin &rarr;
+                </a>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
       </div>
     </header>
 
-    <!-- Mobile Sidebar Collapse -->
-    <div class="collapse d-lg-none bg-dark text-white border-bottom" id="mobileSidebar">
-      <div class="p-3">
-        <div class="list-group list-group-flush">
-          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('tickets', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
-            <i class="bi bi-ticket-perforated me-2"></i> Tickets
-          </a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('analytics', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
-            <i class="bi bi-bar-chart-line me-2"></i> Analytics
-          </a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('clients', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
-            <i class="bi bi-building me-2"></i> Clients
-          </a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('team', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
-            <i class="bi bi-people me-2"></i> Team
-          </a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('settings', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
-            <i class="bi bi-gear me-2"></i> Settings
-          </a>
-          <a href="#" class="list-group-item list-group-item-action bg-dark text-danger border-0 py-2" onclick="logout(); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
-            <i class="bi bi-box-arrow-right me-2"></i> Logout
-          </a>
-        </div>
+    <!-- ==============================================
+         INTERACTIVE DEMO / PROTOTYPE SECTION
+         ============================================== -->
+    <section class="container my-5 py-5 border-top" id="demo-section">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-body display-6">See the Widget in Action</h2>
+        <p class="text-body-secondary fs-5">Click the floating support widget inside the mockup below to test client submissions.</p>
       </div>
-    </div>
 
-    <!-- Scrollable content view wrapper -->
-    <div class="flex-grow-1 overflow-auto p-4">
-
-      <!-- VIEW: TICKETS -->
-      <div id="view-tickets" class="view-content active-view">
-        <!-- Today Date Banner Indicator -->
-        <div class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
-          <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
-          <span class="text-muted small">
-            Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">July 4, 2026</strong>.
-          </span>
-        </div>
-
-        <!-- Overview Stats Row -->
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-light text-secondary me-3">
-                <i class="bi bi-ticket"></i>
+      <div class="row">
+        <div class="col-lg-8 col-xl-7 mx-auto">
+          <div class="card mock-browser" aria-label="Simulated web browser panel">
+            <div class="card-header d-flex align-items-center justify-content-between py-2 bg-body-tertiary">
+              <div class="d-flex gap-2 align-items-center">
+                <span class="browser-dot bg-danger" aria-hidden="true"></span>
+                <span class="browser-dot bg-warning" aria-hidden="true"></span>
+                <span class="browser-dot bg-success" aria-hidden="true"></span>
               </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Total Tickets</div>
-                <h3 class="fw-bold mb-0 mt-1" id="stat-total">0</h3>
-              </div>
+              <div class="browser-address badge bg-body border py-2 px-4 text-body-secondary fw-normal">my-client-site.com/wp-admin</div>
+              <div style="width: 48px;" aria-hidden="true"></div>
             </div>
-          </div>
-
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-danger-subtle text-danger me-3">
-                <i class="bi bi-envelope-open"></i>
+            
+            <div class="browser-content bg-dark-subtle">
+              <!-- Simulated client admin panel (neutral skeleton view) -->
+              <div class="p-4">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <span class="placeholder col-5 py-2 bg-secondary rounded"></span>
+                  <span class="placeholder col-2 py-2 bg-secondary rounded"></span>
+                </div>
+                
+                <!-- Skeleton blocks inside browser -->
+                <div class="row g-3 mb-4">
+                  <div class="col-6">
+                    <div class="p-3 rounded border bg-body">
+                      <span class="placeholder col-8 py-1.5 mb-2 bg-secondary d-block rounded"></span>
+                      <span class="placeholder col-4 py-2.5 bg-secondary d-block rounded"></span>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="p-3 rounded border bg-body">
+                      <span class="placeholder col-7 py-1.5 mb-2 bg-secondary d-block rounded"></span>
+                      <span class="placeholder col-5 py-2.5 bg-secondary d-block rounded"></span>
+                    </div>
+                  </div>
+                </div>
+                <div class="p-3 rounded border bg-body text-start">
+                  <span class="placeholder col-6 py-2 mb-3 bg-secondary d-block rounded"></span>
+                  <div class="placeholder col-12 bg-secondary rounded mb-2" style="height: 8px;"></div>
+                  <div class="d-flex justify-content-between mt-3">
+                    <span class="placeholder col-4 py-1.5 bg-secondary rounded"></span>
+                    <span class="placeholder col-3 py-1.5 bg-secondary rounded"></span>
+                  </div>
+                </div>
               </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Open / Active</div>
-                <h3 class="fw-bold mb-0 mt-1" id="stat-open">0</h3>
+
+              <!-- Toast Simulator -->
+              <div id="simulator-alert" class="toast align-items-center text-white bg-success border-0 position-absolute start-50 translate-middle-x" role="alert" aria-live="assertive" aria-atomic="true" style="bottom: 80px; font-size: 0.85rem; width: 90%; max-width: 260px; pointer-events: none; transition: opacity 0.3s ease; opacity: 0; z-index: 100;">
+                <div class="d-flex">
+                  <div class="toast-body py-2.5">
+                    <i class="bi bi-check-circle-fill me-1" aria-hidden="true"></i> Ticket pushed to agency queue!
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
 
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-warning-subtle text-warning me-3">
-                <i class="bi bi-hourglass-split"></i>
-              </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Pending Client</div>
-                <h3 class="fw-bold mb-0 mt-1" id="stat-pending">0</h3>
-              </div>
-            </div>
-          </div>
 
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-success-subtle text-success me-3">
-                <i class="bi bi-check-circle"></i>
-              </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Resolved</div>
-                <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">0</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Filters & Action Bar -->
-        <div class="card border border-light-subtle rounded-3 p-3 mb-4 bg-white shadow-sm">
-          <div class="row g-3 align-items-center">
-            <!-- Search bar -->
-            <div class="col-12 col-md-4">
-              <div class="input-group">
-                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search tickets..." onkeyup="applyFilters()">
-              </div>
-            </div>
-
-            <!-- Filter Client -->
-            <div class="col-6 col-md-2">
-              <select id="filter-client" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
-                <option value="">All Clients</option>
-                <option value="Aura Cosmetics">Aura Cosmetics</option>
-                <option value="Vertex SaaS">Vertex SaaS</option>
-                <option value="Greenfield Real Estate">Greenfield Real Estate</option>
-              </select>
-            </div>
-
-            <!-- Filter Status -->
-            <div class="col-6 col-md-2">
-              <select id="filter-status" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
-                <option value="">All Statuses</option>
-                <option value="Open">Open</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Pending Client">Pending Client</option>
-                <option value="Resolved">Resolved</option>
-                <option value="Closed">Closed</option>
-              </select>
-            </div>
-
-            <!-- Filter Priority -->
-            <div class="col-6 col-md-2">
-              <select id="filter-priority" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
-                <option value="">All Priorities</option>
-                <option value="Critical">Critical</option>
-                <option value="High">High</option>
-                <option value="Medium">Medium</option>
-                <option value="Low">Low</option>
-              </select>
-            </div>
-
-            <!-- Add Ticket Trigger -->
-            <div class="col-6 col-md-2 text-md-end">
-              <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
-                <i class="bi bi-plus-lg me-1"></i> New Ticket
+              <!-- FLOATING EMBEDDED WIDGET (Keyboard navigable button) -->
+              <button type="button" id="sim-widget-trigger" class="btn btn-primary rounded-circle simulated-widget-trigger shadow" onclick="toggleSimWidget()" aria-label="Open Support Widget" aria-expanded="false" aria-controls="sim-widget-card">
+                <i class="bi bi-chat-left-text-fill fs-4" id="sim-widget-icon" aria-hidden="true"></i>
               </button>
-            </div>
-          </div>
-        </div>
 
-        <!-- Tickets Table Container -->
-        <div class="table-container">
-          <div class="table-responsive">
-            <table class="table mb-0">
-              <thead>
-                <tr>
-                  <th style="width: 10%">ID</th>
-                  <th style="width: 35%">Subject</th>
-                  <th style="width: 15%">Client</th>
-                  <th style="width: 12%">Status</th>
-                  <th style="width: 12%">Priority</th>
-                  <th style="width: 16%">Assigned To</th>
-                </tr>
-              </thead>
-              <tbody id="tickets-table-body">
-                <!-- Dynamic Content injected via JS -->
-              </tbody>
-            </table>
-          </div>
-          <!-- Empty State -->
-          <div id="empty-state" class="text-center py-5 d-none">
-            <i class="bi bi-ticket-detailed fs-1 text-muted opacity-50 mb-3 d-block"></i>
-            <h5 class="fw-semibold">No tickets found</h5>
-            <p class="text-muted">Try adjusting your filters or search keywords.</p>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW: ANALYTICS -->
-      <div id="view-analytics" class="view-content">
-
-        <!-- Timeframe Selector Header Bar -->
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 bg-white p-3 rounded-3 border border-light-subtle shadow-sm">
-          <div class="d-flex align-items-center">
-            <i class="bi bi-funnel text-primary me-2 fs-5"></i>
-            <span class="text-muted small fw-medium">Analytics Scope Timeframe:</span>
-          </div>
-          <div class="btn-group" role="group" aria-label="Analytics Timeframe">
-            <button type="button" class="btn btn-outline-primary btn-sm active" id="timeframe-day" onclick="setTimeframe('day')">Today</button>
-            <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-week" onclick="setTimeframe('week')">This Week</button>
-            <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-month" onclick="setTimeframe('month')">This Month</button>
-          </div>
-        </div>
-
-        <!-- Performance Overview Cards -->
-        <div class="row g-3 mb-4">
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-success-subtle text-success me-3">
-                <i class="bi bi-clock-history"></i>
-              </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Avg Response Time</div>
-                <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-response">18m</h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-primary-subtle text-primary me-3">
-                <i class="bi bi-check-all"></i>
-              </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Avg Resolution Time</div>
-                <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-resolution">4.2h</h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-warning-subtle text-warning me-3">
-                <i class="bi bi-percent"></i>
-              </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Resolution Rate</div>
-                <h3 class="fw-bold mb-0 mt-1" id="kpi-resolution-rate">94.2%</h3>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 col-md-3">
-            <div class="dashboard-card d-flex align-items-center">
-              <div class="card-icon bg-info-subtle text-info me-3">
-                <i class="bi bi-emoji-smile"></i>
-              </div>
-              <div>
-                <div class="text-muted card-label text-uppercase">Client Satisfaction</div>
-                <h3 class="fw-bold mb-0 mt-1" id="kpi-client-satisfaction">4.9/5</h3>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row g-4 mb-4">
-          <!-- Left Column: Volume Bar Chart mockup -->
-          <div class="col-lg-8">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
-              <h5 class="fw-bold mb-4 text-dark text-nowrap" id="chart-title">Today's Hourly Ticket Volume</h5>
-              <div class="d-flex align-items-end justify-content-between h-75 mt-3 px-2" id="analytics-chart-bars">
-                <!-- Loaded dynamically based on timeframe -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column: Group by Client progress bars -->
-          <div class="col-lg-4">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
-              <h5 class="fw-bold mb-3 text-dark">Tickets by Client</h5>
-              <div id="analytics-client-list" class="mt-3">
-                <!-- Group rendered by JS -->
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="row g-4">
-          <!-- Group by Category -->
-          <div class="col-md-6">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-              <h5 class="fw-bold mb-3 text-dark">Category Distribution</h5>
-              <div id="analytics-category-list">
-                <!-- Rendered dynamically -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Group by Priority -->
-          <div class="col-md-6">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-              <h5 class="fw-bold mb-3 text-dark">Priority Distribution</h5>
-              <div id="analytics-priority-list">
-                <!-- Rendered dynamically -->
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW: TICKET DETAIL (FULL PAGE) -->
-      <div id="view-ticket-detail" class="view-content">
-        <div class="mb-4">
-          <button class="btn btn-light btn-sm border" onclick="switchView('tickets', null)">
-            <i class="bi bi-arrow-left me-1"></i> Back to Queue
-          </button>
-        </div>
-
-        <div class="row g-4">
-          <!-- Left Column: Details & Discussion thread -->
-          <div class="col-lg-8">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                <h3 class="fw-bold mb-0 text-dark" id="detail-ticket-title">Ticket Subject</h3>
-                <span class="badge bg-light text-secondary border px-3 py-2" id="detail-ticket-id">TKT-000</span>
-              </div>
-
-              <div class="mb-2">
-                <h6 class="fw-semibold text-muted text-uppercase small mb-2">Original Request Description</h6>
-                <div class="detail-description-box" id="detail-description">
-                  Description text...
+              <!-- SIMULATED SUPPORT WIDGET PANEL -->
+              <div id="sim-widget-card" class="card simulated-widget-card shadow text-start border" role="region" aria-label="Support ticket submission widget">
+                <div class="card-header bg-primary text-white py-2.5 d-flex justify-content-between align-items-center">
+                  <span class="fw-semibold fs-6"><i class="bi bi-shield-check me-1" aria-hidden="true"></i> Support Desk</span>
+                  <button type="button" class="btn-close btn-close-white" onclick="toggleSimWidget()" aria-label="Close support widget"></button>
                 </div>
-                <div id="detail-description-attachments" class="d-flex flex-wrap gap-2"></div>
-              </div>
-            </div>
-
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-              <h5 class="fw-bold text-dark mb-4">Activity & Discussion</h5>
-              <div class="timeline mb-4" id="detail-timeline">
-                <!-- Timeline elements dynamic -->
-              </div>
-
-              <hr class="my-4 border-light-subtle">
-
-              <div>
-                <h6 class="fw-bold text-dark mb-2">Post a Response</h6>
-                <div class="mb-3">
-                  <textarea class="form-control" id="detail-comment-input" rows="4" placeholder="Type your response to the client or an internal note..."></textarea>
-                </div>
-                <div class="mb-3 border rounded-3 p-3 bg-light">
-                  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
-                    <div class="d-flex align-items-center gap-2">
-                      <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('image')">
-                        <i class="bi bi-image me-1"></i> Attach Screenshot
-                      </button>
-                      <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('video')">
-                        <i class="bi bi-play-btn me-1"></i> Attach Recording
-                      </button>
-                    </div>
-                    <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link" id="clear-attachments-btn" type="button" onclick="clearAttachments()">
-                      <i class="bi bi-trash3 me-1"></i> Clear all
-                    </button>
+                <div class="card-body p-3">
+                  <div id="sim-widget-form-container">
+                    <form onsubmit="submitSimTicket(event)">
+                      <div class="mb-2">
+                        <label for="sim-issue-title" class="form-label text-body-secondary mb-1" style="font-size: 0.75rem;">What is the issue?</label>
+                        <input type="text" id="sim-issue-title" class="form-control py-1.5" style="font-size: 0.85rem;" placeholder="e.g. Safari checkout is broken" required>
+                      </div>
+                      <div class="mb-3">
+                        <label for="sim-issue-priority" class="form-label text-body-secondary mb-1" style="font-size: 0.75rem;">Priority</label>
+                        <select id="sim-issue-priority" class="form-select py-1.5" style="font-size: 0.85rem;">
+                          <option value="High">High</option>
+                          <option value="Medium" selected>Medium</option>
+                          <option value="Low">Low</option>
+                        </select>
+                      </div>
+                      <button type="submit" class="btn btn-primary w-100 py-2 fw-semibold" style="font-size: 0.85rem;">Submit Ticket</button>
+                    </form>
                   </div>
-                  <div id="attachment-preview-container" class="d-flex flex-wrap gap-2 mt-2"></div>
-                </div>
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                  <div class="form-check">
-                    <input class="form-check-input" type="checkbox" id="detail-comment-is-internal">
-                    <label class="form-check-label small text-muted" for="detail-comment-is-internal">
-                      Internal Agent Note (Visible only to team members)
-                    </label>
-                  </div>
-                  <button class="btn btn-primary px-4" onclick="submitDetailComment()">
-                    <i class="bi bi-send me-1"></i> Send Reply
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column: Settings & Metadata -->
-          <div class="col-lg-4">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-              <h5 class="fw-bold mb-3 text-dark">Ticket Settings</h5>
-
-              <div class="mb-3">
-                <label class="form-label text-muted small fw-semibold">Status</label>
-                <select class="form-select" id="detail-status-select" onchange="updateDetailTicketStatus()">
-                  <option value="Open">Open</option>
-                  <option value="In Progress">In Progress</option>
-                  <option value="Pending Client">Pending Client</option>
-                  <option value="Resolved">Resolved</option>
-                  <option value="Closed">Closed</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label text-muted small fw-semibold">Priority</label>
-                <select class="form-select" id="detail-priority-select" onchange="updateDetailTicketPriority()">
-                  <option value="Critical">Critical</option>
-                  <option value="High">High</option>
-                  <option value="Medium">Medium</option>
-                  <option value="Low">Low</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label class="form-label text-muted small fw-semibold">Assign Agent</label>
-                <select class="form-select" id="detail-assignee-select" onchange="updateDetailTicketAssignee()">
-                  <!-- Options loaded dynamically -->
-                </select>
-              </div>
-            </div>
-
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-              <h5 class="fw-bold mb-3 text-dark">Ticket Metadata</h5>
-
-              <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted small">Client Name</span>
-                <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
-              </div>
-              <div class="d-flex justify-content-between mb-2">
-                <span class="text-muted small">Category</span>
-                <span class="fw-semibold small" id="detail-category">Bug</span>
-              </div>
-              <div class="d-flex justify-content-between">
-                <span class="text-muted small">Created</span>
-                <span class="fw-semibold small" id="detail-created-at">2 hours ago</span>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW: CLIENTS -->
-      <div id="view-clients" class="view-content">
-        <div class="row g-4 mb-4">
-          <div class="col-12">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold mb-0">Registered Clients & Portals</h5>
-                <button class="btn btn-outline-primary btn-sm" onclick="showAddClientModal()">
-                  <i class="bi bi-plus-lg me-1"></i> Add Client
-                </button>
-              </div>
-              <div class="table-responsive">
-                <table class="table mb-0">
-                  <thead>
-                    <tr>
-                      <th>Client Name</th>
-                      <th>Widget URL Domain</th>
-                      <th>Integration Status</th>
-                      <th>Open Tickets</th>
-                      <th>Assigned Agent</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody id="clients-table-body">
-                    <!-- Client rows will render here -->
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW: TEAM -->
-      <div id="view-team" class="view-content">
-        <div class="row g-4">
-          <!-- Left Column: Team List -->
-          <div class="col-lg-8">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-              <div class="d-flex justify-content-between align-items-center mb-4">
-                <h5 class="fw-bold mb-0 text-dark">Agency Team Members (Support Agents)</h5>
-                <button class="btn btn-outline-primary btn-sm" onclick="showAddAgentModal()">
-                  <i class="bi bi-envelope-plus me-1"></i> Invite Team Member
-                </button>
-              </div>
-              <div class="list-group list-group-flush mb-3" id="agents-settings-list">
-                <!-- Dynamic render of agents -->
-              </div>
-            </div>
-          </div>
-
-          <!-- Right Column: Team Stats Overview -->
-          <div class="col-lg-4">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-              <h5 class="fw-bold mb-3 text-dark">Roster Analytics</h5>
-              <div class="p-3 bg-light rounded-3 mb-3">
-                <div class="text-muted stats-roster-label">Active Staff Members</div>
-                <h2 class="fw-bold mb-0 mt-1" id="team-stat-active">3</h2>
-              </div>
-              <div class="p-3 bg-light rounded-3">
-                <div class="text-muted stats-roster-label">Pending Invitations</div>
-                <h2 class="fw-bold mb-0 mt-1" id="team-stat-pending">0</h2>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- VIEW: SETTINGS -->
-      <div id="view-settings" class="view-content">
-        <div class="row g-4">
-          <!-- Left Column: Profile Update -->
-          <div class="col-lg-8">
-            <!-- Profile Update Feature -->
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-              <h5 class="fw-bold mb-4 text-dark">My Admin Profile</h5>
-              <form onsubmit="saveProfile(event)">
-                <div class="d-flex align-items-center mb-4 gap-3">
-                  <div class="avatar bg-primary text-white text-uppercase profile-avatar-large" id="profile-avatar-preview">AD</div>
-                  <div>
-                    <h6 class="mb-0 fw-semibold text-dark">Profile Photo / Avatar</h6>
-                    <span class="text-muted small">Generated automatically from your initials.</span>
-                  </div>
-                </div>
-
-                <div class="row g-3">
-                  <div class="col-md-6">
-                    <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
-                    <input type="text" class="form-control" id="profile-name" value="Alex Developer" required>
-                  </div>
-                  <div class="col-md-6">
-                    <label for="profile-title" class="form-label fw-semibold text-dark">Title / Position</label>
-                    <input type="text" class="form-control" id="profile-title" value="Agency Admin" required>
-                  </div>
-                  <div class="col-md-12">
-                    <label class="form-label fw-semibold text-muted">Email Address</label>
-                    <input type="email" class="form-control bg-light" value="alex@agency.com" disabled>
-                    <div class="form-text text-muted">
-                      <i class="bi bi-lock me-1"></i> Email address is linked to security credentials and cannot be changed.
-                    </div>
-                  </div>
-                </div>
-                <div class="mt-4">
-                  <button type="submit" class="btn btn-primary">Save Profile Updates</button>
-                </div>
-              </form>
-            </div>
-
-            <!-- System Configurations -->
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mt-4">
-              <h5 class="fw-bold mb-4 text-dark">System Configurations</h5>
-              <div class="row g-3">
-                <div class="col-md-12">
-                  <label for="default-agent-select" class="form-label fw-semibold text-dark">Default Agent for Unassigned Clients</label>
-                  <select class="form-select" id="default-agent-select" onchange="updateDefaultAgent(this.value)">
-                    <!-- Loaded dynamically from JS -->
-                  </select>
-                  <div class="form-text text-muted mt-2">
-                    <i class="bi bi-info-circle me-1"></i> When a client has no specific assigned team member, support tickets from their portal will default to this agent.
+                  <div id="sim-widget-success-container" class="d-none text-center py-3" aria-live="polite">
+                    <i class="bi bi-patch-check-fill text-success fs-2 mb-2" aria-hidden="true"></i>
+                    <div class="fw-bold text-body fs-6">Request Submitted!</div>
+                    <div class="text-body-secondary mt-1" style="font-size: 0.75rem;">Your support engineers have been notified.</div>
                   </div>
                 </div>
               </div>
-            </div>
-          </div>
 
-          <!-- Right Column -->
-          <div class="col-lg-4">
-            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm text-center">
-              <div class="card-icon bg-primary-light text-primary mx-auto mb-3">
-                <i class="bi bi-cloud-arrow-up"></i>
+              <!-- Animated helper arrow hint pointing to widget -->
+              <div id="sim-widget-hint" class="position-absolute d-flex align-items-center text-info gap-2" style="bottom: 75px; right: 55px; animation: bounce-diagonal 1.2s infinite; z-index: 100; pointer-events: none;">
+                <span class="small fw-semibold" style="font-size: 0.75rem;">Click to test!</span>
+                <i class="bi bi-arrow-down-right fs-5" aria-hidden="true"></i>
               </div>
-              <h5 class="fw-bold mb-2">Self-Hosted Update</h5>
-              <p class="text-muted small">Current Version: <strong>v1.0.4-beta</strong></p>
-              <button class="btn btn-light btn-sm w-100" disabled>No updates available</button>
+
             </div>
           </div>
         </div>
       </div>
+    </section>
 
-    </div>
-  </div>
-</div>
-
-<!-- ==============================================
-     LOGOUT SCREEN MOCKUP
-     ============================================== -->
-<div id="login-screen" class="d-none min-vh-100 bg-light align-items-center justify-content-center w-100">
-  <div class="card border border-light-subtle rounded-3 p-4 shadow bg-white login-card">
-    <div class="text-center mb-4">
-      <i class="bi bi-shield-check text-primary fs-1"></i>
-      <h3 class="fw-bold mt-2 text-dark">Ticket Triage</h3>
-      <p class="text-muted small">Sign in to your agency portal</p>
-    </div>
-
-    <form onsubmit="login(event)">
-      <div class="mb-3">
-        <label for="login-email" class="form-label fw-semibold text-dark">Email address</label>
-        <input type="email" class="form-control bg-light" id="login-email" value="alex@agency.com" autocomplete="username" disabled>
+    <!-- Features Section -->
+    <section class="container my-5 py-5 border-top" id="features">
+      <div class="text-center mb-5">
+        <h2 class="fw-bold text-body display-6">Core Features</h2>
+        <p class="text-body-secondary fs-5">Everything you need to offer premium client care, without the SaaS bloat.</p>
       </div>
-      <div class="mb-3">
-        <label for="login-password" class="form-label fw-semibold text-dark">Password</label>
-        <input type="password" class="form-control" id="login-password" value="••••••••" autocomplete="current-password" required>
-      </div>
-      <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Sign In</button>
-    </form>
-  </div>
-</div>
 
-<!-- ==============================================
-     MODAL: CREATE NEW TICKET
-     ============================================== -->
-<div class="modal fade" id="newTicketModal" tabindex="-1" aria-labelledby="newTicketModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="newTicketModalLabel">Submit Support Ticket</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form id="new-ticket-form" onsubmit="createNewTicket(event)">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="new-title" class="form-label fw-semibold">Subject / Issue Title</label>
-            <input type="text" class="form-control" id="new-title" required placeholder="e.g. SSL Certificate Expired">
-          </div>
-
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label for="new-client" class="form-label fw-semibold">Client Site</label>
-              <select class="form-select" id="new-client" required>
-                <option value="">Select client...</option>
-                <option value="Aura Cosmetics">Aura Cosmetics</option>
-                <option value="Vertex SaaS">Vertex SaaS</option>
-                <option value="Greenfield Real Estate">Greenfield Real Estate</option>
-              </select>
+      <div class="row g-4 justify-content-center">
+        
+        <!-- Feature 1 -->
+        <article class="col-md-4">
+          <div class="card h-100 border p-4 p-lg-5">
+            <div class="badge bg-info-subtle text-info border border-info-subtle align-self-start py-2.5 px-2.5 rounded mb-4 fs-4">
+              <i class="bi bi-code-square" aria-hidden="true"></i>
             </div>
-            <div class="col-md-6">
-              <label for="new-category" class="form-label fw-semibold">Category</label>
-              <select class="form-select" id="new-category" required>
-                <option value="Bug">Bug Report</option>
-                <option value="Feature Request">Feature Request</option>
-                <option value="Task">General Task</option>
-                <option value="Question">Question / Help</option>
-              </select>
+            <h3 class="h4 text-body fw-bold mb-3">Embeddable Widget</h3>
+            <p class="text-body-secondary mb-0">
+              Provide client-facing ticket desks directly inside client admin panels or dashboards with a simple iframe or JS script code embed.
+            </p>
+          </div>
+        </article>
+
+        <!-- Feature 2 -->
+        <article class="col-md-4">
+          <div class="card h-100 border p-4 p-lg-5">
+            <div class="badge bg-primary-subtle text-primary border border-primary-subtle align-self-start py-2.5 px-2.5 rounded mb-4 fs-4">
+              <i class="bi bi-kanban" aria-hidden="true"></i>
             </div>
+            <h3 class="h4 text-body fw-bold mb-3">Agency Board</h3>
+            <p class="text-body-secondary mb-0">
+              A comprehensive, clean portal for agency workers and support staff to track queue status, assign tickets, and analyze performance response times.
+            </p>
           </div>
+        </article>
 
-          <div class="row g-3 mb-3">
-            <div class="col-md-6">
-              <label for="new-priority" class="form-label fw-semibold">Priority</label>
-              <select class="form-select" id="new-priority" required>
-                <option value="Low">Low</option>
-                <option value="Medium" selected>Medium</option>
-                <option value="High">High</option>
-                <option value="Critical">Critical</option>
-              </select>
+        <!-- Feature 3 -->
+        <article class="col-md-4">
+          <div class="card h-100 border p-4 p-lg-5">
+            <div class="badge bg-success-subtle text-success border border-success-subtle align-self-start py-2.5 px-2.5 rounded mb-4 fs-4">
+              <i class="bi bi-hdd-network" aria-hidden="true"></i>
             </div>
-            <div class="col-md-6">
-              <label for="new-assignee" class="form-label fw-semibold">Assign Agent</label>
-              <select class="form-select" id="new-assignee">
-                <!-- Loaded from JS -->
-              </select>
-            </div>
+            <h3 class="h4 text-body fw-bold mb-3">100% Self-Hosted</h3>
+            <p class="text-body-secondary mb-0">
+              Own your database and client relationships. Free yourself from monthly per-user licensing fees and keep full control of your infrastructure.
+            </p>
           </div>
+        </article>
 
-          <div class="mb-3">
-            <label for="new-description" class="form-label fw-semibold">Description / Error Details</label>
-            <textarea class="form-control" id="new-description" rows="4" required placeholder="Describe the problem, steps to reproduce, or requested feature details..."></textarea>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Create Ticket</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
-
-<!-- ==============================================
-     MODAL: ADD CLIENT
-     ============================================== -->
-<div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="addClientModalLabel">Register New Client Website</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
-      <form id="new-client-form" onsubmit="createNewClient(event)">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="client-name-input" class="form-label fw-semibold">Client / Company Name</label>
-            <input type="text" class="form-control" id="client-name-input" required placeholder="e.g. Acme Corp">
-          </div>
+    </section>
+  </main>
 
-          <div class="mb-3">
-            <label for="client-domain-input" class="form-label fw-semibold">Allowed Domain (for CORS widget security)</label>
-            <div class="input-group">
-              <span class="input-group-text">https://</span>
-              <input type="text" class="form-control" id="client-domain-input" required placeholder="acmecorp.com">
-            </div>
-            <div class="form-text">The widget will only process requests sent from this domain.</div>
-          </div>
+  <!-- ==============================================
+       FOOTER
+       ============================================== -->
+  <footer class="container text-center py-4 border-top mt-5">
+    <p class="text-body-secondary small mb-0">
+      &copy; 2026 Ticket Triage. Licensed under MIT. Built for lightweight and seamless support desks.
+    </p>
+  </footer>
 
-          <div class="mb-3">
-            <label for="client-assignee-input" class="form-label fw-semibold">Assign Agent / Team Member</label>
-            <select class="form-select" id="client-assignee-input">
-              <!-- Loaded dynamically from JS -->
-            </select>
-            <div class="form-text">Select the primary agent responsible for managing this client.</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Register Client</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+  <!-- ==============================================
+       FRONTEND ACTIONS CODE
+       ============================================== -->
+  <script>
+    // Toggle simulated client widget
+    function toggleSimWidget() {
+      const card = document.getElementById('sim-widget-card');
+      const icon = document.getElementById('sim-widget-icon');
+      const trigger = document.getElementById('sim-widget-trigger');
+      const hint = document.getElementById('sim-widget-hint');
+      
+      if (card.classList.contains('active')) {
+        card.classList.remove('active');
+        icon.className = 'bi bi-chat-left-text-fill fs-4';
+        trigger.setAttribute('aria-expanded', 'false');
+        if (hint) hint.classList.remove('d-none');
+      } else {
+        card.classList.add('active');
+        icon.className = 'bi bi-x-lg fs-4';
+        trigger.setAttribute('aria-expanded', 'true');
+        if (hint) hint.classList.add('d-none');
+        
+        // Auto-focus title input when widget opens for accessibility
+        setTimeout(() => {
+          const firstInput = document.getElementById('sim-issue-title');
+          if (firstInput) firstInput.focus();
+        }, 150);
+      }
+    }
 
-<!-- ==============================================
-     MODAL: ADD AGENT (INVITE EMAIL & ROLE SELECTION)
-     ============================================== -->
-<div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="addAgentModalLabel">Invite New Support Agent</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <form id="new-agent-form" onsubmit="createNewAgent(event)">
-        <div class="modal-body">
-          <div class="mb-3">
-            <label for="agent-email-input" class="form-label fw-semibold text-dark">Team Member Email Address</label>
-            <input type="email" class="form-control" id="agent-email-input" required placeholder="e.g. colleague@agency.com">
-          </div>
-          <div class="mb-3">
-            <label for="agent-role-input" class="form-label fw-semibold text-dark">Access Role / Permission Level</label>
-            <select class="form-select" id="agent-role-input" required>
-              <option value="Regular Member" selected>Regular Member</option>
-              <option value="Admin">Admin</option>
-            </select>
-            <div class="form-text">Admins can adjust dashboard configurations, manage integrations, and invite other members. Regular members have access only to handle tickets.</div>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-          <button type="submit" class="btn btn-primary">Send Invitation</button>
-        </div>
-      </form>
-    </div>
-  </div>
-</div>
+    // Submit ticket inside simulator
+    function submitSimTicket(e) {
+      e.preventDefault();
+      const titleInput = document.getElementById('sim-issue-title');
+      const title = titleInput.value.trim();
+      if (!title) return;
 
-<!-- ==============================================
-     MODAL: WIDGET EMBED CODE & INSTRUCTIONS
-     ============================================== -->
-<div class="modal fade" id="widgetEmbedModal" tabindex="-1" aria-labelledby="widgetEmbedModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title fw-bold" id="widgetEmbedModalLabel">Widget Integration Script</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div class="mb-4">
-          <p class="text-muted">Give your clients a seamless way to submit and track support tickets directly inside their own website admin dashboards or control panels without logging out.</p>
-          <h6 class="fw-semibold mt-3">How it works:</h6>
-          <ol class="text-muted ps-3 small lh-lg">
-            <li>Copy the tailored integration script snippet below.</li>
-            <li>Paste it right before the closing <code>&lt;/body&gt;</code> tag on the client's internal site.</li>
-            <li>A feedback widget button will appear in the bottom-right corner automatically, authenticated via security hash.</li>
-          </ol>
-        </div>
+      // Show success screen in widget
+      document.getElementById('sim-widget-form-container').classList.add('d-none');
+      document.getElementById('sim-widget-success-container').classList.remove('d-none');
 
-        <div>
-          <h6 class="fw-semibold mb-2" id="widget-modal-client-title">Embed Snippet:</h6>
-          <div class="code-container">
-            <button class="code-copy-btn" id="copy-btn" onclick="copyWidgetSnippet()"><i class="bi bi-copy me-1"></i> Copy</button>
-            <pre class="mb-0" id="widget-code-text"></pre>
-          </div>
-          <div class="form-text text-muted mt-2">
-            <i class="bi bi-info-circle me-1"></i> Never share your data-client-id key in public git repositories.
-          </div>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+      // Trigger main landing page alert
+      const alertToast = document.getElementById('simulator-alert');
+      alertToast.style.opacity = '1';
 
-<!-- Toast Feedback Notifications -->
-<div class="toast-container-custom">
-  <div id="toastNotification" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
-    <div class="d-flex">
-      <div class="toast-body d-flex align-items-center">
-        <i class="bi bi-info-circle-fill me-2 text-primary fs-5" id="toast-icon"></i>
-        <span id="toast-message">Operation Completed!</span>
-      </div>
-      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    </div>
-  </div>
-</div>
+      // Keep it up for 3 seconds then close widget
+      setTimeout(() => {
+        alertToast.style.opacity = '0';
+      }, 3000);
 
-<!-- Bootstrap 5 Bundle JS CDN provided by user -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+      setTimeout(() => {
+        toggleSimWidget();
+        // Reset form
+        titleInput.value = '';
+        document.getElementById('sim-widget-form-container').classList.remove('d-none');
+        document.getElementById('sim-widget-success-container').classList.add('d-none');
+      }, 4000);
+    }
 
-<!-- Custom Frontend Application Code (Prototype State Engine) -->
-<script>
-  let userProfile = {
-    name: 'Alex Developer',
-    role: 'Agency Admin',
-    email: 'alex@agency.com',
-    avatarColor: '#4f46e5'
-  };
-</script>
-<script src="js/shared/state.js"></script>
-<script src="js/shared/ui-utils.js"></script>
-<script src="js/shared/auth.js"></script>
-<script src="js/shared/router.js"></script>
-<script src="js/shared/analytics.js"></script>
-<script src="js/shared/rendering.js"></script>
-<script src="js/shared/ticket-handlers.js"></script>
-<script src="js/shared/attachment-handlers.js"></script>
-<script src="js/admin/admin-handlers.js"></script>
-<script src="js/shared/init.js"></script>
+    // Sign up form handler
+    function handleSignup(e) {
+      e.preventDefault();
+      
+      const name = document.getElementById('reg-name').value.trim();
+      const agencyName = document.getElementById('reg-agency').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      
+      const btn = document.getElementById('signup-submit-btn');
+      btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Provisioning sandbox...';
+      btn.disabled = true;
+
+      // Mock loading state
+      setTimeout(() => {
+        // Save details to localStorage
+        const userData = {
+          name: name,
+          agencyName: agencyName,
+          email: email
+        };
+        localStorage.setItem('signedUpUser', JSON.stringify(userData));
+
+        // Switch card to success state
+        document.getElementById('signup-form-container').classList.add('d-none');
+        document.getElementById('success-user-name').innerText = name;
+        document.getElementById('success-agency-name').innerText = agencyName;
+        document.getElementById('signup-success-container').classList.remove('d-none');
+      }, 1200);
+    }
+  </script>
+
+  <!-- Bootstrap 5 Bundle JS CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
 </body>
 </html>

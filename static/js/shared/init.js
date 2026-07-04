@@ -2,6 +2,12 @@
 
 // Initial Load Trigger
 window.onload = function() {
+  // Sync inputs from userProfile state if available
+  const nameEl = document.getElementById('profile-name');
+  const titleEl = document.getElementById('profile-title');
+  if (nameEl && window.userProfile) nameEl.value = window.userProfile.name;
+  if (titleEl && window.userProfile) titleEl.value = window.userProfile.role;
+
   // Sync profile display name initially
   saveProfile({ preventDefault: () => {} });
 
