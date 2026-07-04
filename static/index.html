@@ -144,13 +144,13 @@
        MAIN CONTENT
        ============================================== -->
   <main id="main-content">
-    
+
     <!-- Hero Section -->
     <header class="container mt-4 mt-lg-5 mb-5" id="signup-section">
       <div class="row align-items-center g-5">
-        
+
         <!-- Headline & Text Info (Left Col) -->
-        <div class="col-lg-7">
+        <div class="col-lg-6 col-xl-7">
           <div class="mb-4">
             <span class="badge bg-primary-subtle text-primary border border-primary-subtle py-2 px-3 rounded-pill fs-6 fw-semibold">
               <i class="bi bi-rocket-takeoff-fill me-1" aria-hidden="true"></i> Self-Hosted Support Desk
@@ -165,12 +165,12 @@
         </div>
 
         <!-- Sign Up Form Card (Right Col) -->
-        <div class="col-lg-5">
+        <div class="col-lg-6 col-xl-5">
           <div class="card p-4 p-md-5 shadow border text-start">
             <h2 class="h4 fw-bold mb-4 text-body d-flex align-items-center gap-2">
               <i class="bi bi-lightning-charge-fill text-info" aria-hidden="true"></i> Get Started in Seconds
             </h2>
-            
+
             <div id="signup-form-container">
               <form onsubmit="handleSignup(event)">
                 <div class="row g-3 mb-3">
@@ -191,7 +191,7 @@
                   <label for="reg-password" class="form-label fw-semibold text-body-secondary">Create Password</label>
                   <input type="password" class="form-control py-2" id="reg-password" placeholder="••••••••" required>
                 </div>
-                
+
                 <button type="submit" id="signup-submit-btn" class="btn btn-primary w-100 py-3 mt-1 fw-bold fs-6">
                   Create Free Instance
                 </button>
@@ -245,7 +245,7 @@
               <div class="browser-address badge bg-body border py-2 px-4 text-body-secondary fw-normal">my-client-site.com/wp-admin</div>
               <div style="width: 48px;" aria-hidden="true"></div>
             </div>
-            
+
             <div class="browser-content bg-dark-subtle">
               <!-- Simulated client admin panel (neutral skeleton view) -->
               <div class="p-4">
@@ -253,7 +253,7 @@
                   <span class="placeholder col-5 py-2 bg-secondary rounded"></span>
                   <span class="placeholder col-2 py-2 bg-secondary rounded"></span>
                 </div>
-                
+
                 <!-- Skeleton blocks inside browser -->
                 <div class="row g-3 mb-4">
                   <div class="col-6">
@@ -346,7 +346,7 @@
       </div>
 
       <div class="row g-4 justify-content-center">
-        
+
         <!-- Feature 1 -->
         <article class="col-md-4">
           <div class="card h-100 border p-4 p-lg-5">
@@ -409,7 +409,7 @@
       const icon = document.getElementById('sim-widget-icon');
       const trigger = document.getElementById('sim-widget-trigger');
       const hint = document.getElementById('sim-widget-hint');
-      
+
       if (card.classList.contains('active')) {
         card.classList.remove('active');
         icon.className = 'bi bi-chat-left-text-fill fs-4';
@@ -420,7 +420,7 @@
         icon.className = 'bi bi-x-lg fs-4';
         trigger.setAttribute('aria-expanded', 'true');
         if (hint) hint.classList.add('d-none');
-        
+
         // Auto-focus title input when widget opens for accessibility
         setTimeout(() => {
           const firstInput = document.getElementById('sim-issue-title');
@@ -461,11 +461,11 @@
     // Sign up form handler
     function handleSignup(e) {
       e.preventDefault();
-      
+
       const name = document.getElementById('reg-name').value.trim();
       const agencyName = document.getElementById('reg-agency').value.trim();
       const email = document.getElementById('reg-email').value.trim();
-      
+
       const btn = document.getElementById('signup-submit-btn');
       btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Provisioning sandbox...';
       btn.disabled = true;
