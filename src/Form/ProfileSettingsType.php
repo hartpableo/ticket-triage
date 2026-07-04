@@ -12,13 +12,6 @@ class ProfileSettingsType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-            ->add('email')
-            ->add('roles')
-            ->add('is_verified')
-            ->add('otp')
-            ->add('otp_expiry', null, [
-                'widget' => 'single_text',
-            ])
             ->add('name')
             ->add('title')
         ;

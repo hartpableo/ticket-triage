@@ -276,13 +276,18 @@ body {
     width: 2rem;
     height: 2rem;
     border-radius: 50%;
-    background-color: #e2e8f0;
+    background-color: #4f46e5;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
     font-size: var(--font-size-xs);
-    color: var(--text-muted);
+    color: #ffffff;
+}
+
+.avatar.bg-primary {
+    background-color: #4f46e5 !important;
+    color: #ffffff !important;
 }
 
 /* Toast Container styling */

@@ -8,19 +8,19 @@
             <div class="col-lg-8">
                 <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
                     <h5 class="fw-bold mb-4 text-dark">My Profile</h5>
-                    <form>
+                    {{ form_start(form) }}
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
-                                <input type="text" class="form-control" id="profile-name" value="{{ app.user.name|default('') }}" required>
+                                {{ form_widget(form.name, { id: 'profile-name', attr: { class: 'form-control', required: 'required' } }) }}
                             </div>
                             <div class="col-md-6">
                                 <label for="profile-title" class="form-label fw-semibold text-dark">Title / Position</label>
-                                <input type="text" class="form-control" id="profile-title" value="{{ app.user.title|default('') }}" required>
+                                {{ form_widget(form.title, { id: 'profile-title', attr: { class: 'form-control', required: 'required' } }) }}
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold text-muted">Email Address</label>
-                                <input type="email" class="form-control bg-light" value="alex@agency.com" disabled>
+                                <input type="email" class="form-control bg-light" value="{{ app.user.email }}" disabled>
                                 <div class="form-text text-muted">
                                     <i class="bi bi-lock me-1"></i> Email address is linked to security credentials and cannot be changed.
                                 </div>
@@ -29,7 +29,7 @@
                         <div class="mt-4">
                             <button type="submit" class="btn btn-primary">Save Profile Updates</button>
                         </div>
-                    </form>
+                    {{ form_end(form) }}
                 </div>
 
                 <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mt-4">

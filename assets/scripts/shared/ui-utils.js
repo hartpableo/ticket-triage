@@ -97,6 +97,75 @@ window.showAddAgentModal = showAddAgentModal;
 window.copyWidgetSnippet = copyWidgetSnippet;
 window.selectWidgetSnippet = selectWidgetSnippet;
 
+// Profile Update UI sync handler
+function saveProfile(event) {
+  if (event && event.type === 'submit' && typeof event.preventDefault === 'function') {
+    event.preventDefault();
+  }
+
+  const nameEl = document.getElementById('profile-name');
+  const titleEl = document.getElementById('profile-title');
+  
+  let name = '';
+  let title = '';
+
+  if (nameEl) {
+    name = nameEl.value;
+  } else if (window.userProfile) {
+    name = window.userProfile.name;
+  }
+
+  if (titleEl) {
+    title = titleEl.value;
+  } else if (window.userProfile) {
+    title = window.userProfile.role;
+  }
+
+  // Update window.userProfile state
+  if (window.userProfile) {
+    if (name) window.userProfile.name = name;
+    if (title) window.userProfile.role = title;
+  }
+
+  // Update DOM elements: sidebar display name, sidebar display title, initials
+  const sidebarNameEl = document.getElementById('sidebar-display-name');
+  if (sidebarNameEl && name) {
+    sidebarNameEl.innerText = name;
+  }
+
+  const sidebarTitleEl = document.getElementById('sidebar-display-title');
+  if (sidebarTitleEl && title) {
+    sidebarTitleEl.innerText = title;
+  }
+
+  if (name) {
+    const initials = name
+      .split(' ')
+      .filter(Boolean)
+      .map(n => n[0])
+      .join('')
+      .slice(0, 2)
+      .toUpperCase();
+
+    const sidebarAvatarEl = document.getElementById('sidebar-avatar-initials');
+    if (sidebarAvatarEl) sidebarAvatarEl.innerText = initials;
+
+    const mobileAvatarEl = document.getElementById('mobile-avatar-initials');
+    if (mobileAvatarEl) mobileAvatarEl.innerText = initials;
+
+    const previewEl = document.getElementById('profile-avatar-preview');
+    if (previewEl) previewEl.innerText = initials;
+  }
+
+  if (event && event.type === 'submit') {
+    showToast('Profile updated successfully!', 'success');
+  }
+}
+
+window.saveProfile = saveProfile;
+window.copyWidgetSnippet = copyWidgetSnippet;
+window.selectWidgetSnippet = selectWidgetSnippet;
+
 // Automatically initialize and show any Symfony flash toasts present in the DOM
 document.addEventListener('DOMContentLoaded', () => {
   const flashToasts = document.querySelectorAll('.flash-toast');

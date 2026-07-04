@@ -2,13 +2,31 @@
 
 {% block html_theme %}light{% endblock %}
 
-{% block title %}Dashboard | {{ app_name }}{% endblock %}
+{#{% block title %}Dashboard | {{ app_name }}{% endblock %}#}
 
 {% block javascripts %}
+    <script>
+        window.userProfile = {
+            name: "{{ app.user.name|default('Member')|escape('js') }}",
+            role: "{{ app.user.title|default('Member')|escape('js') }}",
+            email: "{{ app.user.email|escape('js') }}",
+        };
+    </script>
     {{ importmap('dashboard') }}
 {% endblock %}
 
 {% block body %}
+    {% set initials = '' %}
+    {% if app.user and app.user.name %}
+        {% set parts = app.user.name|split(' ') %}
+        {% if parts|length > 1 %}
+            {% set initials = (parts[0]|slice(0, 1) ~ parts[parts|length - 1]|slice(0, 1))|upper %}
+        {% else %}
+            {% set initials = app.user.name|slice(0, 2)|upper %}
+        {% endif %}
+    {% else %}
+        {% set initials = 'GU' %}
+    {% endif %}
     <div id="main-dashboard-layout" class="d-flex" style="min-height: 100dvh;">
         <!-- Sidebar -->
         <aside class="sidebar d-none d-lg-flex flex-column text-white">
@@ -23,10 +41,10 @@
             <!-- Sidebar Profile with Logout -->
             <div class="p-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">AD</div>
+                    <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">{{ initials }}</div>
                     <div>
                         <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">{{ app.user.name }}</div>
-                        <div class="sidebar-display-title" id="sidebar-display-title">Agency Admin</div>
+                        <div class="sidebar-display-title" id="sidebar-display-title">{{ app.user.title }}</div>
                     </div>
                 </div>
                 <button class="btn btn-outline-light btn-sm border-0 p-1" onclick="logout()" title="Logout">
@@ -51,7 +69,7 @@
 
                 <div class="d-flex align-items-center gap-3">
                     <div class="border-start ps-3 d-lg-none">
-                        <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials">AD</div>
+                        <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials">{{ initials }}</div>
                     </div>
                 </div>
             </header>

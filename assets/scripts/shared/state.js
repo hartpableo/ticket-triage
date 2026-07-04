@@ -1,13 +1,4 @@
 // shared/state.js
-if (typeof window.userProfile === 'undefined') {
-  window.userProfile = {
-    name: 'Guest User',
-    role: 'Member',
-    email: 'guest@agency.com',
-    avatarColor: '#6b7280'
-  };
-}
-
 let tickets = [
   {
     id: 'TKT-101',
