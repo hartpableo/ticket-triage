@@ -1,0 +1,6 @@
+features:
+- admin dashboard for an agency to monitor client support tickets
+- client dashboard for a client to track their tickets' status
+- embeddable widget that can be added in a site's admin dashboard for quick ticket submissions
+- email integration
+- sms integration???
