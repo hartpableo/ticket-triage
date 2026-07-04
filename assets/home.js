@@ -1,5 +1,5 @@
-import "./styles/home.css";
 import "bootstrap";
+import "./styles/home.css";
 
 // Toggle simulated client widget
 function toggleSimWidget() {

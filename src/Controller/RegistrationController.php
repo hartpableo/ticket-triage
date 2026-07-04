@@ -9,9 +9,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
@@ -62,15 +62,14 @@ final class RegistrationController extends AbstractController {
                 ]
             );
 
-            $email = new Email()
+            $email = (new TemplatedEmail())
                 ->from($this->getParameter('system.email'))
                 ->to($user->getEmail())
                 ->subject('Verify your email address')
-                ->html(\sprintf('
-                        <h1>Hello!</h1>
-                        <div>Please verify your email by clicking the link below:</div>
-                        <div><a href="%s">Verify</a></div>
-                    ', $signature->getSignedUrl()));
+                ->htmlTemplate('emails/verify_email.html.twig')
+                ->context([
+                    'signedUrl' => $signature->getSignedUrl(),
+                ]);
 
             try {
                 $this->mailer->send($email);

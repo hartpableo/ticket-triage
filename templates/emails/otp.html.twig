@@ -1,0 +1,32 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}OTP Verification | {{ app_name }}{% endblock %}
+
+{% block content %}
+    <h2 style="margin-top: 0; margin-bottom: 12px; font-size: 22px; font-weight: 700; color: #0f172a; line-height: 30px;">
+        OTP Verification Code
+    </h2>
+    <p style="margin-top: 0; margin-bottom: 24px; font-size: 15px; line-height: 24px; color: #475569;">
+        Use the following one-time passcode (OTP) to complete your login request.
+    </p>
+    
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 28px;">
+        <tr>
+            <td align="center">
+                <div style="display: inline-block; padding: 16px 40px; background-color: #f1f5f9; color: #0f172a; font-family: 'Courier New', Courier, monospace, sans-serif; font-size: 36px; font-weight: 700; letter-spacing: 6px; border-radius: 12px; border: 1px dashed #cbd5e1; box-shadow: inset 0 2px 4px 0 rgba(0, 0, 0, 0.06);">
+                    {{ otp }}
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+    <p style="margin-top: 0; margin-bottom: 0; font-size: 14px; line-height: 22px; color: #475569; text-align: center;">
+        This code is valid for <strong>15 minutes</strong>.
+    </p>
+    
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 32px 0 20px 0;">
+    
+    <p style="margin: 0; font-size: 12px; line-height: 18px; color: #94a3b8;">
+        For security, never share this code with anyone. If you didn't request a login code, please secure your credentials or contact the system administrator.
+    </p>
+{% endblock %}

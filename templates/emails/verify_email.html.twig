@@ -1,0 +1,35 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}Verify your email address - {{ app_name }}{% endblock %}
+
+{% block content %}
+    <h2 style="margin-top: 0; margin-bottom: 12px; font-size: 22px; font-weight: 700; color: #0f172a; line-height: 30px;">
+        Welcome to {{ app_name }}!
+    </h2>
+    <p style="margin-top: 0; margin-bottom: 24px; font-size: 15px; line-height: 24px; color: #475569;">
+        Thanks for signing up. To complete your registration and secure your account, please verify your email address by clicking the button below:
+    </p>
+    
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 28px;">
+        <tr>
+            <td align="center">
+                <a href="{{ signedUrl }}" style="display: inline-block; padding: 12px 32px; background-color: #0d6efd; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.2), 0 2px 4px -2px rgba(13, 110, 253, 0.2);">
+                    Verify Email Address
+                </a>
+            </td>
+        </tr>
+    </table>
+    
+    <p style="margin-top: 0; margin-bottom: 12px; font-size: 13px; line-height: 20px; color: #64748b;">
+        If the button above doesn't work, copy and paste the following link into your browser:
+    </p>
+    <p style="margin-top: 0; margin-bottom: 24px; font-size: 12px; line-height: 18px; color: #0d6efd; word-break: break-all;">
+        <a href="{{ signedUrl }}" style="color: #0d6efd; text-decoration: underline;">{{ signedUrl }}</a>
+    </p>
+    
+    <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 32px 0 20px 0;">
+    
+    <p style="margin: 0; font-size: 12px; line-height: 18px; color: #94a3b8;">
+        This verification link will expire in 24 hours. If you did not sign up for an account, you can safely ignore this message.
+    </p>
+{% endblock %}

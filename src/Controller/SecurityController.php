@@ -10,9 +10,9 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
@@ -57,15 +57,14 @@ class SecurityController extends AbstractController {
             $user->setOtpExpiry(new \DateTimeImmutable()->modify('+15 minutes'));
             $this->entityManager->flush();
 
-            $email = new Email()
+            $email = (new TemplatedEmail())
                 ->from($this->getParameter('system.email'))
                 ->to($user->getEmail())
                 ->subject('OTP Verification | ' . $this->getParameter('app.name'))
-                ->html(\sprintf('
-                    <h1>OTP Verification</h1>
-                    <p>Your code is: <br> <strong>%s</strong></p>
-                    <p>This code is valid only for 15 minutes.</p>
-                ', $otp));
+                ->htmlTemplate('emails/otp.html.twig')
+                ->context([
+                    'otp' => $otp,
+                ]);
 
             $this->mailer->send($email);
 
