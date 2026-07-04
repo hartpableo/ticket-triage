@@ -27,6 +27,39 @@ final class SettingController extends DashboardController {
             $form->handleRequest($request);
 
             if ($form->isValid()) {
+                /** @var \Symfony\Component\HttpFoundation\File\UploadedFile $photoFile */
+                $photoFile = $form->get('photo')->getData();
+
+                if ($photoFile) {
+                    $originalFilename = pathinfo($photoFile->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = preg_replace('/[^a-zA-Z0-9_]/', '', $originalFilename);
+                    if (empty($safeFilename)) {
+                        $safeFilename = 'profile';
+                    }
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $photoFile->guessExtension();
+
+                    try {
+                        $photoFile->move(
+                            $this->getParameter('profile_photos_directory'),
+                            $newFilename
+                        );
+
+                        // Delete old photo if it exists
+                        $oldPhoto = $user->getPhoto();
+                        if ($oldPhoto) {
+                            $oldPhotoPath = $this->getParameter('profile_photos_directory') . '/' . $oldPhoto;
+                            if (file_exists($oldPhotoPath)) {
+                                @unlink($oldPhotoPath);
+                            }
+                        }
+
+                        $user->setPhoto($newFilename);
+                    } catch (\Exception $e) {
+                        $this->addFlash('danger', 'Could not upload photo: ' . $e->getMessage());
+                        return $this->redirectToRoute('app_settings');
+                    }
+                }
+
                 $entityManager->persist($user);
                 $entityManager->flush();
 

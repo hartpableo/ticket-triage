@@ -21,7 +21,7 @@ window.onload = function() {
   renderTicketsTable();
   if (typeof renderClientsTable === 'function') renderClientsTable();
   if (typeof renderAgentsList === 'function') renderAgentsList();
-  
+
   updateMetrics(); // Triggers updateAnalytics()
   setTimeframe(currentAnalyticsTimeframe); // Initialize charts & metrics with Today scope
 

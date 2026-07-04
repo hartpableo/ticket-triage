@@ -1,6 +1,13 @@
 {% extends 'dashboard/base.html.twig' %}
 
+{% block title %}Settings | {{ app_name }}{% endblock %}
+
 {% block page_title %}Dashboard Configurations{% endblock %}
+
+{% block javascripts %}
+    {{ parent() }}
+    {{ importmap('dashboard.settings') }}
+{% endblock %}
 
 {% block dashboard_content %}
     <div id="view-settings" class="view-content active-view">
@@ -10,7 +17,26 @@
                     <h5 class="fw-bold mb-4 text-dark">My Profile</h5>
                     {{ form_start(form) }}
                         {{ form_errors(form) }}
+
+                        <div class="d-flex align-items-center mb-4 gap-3">
+                            {% set user_initials = initials|default(app.user.name ? (app.user.name|split(' ')|length > 1 ? (app.user.name|split(' ')[0]|slice(0, 1) ~ app.user.name|split(' ')[app.user.name|split(' ')|length - 1]|slice(0, 1))|upper : app.user.name|slice(0, 2)|upper) : 'GU') %}
+                            <div class="avatar bg-primary text-white text-uppercase profile-avatar-large" id="profile-avatar-preview"
+                                 {% if app.user.photo %}style="background-image: url('{{ asset('uploads/profile_photos/' ~ app.user.photo) }}'); background-size: cover; background-position: center; color: transparent; text-shadow: none;"{% endif %}>
+                                {% if not app.user.photo %}{{ user_initials }}{% endif %}
+                            </div>
+                            <div>
+                                <h6 class="mb-0 fw-semibold text-dark">Profile Photo / Avatar</h6>
+                                <span class="text-muted small">Select an image to preview and update.</span>
+                            </div>
+                        </div>
+
                         <div class="row g-3">
+                            <div class="col-12">
+                                <label for="profile-photo" class="form-label fw-semibold text-dark">Upload New Photo</label>
+                                {% set photo_class = 'form-control' ~ (form.photo.vars.errors|length > 0 ? ' is-invalid' : '') %}
+                                {{ form_widget(form.photo, { id: 'profile-photo', attr: { class: photo_class } }) }}
+                                {{ form_errors(form.photo) }}
+                            </div>
                             <div class="col-md-6">
                                 <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
                                 {% set name_class = 'form-control' ~ (form.name.vars.errors|length > 0 ? ' is-invalid' : '') %}

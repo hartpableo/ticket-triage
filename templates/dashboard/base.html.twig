@@ -41,7 +41,10 @@
             <!-- Sidebar Profile with Logout -->
             <div class="p-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
-                    <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">{{ initials }}</div>
+                    <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials"
+                         {% if app.user.photo %}style="background-image: url('{{ asset('uploads/profile_photos/' ~ app.user.photo) }}'); background-size: cover; background-position: center; color: transparent; text-shadow: none;"{% endif %}>
+                        {% if not app.user.photo %}{{ initials }}{% endif %}
+                    </div>
                     <div>
                         <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">{{ app.user.name }}</div>
                         <div class="sidebar-display-title" id="sidebar-display-title">{{ app.user.title }}</div>
@@ -69,7 +72,10 @@
 
                 <div class="d-flex align-items-center gap-3">
                     <div class="border-start ps-3 d-lg-none">
-                        <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials">{{ initials }}</div>
+                        <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials"
+                             {% if app.user.photo %}style="background-image: url('{{ asset('uploads/profile_photos/' ~ app.user.photo) }}'); background-size: cover; background-position: center; color: transparent; text-shadow: none;"{% endif %}>
+                            {% if not app.user.photo %}{{ initials }}{% endif %}
+                        </div>
                     </div>
                 </div>
             </header>
