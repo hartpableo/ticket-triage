@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ticket Triage - Member Portal</title>
+
+  <!-- Bootstrap 5 CSS CDN provided by user -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+
+  <!-- Bootstrap Icons CDN for clean UI icons -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+  <!-- Google Font: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #0d9488; /* Teal branding for members to distinguish from Indigo admin */
+      --primary-hover: #0f766e;
+      --primary-light: #ccfbf1;
+      --secondary: #64748b;
+      --bg-main: #f8fafc;
+      --bg-card: #ffffff;
+      --sidebar-bg: #0f172a;
+      --sidebar-color: #94a3b8;
+      --sidebar-active: #ffffff;
+      --sidebar-active-bg: #1e293b;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --border-color: #e2e8f0;
+
+      --status-open-bg: #e0e7ff;
+      --status-open-text: #3730a3;
+      --status-progress-bg: #f3e8ff;
+      --status-progress-text: #6b21a8;
+      --status-pending-bg: #fef3c7;
+      --status-pending-text: #92400e;
+      --status-resolved-bg: #dcfce7;
+      --status-resolved-text: #166534;
+      --status-closed-bg: #f1f5f9;
+      --status-closed-text: #334155;
+
+      --priority-critical-bg: #ffe4e6;
+      --priority-critical-text: #991b1b;
+      --priority-high-bg: #ffedd5;
+      --priority-high-text: #9a3412;
+      --priority-medium-bg: #fef9c3;
+      --priority-medium-text: #854d0e;
+      --priority-low-bg: #e0f2fe;
+      --priority-low-text: #0369a1;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-main);
+      color: var(--text-main);
+      overflow-x: hidden;
+    }
+
+    /* Layout */
+    .sidebar {
+      width: 260px;
+      background-color: var(--sidebar-bg);
+      flex-shrink: 0;
+      transition: all 0.3s ease;
+      z-index: 100;
+    }
+
+    .sidebar-logo {
+      font-size: 1.25rem;
+      font-weight: 700;
+      padding: 1.5rem 1rem;
+      color: #ffffff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      letter-spacing: -0.025em;
+    }
+
+    .sidebar-link {
+      display: flex;
+      align-items: center;
+      padding: 0.75rem 1.5rem;
+      color: var(--sidebar-color);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.925rem;
+      transition: all 0.2s ease;
+      border-left: 3px solid transparent;
+    }
+
+    .sidebar-link i {
+      margin-right: 0.75rem;
+      font-size: 1.1rem;
+    }
+
+    .sidebar-link:hover {
+      color: #ffffff;
+      background-color: rgba(255, 255, 255, 0.03);
+    }
+
+    .sidebar-link.active {
+      color: #ffffff;
+      background-color: var(--sidebar-active-bg);
+      border-left-color: var(--primary);
+    }
+
+    .topbar {
+      height: 70px;
+      background-color: #ffffff;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    /* Cards & Components */
+    .dashboard-card {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .dashboard-card:hover {
+      box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05), 0 2px 4px -1px rgba(0,0,0,0.03);
+    }
+
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.35rem;
+    }
+
+    .table-container {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    .table th {
+      font-weight: 600;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      background-color: #f8fafc;
+      border-bottom: 1px solid var(--border-color);
+      padding: 1rem 1.25rem;
+    }
+
+    .table td {
+      padding: 1rem 1.25rem;
+      vertical-align: middle;
+      font-size: 0.875rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .table tbody tr {
+      cursor: pointer;
+      transition: background-color 0.15s ease;
+    }
+
+    .table tbody tr:hover {
+      background-color: #f8fafc;
+    }
+
+    /* Badges */
+    .badge-custom {
+      font-weight: 600;
+      font-size: 0.75rem;
+      padding: 0.35em 0.65em;
+      border-radius: 20px;
+      display: inline-block;
+    }
+
+    .status-open { background-color: var(--status-open-bg); color: var(--status-open-text); }
+    .status-progress { background-color: var(--status-progress-bg); color: var(--status-progress-text); }
+    .status-pending { background-color: var(--status-pending-bg); color: var(--status-pending-text); }
+    .status-resolved { background-color: var(--status-resolved-bg); color: var(--status-resolved-text); }
+    .status-closed { background-color: var(--status-closed-bg); color: var(--status-closed-text); }
+
+    .priority-critical { background-color: var(--priority-critical-bg); color: var(--priority-critical-text); }
+    .priority-high { background-color: var(--priority-high-bg); color: var(--priority-high-text); }
+    .priority-medium { background-color: var(--priority-medium-bg); color: var(--priority-medium-text); }
+    .priority-low { background-color: var(--priority-low-bg); color: var(--priority-low-text); }
+
+    /* Timeline styles */
+    .timeline {
+      position: relative;
+      padding-left: 0.5rem;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 2rem;
+      padding-bottom: 1.75rem;
+    }
+
+    .timeline-item::before {
+      content: "";
+      position: absolute;
+      left: 7px;
+      top: 24px;
+      bottom: 0;
+      width: 2px;
+      background-color: var(--border-color);
+    }
+
+    .timeline-item:last-child::before {
+      display: none;
+    }
+
+    .timeline-badge {
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background-color: var(--primary);
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 2px var(--border-color);
+    }
+
+    .timeline-badge.system {
+      background-color: var(--secondary);
+    }
+
+    .timeline-badge.internal {
+      background-color: #f59e0b;
+    }
+
+    /* Avatars */
+    .avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background-color: #e2e8f0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    /* Toast Container styling */
+    .toast-container-custom {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 1100;
+    }
+
+    /* Subviews visibility helper */
+    .view-content {
+      display: none;
+    }
+    .view-content.active-view {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+
+<div id="main-dashboard-layout" class="d-flex" style="min-height: 100vh;">
+  <!-- Sidebar -->
+  <aside class="sidebar d-none d-lg-flex flex-column text-white">
+    <div class="sidebar-logo d-flex align-items-center">
+      <i class="bi bi-shield-check text-primary me-2 fs-4"></i>
+      <span>Ticket Triage</span>
+      <span class="badge bg-primary ms-2" style="font-size: 0.65rem;">Member</span>
+    </div>
+
+    <div class="sidebar-nav flex-grow-1">
+      <a href="#" class="sidebar-link active" onclick="switchView('tickets', this)">
+        <i class="bi bi-ticket-perforated"></i>
+        <span>Tickets</span>
+      </a>
+      <a href="#" class="sidebar-link" onclick="switchView('analytics', this)">
+        <i class="bi bi-bar-chart-line"></i>
+        <span>Analytics</span>
+      </a>
+      <a href="#" class="sidebar-link" onclick="switchView('settings', this)">
+        <i class="bi bi-gear"></i>
+        <span>Settings</span>
+      </a>
+    </div>
+
+    <!-- Sidebar Profile with Logout -->
+    <div class="p-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
+      <div class="d-flex align-items-center">
+        <div class="avatar bg-primary text-white me-2 text-uppercase" id="sidebar-avatar-initials" style="font-size: 0.8rem; font-weight: 700;">SC</div>
+        <div>
+          <div class="fw-semibold text-white fs-7" style="font-size: 0.85rem;" id="sidebar-display-name">Sarah Connor</div>
+          <div class="text-muted" style="font-size: 0.75rem;" id="sidebar-display-title">Senior Developer</div>
+        </div>
+      </div>
+      <button class="btn btn-outline-light btn-sm border-0 p-1" onclick="logout()" title="Logout">
+        <i class="bi bi-box-arrow-right fs-5 text-danger"></i>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Content Area -->
+  <div class="flex-grow-1 d-flex flex-column" style="min-width: 0;">
+
+    <!-- Topbar Header -->
+    <header class="topbar d-flex align-items-center justify-content-between px-4">
+      <div class="d-flex align-items-center">
+        <button class="btn btn-outline-secondary btn-sm d-lg-none me-3" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSidebar" aria-expanded="false" aria-controls="mobileSidebar">
+          <i class="bi bi-list"></i>
+        </button>
+        <h4 class="mb-0 fw-semibold text-dark fs-5" id="page-title">Tickets Queue</h4>
+      </div>
+
+      <div class="d-flex align-items-center gap-3">
+        <div class="border-start ps-3 d-lg-none">
+          <div class="avatar bg-primary text-white text-uppercase" id="mobile-avatar-initials">SC</div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Mobile Sidebar Collapse -->
+    <div class="collapse d-lg-none bg-dark text-white border-bottom" id="mobileSidebar">
+      <div class="p-3">
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('tickets', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+            <i class="bi bi-ticket-perforated me-2"></i> Tickets
+          </a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('analytics', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+            <i class="bi bi-bar-chart-line me-2"></i> Analytics
+          </a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('settings', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+            <i class="bi bi-gear me-2"></i> Settings
+          </a>
+          <a href="#" class="list-group-item list-group-item-action bg-dark text-danger border-0 py-2" onclick="logout(); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+            <i class="bi bi-box-arrow-right me-2"></i> Logout
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scrollable content view wrapper -->
+    <div class="flex-grow-1 overflow-auto p-4">
+
+      <!-- VIEW: TICKETS -->
+      <div id="view-tickets" class="view-content active-view">
+        <!-- Today Date Banner Indicator -->
+        <div class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
+          <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
+          <span class="text-muted small">
+            Metrics display shown below represents your ticket activities for the current day: <strong class="text-dark" id="today-date-str">July 4, 2026</strong>.
+          </span>
+        </div>
+
+        <!-- Overview Stats Row -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-light text-secondary me-3">
+                <i class="bi bi-ticket"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Total Tickets</div>
+                <h3 class="fw-bold mb-0 mt-1" id="stat-total">0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-danger-subtle text-danger me-3">
+                <i class="bi bi-envelope-open"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Open / Active</div>
+                <h3 class="fw-bold mb-0 mt-1" id="stat-open">0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-warning-subtle text-warning me-3">
+                <i class="bi bi-hourglass-split"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Pending Client</div>
+                <h3 class="fw-bold mb-0 mt-1" id="stat-pending">0</h3>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-success-subtle text-success me-3">
+                <i class="bi bi-check-circle"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Resolved</div>
+                <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">0</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters & Action Bar -->
+        <div class="card border border-light-subtle rounded-3 p-3 mb-4 bg-white shadow-sm">
+          <div class="row g-3 align-items-center">
+            <!-- Search bar -->
+            <div class="col-12 col-md-4">
+              <div class="input-group">
+                <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search tickets..." onkeyup="applyFilters()">
+              </div>
+            </div>
+
+            <!-- Filter Client -->
+            <div class="col-6 col-md-2">
+              <select id="filter-client" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                <option value="">All Clients</option>
+                <option value="Aura Cosmetics">Aura Cosmetics</option>
+                <option value="Vertex SaaS">Vertex SaaS</option>
+                <option value="Greenfield Real Estate">Greenfield Real Estate</option>
+              </select>
+            </div>
+
+            <!-- Filter Status -->
+            <div class="col-6 col-md-3">
+              <select id="filter-status" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                <option value="">All Statuses</option>
+                <option value="Open">Open</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Pending Client">Pending Client</option>
+                <option value="Resolved">Resolved</option>
+                <option value="Closed">Closed</option>
+              </select>
+            </div>
+
+            <!-- Filter Priority -->
+            <div class="col-6 col-md-3">
+              <select id="filter-priority" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                <option value="">All Priorities</option>
+                <option value="Critical">Critical</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tickets Table Container -->
+        <div class="table-container">
+          <div class="table-responsive">
+            <table class="table mb-0">
+              <thead>
+                <tr>
+                  <th style="width: 10%">ID</th>
+                  <th style="width: 35%">Subject</th>
+                  <th style="width: 15%">Client</th>
+                  <th style="width: 12%">Status</th>
+                  <th style="width: 12%">Priority</th>
+                  <th style="width: 16%">Assigned To</th>
+                </tr>
+              </thead>
+              <tbody id="tickets-table-body">
+                <!-- Dynamic Content injected via JS -->
+              </tbody>
+            </table>
+          </div>
+          <!-- Empty State -->
+          <div id="empty-state" class="text-center py-5 d-none">
+            <i class="bi bi-ticket-detailed fs-1 text-muted opacity-50 mb-3 d-block"></i>
+            <h5 class="fw-semibold">No tickets found</h5>
+            <p class="text-muted">Try adjusting your filters or search keywords.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: ANALYTICS -->
+      <div id="view-analytics" class="view-content">
+
+        <!-- Timeframe Selector Header Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 bg-white p-3 rounded-3 border border-light-subtle shadow-sm">
+          <div class="d-flex align-items-center">
+            <i class="bi bi-funnel text-primary me-2 fs-5"></i>
+            <span class="text-muted small fw-medium">Analytics Scope Timeframe:</span>
+          </div>
+          <div class="btn-group" role="group" aria-label="Analytics Timeframe">
+            <button type="button" class="btn btn-outline-primary btn-sm active" id="timeframe-day" onclick="setTimeframe('day')">Today</button>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-week" onclick="setTimeframe('week')">This Week</button>
+            <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-month" onclick="setTimeframe('month')">This Month</button>
+          </div>
+        </div>
+
+        <!-- Performance Overview Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-success-subtle text-success me-3">
+                <i class="bi bi-clock-history"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Avg Response Time</div>
+                <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-response">18m</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-primary-subtle text-primary me-3">
+                <i class="bi bi-check-all"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Avg Resolution Time</div>
+                <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-resolution">4.2h</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-warning-subtle text-warning me-3">
+                <i class="bi bi-percent"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Resolution Rate</div>
+                <h3 class="fw-bold mb-0 mt-1" id="kpi-resolution-rate">94.2%</h3>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 col-md-3">
+            <div class="dashboard-card d-flex align-items-center">
+              <div class="card-icon bg-info-subtle text-info me-3">
+                <i class="bi bi-emoji-smile"></i>
+              </div>
+              <div>
+                <div class="text-muted fs-7 mb-0 text-uppercase" style="font-size: 0.75rem;">Client Satisfaction</div>
+                <h3 class="fw-bold mb-0 mt-1" id="kpi-client-satisfaction">4.9/5</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+          <!-- Left Column: Volume Bar Chart mockup -->
+          <div class="col-lg-8">
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
+              <h5 class="fw-bold mb-4 text-dark text-nowrap" id="chart-title">Today's Hourly Ticket Volume</h5>
+              <div class="d-flex align-items-end justify-content-between h-75 mt-3 px-2" style="min-height: 220px;" id="analytics-chart-bars">
+                <!-- Loaded dynamically based on timeframe -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Group by Client progress bars -->
+          <div class="col-lg-4">
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
+              <h5 class="fw-bold mb-3 text-dark">Tickets by Client</h5>
+              <div id="analytics-client-list" class="mt-3">
+                <!-- Group rendered by JS -->
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-4">
+          <!-- Group by Category -->
+          <div class="col-md-6">
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+              <h5 class="fw-bold mb-3 text-dark">Category Distribution</h5>
+              <div id="analytics-category-list">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+
+          <!-- Group by Priority -->
+          <div class="col-md-6">
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+              <h5 class="fw-bold mb-3 text-dark">Priority Distribution</h5>
+              <div id="analytics-priority-list">
+                <!-- Rendered dynamically -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: TICKET DETAIL (FULL PAGE) -->
+      <div id="view-ticket-detail" class="view-content">
+        <div class="mb-4">
+          <button class="btn btn-light btn-sm border" onclick="switchView('tickets', null)">
+            <i class="bi bi-arrow-left me-1"></i> Back to Queue
+          </button>
+        </div>
+
+        <div class="row g-4">
+          <!-- Left Column: Details & Discussion thread -->
+          <div class="col-lg-8">
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
+              <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
+                <h3 class="fw-bold mb-0 text-dark" id="detail-ticket-title">Ticket Subject</h3>
+                <span class="badge bg-light text-secondary border px-3 py-2" id="detail-ticket-id">TKT-000</span>
+              </div>
+
+              <div class="mb-2">
+                <h6 class="fw-semibold text-muted text-uppercase small mb-2">Original Request Description</h6>
+                <div class="p-3 rounded-3 text-dark mb-2" id="detail-description" style="font-size: 0.95rem; background-color: #fafafa; border: 1px solid var(--border-color); white-space: pre-line;">
+                  Description text...
+                </div>
+                <div id="detail-description-attachments" class="d-flex flex-wrap gap-2"></div>
+              </div>
+            </div>
+
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+              <h5 class="fw-bold text-dark mb-4">Activity & Discussion</h5>
+              <div class="timeline mb-4" id="detail-timeline">
+                <!-- Timeline elements dynamic -->
+              </div>
+
+              <hr class="my-4 border-light-subtle">
+
+              <div>
+                <h6 class="fw-bold text-dark mb-2">Post a Response</h6>
+                <div class="mb-3">
+                  <textarea class="form-control" id="detail-comment-input" rows="4" placeholder="Type your response to the client or an internal note..."></textarea>
+                </div>
+                <div class="mb-3 border rounded-3 p-3 bg-light">
+                  <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
+                    <div class="d-flex align-items-center gap-2">
+                      <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('image')">
+                        <i class="bi bi-image me-1"></i> Attach Screenshot
+                      </button>
+                      <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('video')">
+                        <i class="bi bi-play-btn me-1"></i> Attach Recording
+                      </button>
+                    </div>
+                    <button class="btn btn-link btn-sm text-danger p-0 d-none" id="clear-attachments-btn" type="button" onclick="clearAttachments()" style="text-decoration: none; font-size: 0.8rem;">
+                      <i class="bi bi-trash3 me-1"></i> Clear all
+                    </button>
+                  </div>
+                  <div id="attachment-preview-container" class="d-flex flex-wrap gap-2 mt-2"></div>
+                </div>
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                  <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="detail-comment-is-internal">
+                    <label class="form-check-label small text-muted" for="detail-comment-is-internal">
+                      Internal Agent Note (Visible only to team members)
+                    </label>
+                  </div>
+                  <button class="btn btn-primary px-4" onclick="submitDetailComment()">
+                    <i class="bi bi-send me-1"></i> Send Reply
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Column: Settings & Metadata -->
+          <div class="col-lg-4">
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
+              <h5 class="fw-bold mb-3 text-dark">Ticket Settings</h5>
+
+              <div class="mb-3">
+                <label class="form-label text-muted small fw-semibold">Status</label>
+                <select class="form-select" id="detail-status-select" onchange="updateDetailTicketStatus()">
+                  <option value="Open">Open</option>
+                  <option value="In Progress">In Progress</option>
+                  <option value="Pending Client">Pending Client</option>
+                  <option value="Resolved">Resolved</option>
+                  <option value="Closed">Closed</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-muted small fw-semibold">Priority</label>
+                <select class="form-select" id="detail-priority-select" onchange="updateDetailTicketPriority()">
+                  <option value="Critical">Critical</option>
+                  <option value="High">High</option>
+                  <option value="Medium">Medium</option>
+                  <option value="Low">Low</option>
+                </select>
+              </div>
+
+              <div class="mb-3">
+                <label class="form-label text-muted small fw-semibold">Assign Agent</label>
+                <select class="form-select" id="detail-assignee-select" onchange="updateDetailTicketAssignee()">
+                  <!-- Options loaded dynamically -->
+                </select>
+              </div>
+            </div>
+
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+              <h5 class="fw-bold mb-3 text-dark">Ticket Metadata</h5>
+
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">Client Name</span>
+                <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
+              </div>
+              <div class="d-flex justify-content-between mb-2">
+                <span class="text-muted small">Category</span>
+                <span class="fw-semibold small" id="detail-category">Bug</span>
+              </div>
+              <div class="d-flex justify-content-between">
+                <span class="text-muted small">Created</span>
+                <span class="fw-semibold small" id="detail-created-at">2 hours ago</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VIEW: SETTINGS -->
+      <div id="view-settings" class="view-content">
+        <div class="row g-4">
+          <!-- Left Column: Profile Update -->
+          <div class="col-lg-8">
+            <!-- Profile Update Feature -->
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+              <h5 class="fw-bold mb-4 text-dark">My Agent Profile</h5>
+              <form onsubmit="saveProfile(event)">
+                <div class="d-flex align-items-center mb-4 gap-3">
+                  <div class="avatar bg-primary text-white text-uppercase fs-4 fw-bold" id="profile-avatar-preview" style="width: 64px; height: 64px; border-radius: 50%; display: flex; align-items: center; justify-content: center;">SC</div>
+                  <div>
+                    <h6 class="mb-0 fw-semibold text-dark">Profile Photo / Avatar</h6>
+                    <span class="text-muted small">Generated automatically from your initials.</span>
+                  </div>
+                </div>
+
+                <div class="row g-3">
+                  <div class="col-md-6">
+                    <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
+                    <input type="text" class="form-control" id="profile-name" value="Sarah Connor" required>
+                  </div>
+                  <div class="col-md-6">
+                    <label for="profile-title" class="form-label fw-semibold text-dark">Title / Position</label>
+                    <input type="text" class="form-control" id="profile-title" value="Senior Developer" required>
+                  </div>
+                  <div class="col-md-12">
+                    <label class="form-label fw-semibold text-muted">Email Address</label>
+                    <input type="email" class="form-control bg-light" value="sarah@agency.com" disabled>
+                    <div class="form-text text-muted">
+                      <i class="bi bi-lock me-1"></i> Email address is linked to security credentials and cannot be changed.
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-4">
+                  <button type="submit" class="btn btn-primary">Save Profile Updates</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ==============================================
+     LOGOUT SCREEN MOCKUP
+     ============================================== -->
+<div id="login-screen" class="d-none min-vh-100 bg-light align-items-center justify-content-center w-100">
+  <div class="card border border-light-subtle rounded-3 p-4 shadow bg-white" style="width: 400px; max-width: 90%;">
+    <div class="text-center mb-4">
+      <i class="bi bi-shield-check text-primary fs-1"></i>
+      <h3 class="fw-bold mt-2 text-dark">Ticket Triage</h3>
+      <p class="text-muted small">Sign in to your agent portal</p>
+    </div>
+
+    <form onsubmit="login(event)">
+      <div class="mb-3">
+        <label for="login-email" class="form-label fw-semibold text-dark">Email address</label>
+        <input type="email" class="form-control bg-light" id="login-email" value="sarah@agency.com" autocomplete="username" disabled>
+      </div>
+      <div class="mb-3">
+        <label for="login-password" class="form-label fw-semibold text-dark">Password</label>
+        <input type="password" class="form-control" id="login-password" value="••••••••" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary w-100 py-2 mt-2">Sign In</button>
+    </form>
+  </div>
+</div>
+
+<!-- Toast Feedback Notifications -->
+<div class="toast-container-custom">
+  <div id="toastNotification" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+      <div class="toast-body d-flex align-items-center">
+        <i class="bi bi-info-circle-fill me-2 text-primary fs-5" id="toast-icon"></i>
+        <span id="toast-message">Operation Completed!</span>
+      </div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+  </div>
+</div>
+
+<!-- Bootstrap 5 Bundle JS CDN provided by user -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+
+<!-- Custom Frontend Application Code (Prototype State Engine) -->
+<script>
+  let userProfile = {
+    name: 'Sarah Connor',
+    role: 'Senior Developer',
+    email: 'sarah@agency.com',
+    avatarColor: '#0d9488'
+  };
+</script>
+<script src="js/shared/state.js"></script>
+<script src="js/shared/ui-utils.js"></script>
+<script src="js/shared/auth.js"></script>
+<script src="js/shared/router.js"></script>
+<script src="js/shared/analytics.js"></script>
+<script src="js/shared/rendering.js"></script>
+<script src="js/shared/ticket-handlers.js"></script>
+<script src="js/shared/attachment-handlers.js"></script>
+<script src="js/shared/init.js"></script>
+</body>
+</html>
