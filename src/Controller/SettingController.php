@@ -21,14 +21,33 @@ final class SettingController extends DashboardController {
             $user
         );
 
-        $form->handleRequest($request);
+        $session = $request->getSession();
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->persist($user);
-            $entityManager->flush();
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
 
-            $this->addFlash('success', 'Profile updated successfully!');
+            if ($form->isValid()) {
+                $entityManager->persist($user);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Profile updated successfully!');
+                return $this->redirectToRoute('app_settings');
+            }
+
+            // Save invalid form data to session and redirect to keep GET request state
+            $session->set(
+                'settings_form_data',
+                $request->request->all($form->getName())
+            );
             return $this->redirectToRoute('app_settings');
+        }
+
+        // On GET request: check if we have stored invalid form data from a redirect
+        $responseStatus = Response::HTTP_OK;
+        if ($session->has('settings_form_data')) {
+            $form->submit($session->get('settings_form_data'), FALSE);
+            $session->remove('settings_form_data');
+            $responseStatus = Response::HTTP_UNPROCESSABLE_ENTITY;
         }
 
         return $this->render('setting/index.html.twig', array_merge(
@@ -36,6 +55,6 @@ final class SettingController extends DashboardController {
             [
                 'form' => $form
             ]
-        ));
+        ), new Response(NULL, $responseStatus));
     }
 }

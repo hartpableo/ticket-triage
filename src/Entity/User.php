@@ -53,6 +53,9 @@ class User implements UserInterface
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'assigned_agent')]
     private Collection $tickets;
 
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $photo = null;
+
     public function __construct()
     {
         $this->clients = new ArrayCollection();
@@ -224,6 +227,18 @@ class User implements UserInterface
                 $ticket->setAssignedAgent(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getPhoto(): ?string
+    {
+        return $this->photo;
+    }
+
+    public function setPhoto(?string $photo): static
+    {
+        $this->photo = $photo;
 
         return $this;
     }

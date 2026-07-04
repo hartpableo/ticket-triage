@@ -9,14 +9,19 @@
                 <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
                     <h5 class="fw-bold mb-4 text-dark">My Profile</h5>
                     {{ form_start(form) }}
+                        {{ form_errors(form) }}
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
-                                {{ form_widget(form.name, { id: 'profile-name', attr: { class: 'form-control', required: 'required' } }) }}
+                                {% set name_class = 'form-control' ~ (form.name.vars.errors|length > 0 ? ' is-invalid' : '') %}
+                                {{ form_widget(form.name, { id: 'profile-name', attr: { class: name_class, required: 'required' } }) }}
+                                {{ form_errors(form.name) }}
                             </div>
                             <div class="col-md-6">
                                 <label for="profile-title" class="form-label fw-semibold text-dark">Title / Position</label>
-                                {{ form_widget(form.title, { id: 'profile-title', attr: { class: 'form-control', required: 'required' } }) }}
+                                {% set title_class = 'form-control' ~ (form.title.vars.errors|length > 0 ? ' is-invalid' : '') %}
+                                {{ form_widget(form.title, { id: 'profile-title', attr: { class: title_class, required: 'required' } }) }}
+                                {{ form_errors(form.title) }}
                             </div>
                             <div class="col-md-12">
                                 <label class="form-label fw-semibold text-muted">Email Address</label>
@@ -27,7 +32,7 @@
                             </div>
                         </div>
                         <div class="mt-4">
-                            <button type="submit" class="btn btn-primary">Save Profile Updates</button>
+                            {{ form_widget(form.submit) }}
                         </div>
                     {{ form_end(form) }}
                 </div>
