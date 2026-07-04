@@ -24,9 +24,9 @@ Ticket
 - title
 - description
 - client_id
-- category
-- status
-- priority
+- category - enum
+- status - enum
+- priority - enum
 - assigned_agent_id
 - created_at
 - updated_at
