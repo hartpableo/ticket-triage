@@ -1,20 +1,114 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Hello AnalyticsController!{% endblock %}
+{% block page_title %}Performance & Volume Analytics | {{ app_name }}{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block dashboard_content %}
+    <!-- VIEW: ANALYTICS -->
+    <div id="view-analytics" class="view-content active-view">
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <!-- Timeframe Selector Header Bar -->
+        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 bg-white p-3 rounded-3 border border-light-subtle shadow-sm">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-funnel text-primary me-2 fs-5"></i>
+                <span class="text-muted small fw-medium">Analytics Scope Timeframe:</span>
+            </div>
+            <div class="btn-group" role="group" aria-label="Analytics Timeframe">
+                <button type="button" class="btn btn-outline-primary btn-sm active" id="timeframe-day" onclick="setTimeframe('day')">Today</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-week" onclick="setTimeframe('week')">This Week</button>
+                <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-month" onclick="setTimeframe('month')">This Month</button>
+            </div>
+        </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/AnalyticsController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/analytics/index.html.twig</code></li>
-    </ul>
-</div>
+        <!-- Performance Overview Cards -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-success-subtle text-success me-3">
+                        <i class="bi bi-clock-history"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Avg Response Time</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-response">18m</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-primary-subtle text-primary me-3">
+                        <i class="bi bi-check-all"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Avg Resolution Time</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-resolution">4.2h</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-warning-subtle text-warning me-3">
+                        <i class="bi bi-percent"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Resolution Rate</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="kpi-resolution-rate">94.2%</h3>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-info-subtle text-info me-3">
+                        <i class="bi bi-emoji-smile"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Client Satisfaction</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="kpi-client-satisfaction">4.9/5</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-4">
+            <!-- Left Column: Volume Bar Chart mockup -->
+            <div class="col-lg-8">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
+                    <h5 class="fw-bold mb-4 text-dark text-nowrap" id="chart-title">Today's Hourly Ticket Volume</h5>
+                    <div class="d-flex align-items-end justify-content-between h-75 mt-3 px-2" id="analytics-chart-bars">
+                        <!-- Loaded dynamically based on timeframe -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Group by Client progress bars -->
+            <div class="col-lg-4">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
+                    <h5 class="fw-bold mb-3 text-dark">Tickets by Client</h5>
+                    <div id="analytics-client-list" class="mt-3">
+                        <!-- Group rendered by JS -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Group by Category -->
+            <div class="col-md-6">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+                    <h5 class="fw-bold mb-3 text-dark">Category Distribution</h5>
+                    <div id="analytics-category-list">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Group by Priority -->
+            <div class="col-md-6">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+                    <h5 class="fw-bold mb-3 text-dark">Priority Distribution</h5>
+                    <div id="analytics-priority-list">
+                        <!-- Rendered dynamically -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

@@ -107,3 +107,9 @@ let agents = [
 let selectedTicketId = null;
 let currentAnalyticsTimeframe = 'day';
 window.defaultClientAgent = 'Sarah Connor';
+
+window.tickets = tickets;
+window.clients = clients;
+window.agents = agents;
+window.selectedTicketId = selectedTicketId;
+window.currentAnalyticsTimeframe = currentAnalyticsTimeframe;

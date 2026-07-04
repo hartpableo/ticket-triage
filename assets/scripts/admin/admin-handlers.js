@@ -162,3 +162,10 @@ function updateDefaultAgent(agentName) {
   renderClientsTable();
   showToast(`Default agent for unassigned clients updated to: ${agentName}`);
 }
+
+window.createNewTicket = createNewTicket;
+window.createNewClient = createNewClient;
+window.assignClientToAgent = assignClientToAgent;
+window.createNewAgent = createNewAgent;
+window.removeAgent = removeAgent;
+window.updateDefaultAgent = updateDefaultAgent;

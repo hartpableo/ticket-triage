@@ -1,20 +1,68 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Hello SettingController!{% endblock %}
+{% block page_title %}Dashboard Configurations{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block dashboard_content %}
+    <!-- VIEW: SETTINGS -->
+    <div id="view-settings" class="view-content active-view">
+        <div class="row g-4">
+            <!-- Left Column: Profile Update -->
+            <div class="col-lg-8">
+                <!-- Profile Update Feature -->
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+                    <h5 class="fw-bold mb-4 text-dark">My Admin Profile</h5>
+                    <form onsubmit="saveProfile(event)">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
+                                <input type="text" class="form-control" id="profile-name" value="Alex" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="profile-title" class="form-label fw-semibold text-dark">Title / Position</label>
+                                <input type="text" class="form-control" id="profile-title" value="Agency Admin" required>
+                            </div>
+                            <div class="col-md-12">
+                                <label class="form-label fw-semibold text-muted">Email Address</label>
+                                <input type="email" class="form-control bg-light" value="alex@agency.com" disabled>
+                                <div class="form-text text-muted">
+                                    <i class="bi bi-lock me-1"></i> Email address is linked to security credentials and cannot be changed.
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary">Save Profile Updates</button>
+                        </div>
+                    </form>
+                </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+                <!-- System Configurations -->
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mt-4">
+                    <h5 class="fw-bold mb-4 text-dark">System Configurations</h5>
+                    <div class="row g-3">
+                        <div class="col-md-12">
+                            <label for="default-agent-select" class="form-label fw-semibold text-dark">Default Agent for Unassigned Clients</label>
+                            <select class="form-select" id="default-agent-select" onchange="updateDefaultAgent(this.value)">
+                                <!-- Loaded dynamically from JS -->
+                            </select>
+                            <div class="form-text text-muted mt-2">
+                                <i class="bi bi-info-circle me-1"></i> When a client has no specific assigned team member, support tickets from their portal will default to this agent.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/SettingController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/setting/index.html.twig</code></li>
-    </ul>
-</div>
+            <!-- Right Column -->
+            <div class="col-lg-4">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm text-center">
+                    <div class="card-icon bg-primary-light text-primary mx-auto mb-3">
+                        <i class="bi bi-cloud-arrow-up"></i>
+                    </div>
+                    <h5 class="fw-bold mb-2">Self-Hosted Update</h5>
+                    <p class="text-muted small">Current Version: <strong>v1.0.4-beta</strong></p>
+                    <button class="btn btn-light btn-sm w-100" disabled>No updates available</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

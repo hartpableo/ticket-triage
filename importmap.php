@@ -23,7 +23,8 @@
  * }>
  */
 return [
-    'home' => ['path' => './assets/home.js', 'entrypoint' => true],
+    'home' => ['path' => './assets/home.js', 'entrypoint' => TRUE],
+    'dashboard' => ['path' => './assets/dashboard.js', 'entrypoint' => TRUE],
     'bootstrap' => ['version' => '5.3.8'],
     '@popperjs/core' => ['version' => '2.11.8'],
     'bootstrap/dist/css/bootstrap.min.css' => ['version' => '5.3.8', 'type' => 'css'],

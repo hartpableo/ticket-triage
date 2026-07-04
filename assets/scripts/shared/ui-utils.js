@@ -74,3 +74,9 @@ function showAddAgentModal() {
     modal.show();
   }
 }
+
+window.showToast = showToast;
+window.showAddClientModal = showAddClientModal;
+window.showAddAgentModal = showAddAgentModal;
+window.copyWidgetSnippet = copyWidgetSnippet;
+window.selectWidgetSnippet = selectWidgetSnippet;

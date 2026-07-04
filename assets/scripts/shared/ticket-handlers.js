@@ -72,14 +72,11 @@ function openTicketDetails(id) {
   // Render Timeline Activity
   renderDetailTimeline(ticket);
 
-  // Switch view content to detail view
-  switchView('ticket-detail', null);
-  
   // Set header breadcrumb title
   const pageTitleEl = document.getElementById('page-title');
   if (pageTitleEl) {
     pageTitleEl.innerHTML = `
-      <span class="text-muted fw-normal" style="cursor: pointer;" onclick="switchView('tickets', null)">Tickets Queue</span> 
+      <span class="text-muted fw-normal" style="cursor: pointer;" onclick="window.location.href='/dashboard/tickets'">Tickets Queue</span> 
       <span class="text-secondary mx-2">/</span> 
       <span class="text-dark">${ticket.id}</span>
     `;
@@ -195,3 +192,10 @@ function submitDetailComment() {
   renderDetailTimeline(ticket);
   showToast('Reply posted successfully!');
 }
+
+window.applyFilters = applyFilters;
+window.openTicketDetails = openTicketDetails;
+window.updateDetailTicketStatus = updateDetailTicketStatus;
+window.updateDetailTicketPriority = updateDetailTicketPriority;
+window.updateDetailTicketAssignee = updateDetailTicketAssignee;
+window.submitDetailComment = submitDetailComment;

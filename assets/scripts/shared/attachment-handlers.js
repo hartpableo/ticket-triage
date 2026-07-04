@@ -71,3 +71,6 @@ function simulateMediaAttachment(type) {
     showToast('Mock screen recording attached to response.');
   }
 }
+
+window.simulateMediaAttachment = simulateMediaAttachment;
+window.clearAttachments = clearAttachments;

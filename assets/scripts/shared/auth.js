@@ -75,3 +75,7 @@ function saveProfile(event) {
 
   showToast('Profile updated successfully!');
 }
+
+window.login = login;
+window.logout = logout;
+window.saveProfile = saveProfile;

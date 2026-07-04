@@ -1,0 +1,11 @@
+<nav aria-label="Admin menu" class="sidebar-nav flex-grow-1">
+    {% for item in menu %}
+        <a
+            href="{{ path(item.route) }}"
+            class="sidebar-link {{ app.current_route == item.route ? 'active' }}"
+        >
+            <i class="bi bi-{{ item.icon }}"></i>
+            <span>{{ item.title }}</span>
+        </a>
+    {% endfor %}
+</nav>

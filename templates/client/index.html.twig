@@ -1,20 +1,38 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Hello ClientController!{% endblock %}
+{% block page_title %}Clients Directory{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
-
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/ClientController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/client/index.html.twig</code></li>
-    </ul>
-</div>
+{% block dashboard_content %}
+    <!-- VIEW: CLIENTS -->
+    <div id="view-clients" class="view-content active-view">
+        <div class="row g-4 mb-4">
+            <div class="col-12">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0">Registered Clients & Portals</h5>
+                        <button class="btn btn-outline-primary btn-sm" onclick="showAddClientModal()">
+                            <i class="bi bi-plus-lg me-1"></i> Add Client
+                        </button>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table mb-0">
+                            <thead>
+                            <tr>
+                                <th>Client Name</th>
+                                <th>Widget URL Domain</th>
+                                <th>Integration Status</th>
+                                <th>Open Tickets</th>
+                                <th>Assigned Agent</th>
+                                <th>Actions</th>
+                            </tr>
+                            </thead>
+                            <tbody id="clients-table-body">
+                            <!-- Client rows will render here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

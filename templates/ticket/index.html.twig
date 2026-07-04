@@ -1,20 +1,147 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Hello TicketController!{% endblock %}
+{% block page_title %}Tickets Queue{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block dashboard_content %}
+    <!-- VIEW: TICKETS -->
+    <div id="view-tickets" class="view-content active-view">
+        <!-- Today Date Banner Indicator -->
+        <div class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
+            <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
+            <span class="text-muted small">
+                Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">July 4, 2026</strong>.
+            </span>
+        </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
+        <!-- Overview Stats Row -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-light text-secondary me-3">
+                        <i class="bi bi-ticket"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Total Tickets</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-total">0</h3>
+                    </div>
+                </div>
+            </div>
 
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/TicketController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/ticket/index.html.twig</code></li>
-    </ul>
-</div>
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-danger-subtle text-danger me-3">
+                        <i class="bi bi-envelope-open"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Open / Active</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-open">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-warning-subtle text-warning me-3">
+                        <i class="bi bi-hourglass-split"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Pending Client</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-pending">0</h3>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="dashboard-card d-flex align-items-center">
+                    <div class="card-icon bg-success-subtle text-success me-3">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div>
+                        <div class="text-muted card-label text-uppercase">Resolved</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">0</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters & Action Bar -->
+        <div class="card border border-light-subtle rounded-3 p-3 mb-4 bg-white shadow-sm">
+            <div class="row g-3 align-items-center">
+                <!-- Search bar -->
+                <div class="col-12 col-md-4">
+                    <div class="input-group">
+                        <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
+                        <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search tickets..." onkeyup="applyFilters()">
+                    </div>
+                </div>
+
+                <!-- Filter Client -->
+                <div class="col-6 col-md-2">
+                    <select id="filter-client" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                        <option value="">All Clients</option>
+                        <option value="Aura Cosmetics">Aura Cosmetics</option>
+                        <option value="Vertex SaaS">Vertex SaaS</option>
+                        <option value="Greenfield Real Estate">Greenfield Real Estate</option>
+                    </select>
+                </div>
+
+                <!-- Filter Status -->
+                <div class="col-6 col-md-2">
+                    <select id="filter-status" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                        <option value="">All Statuses</option>
+                        <option value="Open">Open</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Pending Client">Pending Client</option>
+                        <option value="Resolved">Resolved</option>
+                        <option value="Closed">Closed</option>
+                    </select>
+                </div>
+
+                <!-- Filter Priority -->
+                <div class="col-6 col-md-2">
+                    <select id="filter-priority" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
+                        <option value="">All Priorities</option>
+                        <option value="Critical">Critical</option>
+                        <option value="High">High</option>
+                        <option value="Medium">Medium</option>
+                        <option value="Low">Low</option>
+                    </select>
+                </div>
+
+                <!-- Add Ticket Trigger -->
+                <div class="col-6 col-md-2 text-md-end">
+                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                        <i class="bi bi-plus-lg me-1"></i> New Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tickets Table Container -->
+        <div class="table-container">
+            <div class="table-responsive">
+                <table class="table mb-0">
+                    <thead>
+                    <tr>
+                        <th style="width: 10%">ID</th>
+                        <th style="width: 35%">Subject</th>
+                        <th style="width: 15%">Client</th>
+                        <th style="width: 12%">Status</th>
+                        <th style="width: 12%">Priority</th>
+                        <th style="width: 16%">Assigned To</th>
+                    </tr>
+                    </thead>
+                    <tbody id="tickets-table-body">
+                    <!-- Dynamic Content injected via JS -->
+                    </tbody>
+                </table>
+            </div>
+            <!-- Empty State -->
+            <div id="empty-state" class="text-center py-5 d-none">
+                <i class="bi bi-ticket-detailed fs-1 text-muted opacity-50 mb-3 d-block"></i>
+                <h5 class="fw-semibold">No tickets found</h5>
+                <p class="text-muted">Try adjusting your filters or search keywords.</p>
+            </div>
+        </div>
+    </div>
 {% endblock %}

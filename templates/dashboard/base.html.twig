@@ -1,5 +1,7 @@
 {% extends 'base.html.twig' %}
 
+{% block html_theme %}light{% endblock %}
+
 {% block title %}Dashboard | {{ app_name }}{% endblock %}
 
 {% block javascripts %}
@@ -12,39 +14,18 @@
         <aside class="sidebar d-none d-lg-flex flex-column text-white">
             <div class="sidebar-logo d-flex align-items-center">
                 <i class="bi bi-shield-check text-primary me-2 fs-4"></i>
-                <span>Ticket Triage</span>
+                <span>{{ app_name }}</span>
                 <span class="badge bg-secondary ms-2 small-badge">Admin</span>
             </div>
 
-            <div class="sidebar-nav flex-grow-1">
-                <a href="#" class="sidebar-link active" onclick="switchView('tickets', this)">
-                    <i class="bi bi-ticket-perforated"></i>
-                    <span>Tickets</span>
-                </a>
-                <a href="#" class="sidebar-link" onclick="switchView('analytics', this)">
-                    <i class="bi bi-bar-chart-line"></i>
-                    <span>Analytics</span>
-                </a>
-                <a href="#" class="sidebar-link" onclick="switchView('clients', this)">
-                    <i class="bi bi-building"></i>
-                    <span>Clients</span>
-                </a>
-                <a href="#" class="sidebar-link" onclick="switchView('team', this)">
-                    <i class="bi bi-people"></i>
-                    <span>Team</span>
-                </a>
-                <a href="#" class="sidebar-link" onclick="switchView('settings', this)">
-                    <i class="bi bi-gear"></i>
-                    <span>Settings</span>
-                </a>
-            </div>
+            {% include 'admin-menu.html.twig' with {menu: admin_menu} only %}
 
             <!-- Sidebar Profile with Logout -->
             <div class="p-3 border-top border-secondary border-opacity-25 d-flex align-items-center justify-content-between">
                 <div class="d-flex align-items-center">
                     <div class="avatar bg-primary text-white me-2 text-uppercase sidebar-avatar" id="sidebar-avatar-initials">AD</div>
                     <div>
-                        <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">Alex Developer</div>
+                        <div class="fw-semibold text-white sidebar-display-name" id="sidebar-display-name">{{ app.user.name }}</div>
                         <div class="sidebar-display-title" id="sidebar-display-title">Agency Admin</div>
                     </div>
                 </div>
@@ -63,7 +44,9 @@
                     <button class="btn btn-outline-secondary btn-sm d-lg-none me-3" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSidebar" aria-expanded="false" aria-controls="mobileSidebar">
                         <i class="bi bi-list"></i>
                     </button>
-                    <h4 class="mb-0 fw-semibold text-dark fs-5" id="page-title">Tickets Queue</h4>
+                    <h4 class="mb-0 fw-semibold text-dark fs-5" id="page-title">
+                        {% block page_title %}{% endblock %}
+                    </h4>
                 </div>
 
                 <div class="d-flex align-items-center gap-3">
@@ -77,19 +60,19 @@
             <div class="collapse d-lg-none bg-dark text-white border-bottom" id="mobileSidebar">
                 <div class="p-3">
                     <div class="list-group list-group-flush">
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('tickets', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+                        <a href="{{ path('app_tickets') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
                             <i class="bi bi-ticket-perforated me-2"></i> Tickets
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('analytics', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+                        <a href="{{ path('app_analytics') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
                             <i class="bi bi-bar-chart-line me-2"></i> Analytics
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('clients', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+                        <a href="{{ path('app_clients') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
                             <i class="bi bi-building me-2"></i> Clients
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('team', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+                        <a href="{{ path('app_team') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
                             <i class="bi bi-people me-2"></i> Team
                         </a>
-                        <a href="#" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="switchView('settings', null); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
+                        <a href="{{ path('app_settings') }}" class="list-group-item list-group-item-action bg-dark text-white border-0 py-2" onclick="bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
                             <i class="bi bi-gear me-2"></i> Settings
                         </a>
                         <a href="#" class="list-group-item list-group-item-action bg-dark text-danger border-0 py-2" onclick="logout(); bootstrap.Collapse.getInstance(document.getElementById('mobileSidebar')).hide();">
@@ -101,521 +84,7 @@
 
             <!-- Scrollable content view wrapper -->
             <div class="flex-grow-1 overflow-auto p-4">
-
-                <!-- VIEW: TICKETS -->
-                <div id="view-tickets" class="view-content active-view">
-                    <!-- Today Date Banner Indicator -->
-                    <div class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
-                        <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
-                        <span class="text-muted small">
-            Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">July 4, 2026</strong>.
-          </span>
-                    </div>
-
-                    <!-- Overview Stats Row -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-light text-secondary me-3">
-                                    <i class="bi bi-ticket"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Total Tickets</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="stat-total">0</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-danger-subtle text-danger me-3">
-                                    <i class="bi bi-envelope-open"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Open / Active</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="stat-open">0</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-warning-subtle text-warning me-3">
-                                    <i class="bi bi-hourglass-split"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Pending Client</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="stat-pending">0</h3>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-success-subtle text-success me-3">
-                                    <i class="bi bi-check-circle"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Resolved</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">0</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters & Action Bar -->
-                    <div class="card border border-light-subtle rounded-3 p-3 mb-4 bg-white shadow-sm">
-                        <div class="row g-3 align-items-center">
-                            <!-- Search bar -->
-                            <div class="col-12 col-md-4">
-                                <div class="input-group">
-                                    <span class="input-group-text bg-light border-end-0 text-muted"><i class="bi bi-search"></i></span>
-                                    <input type="text" id="search-input" class="form-control bg-light border-start-0" placeholder="Search tickets..." onkeyup="applyFilters()">
-                                </div>
-                            </div>
-
-                            <!-- Filter Client -->
-                            <div class="col-6 col-md-2">
-                                <select id="filter-client" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
-                                    <option value="">All Clients</option>
-                                    <option value="Aura Cosmetics">Aura Cosmetics</option>
-                                    <option value="Vertex SaaS">Vertex SaaS</option>
-                                    <option value="Greenfield Real Estate">Greenfield Real Estate</option>
-                                </select>
-                            </div>
-
-                            <!-- Filter Status -->
-                            <div class="col-6 col-md-2">
-                                <select id="filter-status" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
-                                    <option value="">All Statuses</option>
-                                    <option value="Open">Open</option>
-                                    <option value="In Progress">In Progress</option>
-                                    <option value="Pending Client">Pending Client</option>
-                                    <option value="Resolved">Resolved</option>
-                                    <option value="Closed">Closed</option>
-                                </select>
-                            </div>
-
-                            <!-- Filter Priority -->
-                            <div class="col-6 col-md-2">
-                                <select id="filter-priority" class="form-select bg-light border-light-subtle" onchange="applyFilters()">
-                                    <option value="">All Priorities</option>
-                                    <option value="Critical">Critical</option>
-                                    <option value="High">High</option>
-                                    <option value="Medium">Medium</option>
-                                    <option value="Low">Low</option>
-                                </select>
-                            </div>
-
-                            <!-- Add Ticket Trigger -->
-                            <div class="col-6 col-md-2 text-md-end">
-                                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
-                                    <i class="bi bi-plus-lg me-1"></i> New Ticket
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Tickets Table Container -->
-                    <div class="table-container">
-                        <div class="table-responsive">
-                            <table class="table mb-0">
-                                <thead>
-                                <tr>
-                                    <th style="width: 10%">ID</th>
-                                    <th style="width: 35%">Subject</th>
-                                    <th style="width: 15%">Client</th>
-                                    <th style="width: 12%">Status</th>
-                                    <th style="width: 12%">Priority</th>
-                                    <th style="width: 16%">Assigned To</th>
-                                </tr>
-                                </thead>
-                                <tbody id="tickets-table-body">
-                                <!-- Dynamic Content injected via JS -->
-                                </tbody>
-                            </table>
-                        </div>
-                        <!-- Empty State -->
-                        <div id="empty-state" class="text-center py-5 d-none">
-                            <i class="bi bi-ticket-detailed fs-1 text-muted opacity-50 mb-3 d-block"></i>
-                            <h5 class="fw-semibold">No tickets found</h5>
-                            <p class="text-muted">Try adjusting your filters or search keywords.</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: ANALYTICS -->
-                <div id="view-analytics" class="view-content">
-
-                    <!-- Timeframe Selector Header Bar -->
-                    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3 bg-white p-3 rounded-3 border border-light-subtle shadow-sm">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-funnel text-primary me-2 fs-5"></i>
-                            <span class="text-muted small fw-medium">Analytics Scope Timeframe:</span>
-                        </div>
-                        <div class="btn-group" role="group" aria-label="Analytics Timeframe">
-                            <button type="button" class="btn btn-outline-primary btn-sm active" id="timeframe-day" onclick="setTimeframe('day')">Today</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-week" onclick="setTimeframe('week')">This Week</button>
-                            <button type="button" class="btn btn-outline-primary btn-sm" id="timeframe-month" onclick="setTimeframe('month')">This Month</button>
-                        </div>
-                    </div>
-
-                    <!-- Performance Overview Cards -->
-                    <div class="row g-3 mb-4">
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-success-subtle text-success me-3">
-                                    <i class="bi bi-clock-history"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Avg Response Time</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-response">18m</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-primary-subtle text-primary me-3">
-                                    <i class="bi bi-check-all"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Avg Resolution Time</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="kpi-avg-resolution">4.2h</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-warning-subtle text-warning me-3">
-                                    <i class="bi bi-percent"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Resolution Rate</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="kpi-resolution-rate">94.2%</h3>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-6 col-md-3">
-                            <div class="dashboard-card d-flex align-items-center">
-                                <div class="card-icon bg-info-subtle text-info me-3">
-                                    <i class="bi bi-emoji-smile"></i>
-                                </div>
-                                <div>
-                                    <div class="text-muted card-label text-uppercase">Client Satisfaction</div>
-                                    <h3 class="fw-bold mb-0 mt-1" id="kpi-client-satisfaction">4.9/5</h3>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-4 mb-4">
-                        <!-- Left Column: Volume Bar Chart mockup -->
-                        <div class="col-lg-8">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
-                                <h5 class="fw-bold mb-4 text-dark text-nowrap" id="chart-title">Today's Hourly Ticket Volume</h5>
-                                <div class="d-flex align-items-end justify-content-between h-75 mt-3 px-2" id="analytics-chart-bars">
-                                    <!-- Loaded dynamically based on timeframe -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column: Group by Client progress bars -->
-                        <div class="col-lg-4">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
-                                <h5 class="fw-bold mb-3 text-dark">Tickets by Client</h5>
-                                <div id="analytics-client-list" class="mt-3">
-                                    <!-- Group rendered by JS -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row g-4">
-                        <!-- Group by Category -->
-                        <div class="col-md-6">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                                <h5 class="fw-bold mb-3 text-dark">Category Distribution</h5>
-                                <div id="analytics-category-list">
-                                    <!-- Rendered dynamically -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Group by Priority -->
-                        <div class="col-md-6">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                                <h5 class="fw-bold mb-3 text-dark">Priority Distribution</h5>
-                                <div id="analytics-priority-list">
-                                    <!-- Rendered dynamically -->
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: TICKET DETAIL (FULL PAGE) -->
-                <div id="view-ticket-detail" class="view-content">
-                    <div class="mb-4">
-                        <button class="btn btn-light btn-sm border" onclick="switchView('tickets', null)">
-                            <i class="bi bi-arrow-left me-1"></i> Back to Queue
-                        </button>
-                    </div>
-
-                    <div class="row g-4">
-                        <!-- Left Column: Details & Discussion thread -->
-                        <div class="col-lg-8">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-                                <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
-                                    <h3 class="fw-bold mb-0 text-dark" id="detail-ticket-title">Ticket Subject</h3>
-                                    <span class="badge bg-light text-secondary border px-3 py-2" id="detail-ticket-id">TKT-000</span>
-                                </div>
-
-                                <div class="mb-2">
-                                    <h6 class="fw-semibold text-muted text-uppercase small mb-2">Original Request Description</h6>
-                                    <div class="detail-description-box" id="detail-description">
-                                        Description text...
-                                    </div>
-                                    <div id="detail-description-attachments" class="d-flex flex-wrap gap-2"></div>
-                                </div>
-                            </div>
-
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                                <h5 class="fw-bold text-dark mb-4">Activity & Discussion</h5>
-                                <div class="timeline mb-4" id="detail-timeline">
-                                    <!-- Timeline elements dynamic -->
-                                </div>
-
-                                <hr class="my-4 border-light-subtle">
-
-                                <div>
-                                    <h6 class="fw-bold text-dark mb-2">Post a Response</h6>
-                                    <div class="mb-3">
-                                        <textarea class="form-control" id="detail-comment-input" rows="4" placeholder="Type your response to the client or an internal note..."></textarea>
-                                    </div>
-                                    <div class="mb-3 border rounded-3 p-3 bg-light">
-                                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
-                                            <div class="d-flex align-items-center gap-2">
-                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('image')">
-                                                    <i class="bi bi-image me-1"></i> Attach Screenshot
-                                                </button>
-                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('video')">
-                                                    <i class="bi bi-play-btn me-1"></i> Attach Recording
-                                                </button>
-                                            </div>
-                                            <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link" id="clear-attachments-btn" type="button" onclick="clearAttachments()">
-                                                <i class="bi bi-trash3 me-1"></i> Clear all
-                                            </button>
-                                        </div>
-                                        <div id="attachment-preview-container" class="d-flex flex-wrap gap-2 mt-2"></div>
-                                    </div>
-                                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                                        <div class="form-check">
-                                            <input class="form-check-input" type="checkbox" id="detail-comment-is-internal">
-                                            <label class="form-check-label small text-muted" for="detail-comment-is-internal">
-                                                Internal Agent Note (Visible only to team members)
-                                            </label>
-                                        </div>
-                                        <button class="btn btn-primary px-4" onclick="submitDetailComment()">
-                                            <i class="bi bi-send me-1"></i> Send Reply
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column: Settings & Metadata -->
-                        <div class="col-lg-4">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-                                <h5 class="fw-bold mb-3 text-dark">Ticket Settings</h5>
-
-                                <div class="mb-3">
-                                    <label class="form-label text-muted small fw-semibold">Status</label>
-                                    <select class="form-select" id="detail-status-select" onchange="updateDetailTicketStatus()">
-                                        <option value="Open">Open</option>
-                                        <option value="In Progress">In Progress</option>
-                                        <option value="Pending Client">Pending Client</option>
-                                        <option value="Resolved">Resolved</option>
-                                        <option value="Closed">Closed</option>
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label text-muted small fw-semibold">Priority</label>
-                                    <select class="form-select" id="detail-priority-select" onchange="updateDetailTicketPriority()">
-                                        <option value="Critical">Critical</option>
-                                        <option value="High">High</option>
-                                        <option value="Medium">Medium</option>
-                                        <option value="Low">Low</option>
-                                    </select>
-                                </div>
-
-                                <div class="mb-3">
-                                    <label class="form-label text-muted small fw-semibold">Assign Agent</label>
-                                    <select class="form-select" id="detail-assignee-select" onchange="updateDetailTicketAssignee()">
-                                        <!-- Options loaded dynamically -->
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                                <h5 class="fw-bold mb-3 text-dark">Ticket Metadata</h5>
-
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted small">Client Name</span>
-                                    <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
-                                </div>
-                                <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted small">Category</span>
-                                    <span class="fw-semibold small" id="detail-category">Bug</span>
-                                </div>
-                                <div class="d-flex justify-content-between">
-                                    <span class="text-muted small">Created</span>
-                                    <span class="fw-semibold small" id="detail-created-at">2 hours ago</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: CLIENTS -->
-                <div id="view-clients" class="view-content">
-                    <div class="row g-4 mb-4">
-                        <div class="col-12">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm h-100">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h5 class="fw-bold mb-0">Registered Clients & Portals</h5>
-                                    <button class="btn btn-outline-primary btn-sm" onclick="showAddClientModal()">
-                                        <i class="bi bi-plus-lg me-1"></i> Add Client
-                                    </button>
-                                </div>
-                                <div class="table-responsive">
-                                    <table class="table mb-0">
-                                        <thead>
-                                        <tr>
-                                            <th>Client Name</th>
-                                            <th>Widget URL Domain</th>
-                                            <th>Integration Status</th>
-                                            <th>Open Tickets</th>
-                                            <th>Assigned Agent</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody id="clients-table-body">
-                                        <!-- Client rows will render here -->
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: TEAM -->
-                <div id="view-team" class="view-content">
-                    <div class="row g-4">
-                        <!-- Left Column: Team List -->
-                        <div class="col-lg-8">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                                <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <h5 class="fw-bold mb-0 text-dark">Agency Team Members (Support Agents)</h5>
-                                    <button class="btn btn-outline-primary btn-sm" onclick="showAddAgentModal()">
-                                        <i class="bi bi-envelope-plus me-1"></i> Invite Team Member
-                                    </button>
-                                </div>
-                                <div class="list-group list-group-flush mb-3" id="agents-settings-list">
-                                    <!-- Dynamic render of agents -->
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column: Team Stats Overview -->
-                        <div class="col-lg-4">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-                                <h5 class="fw-bold mb-3 text-dark">Roster Analytics</h5>
-                                <div class="p-3 bg-light rounded-3 mb-3">
-                                    <div class="text-muted stats-roster-label">Active Staff Members</div>
-                                    <h2 class="fw-bold mb-0 mt-1" id="team-stat-active">3</h2>
-                                </div>
-                                <div class="p-3 bg-light rounded-3">
-                                    <div class="text-muted stats-roster-label">Pending Invitations</div>
-                                    <h2 class="fw-bold mb-0 mt-1" id="team-stat-pending">0</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- VIEW: SETTINGS -->
-                <div id="view-settings" class="view-content">
-                    <div class="row g-4">
-                        <!-- Left Column: Profile Update -->
-                        <div class="col-lg-8">
-                            <!-- Profile Update Feature -->
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                                <h5 class="fw-bold mb-4 text-dark">My Admin Profile</h5>
-                                <form onsubmit="saveProfile(event)">
-                                    <div class="d-flex align-items-center mb-4 gap-3">
-                                        <div class="avatar bg-primary text-white text-uppercase profile-avatar-large" id="profile-avatar-preview">AD</div>
-                                        <div>
-                                            <h6 class="mb-0 fw-semibold text-dark">Profile Photo / Avatar</h6>
-                                            <span class="text-muted small">Generated automatically from your initials.</span>
-                                        </div>
-                                    </div>
-
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label for="profile-name" class="form-label fw-semibold text-dark">Display Name</label>
-                                            <input type="text" class="form-control" id="profile-name" value="Alex Developer" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="profile-title" class="form-label fw-semibold text-dark">Title / Position</label>
-                                            <input type="text" class="form-control" id="profile-title" value="Agency Admin" required>
-                                        </div>
-                                        <div class="col-md-12">
-                                            <label class="form-label fw-semibold text-muted">Email Address</label>
-                                            <input type="email" class="form-control bg-light" value="alex@agency.com" disabled>
-                                            <div class="form-text text-muted">
-                                                <i class="bi bi-lock me-1"></i> Email address is linked to security credentials and cannot be changed.
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="mt-4">
-                                        <button type="submit" class="btn btn-primary">Save Profile Updates</button>
-                                    </div>
-                                </form>
-                            </div>
-
-                            <!-- System Configurations -->
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mt-4">
-                                <h5 class="fw-bold mb-4 text-dark">System Configurations</h5>
-                                <div class="row g-3">
-                                    <div class="col-md-12">
-                                        <label for="default-agent-select" class="form-label fw-semibold text-dark">Default Agent for Unassigned Clients</label>
-                                        <select class="form-select" id="default-agent-select" onchange="updateDefaultAgent(this.value)">
-                                            <!-- Loaded dynamically from JS -->
-                                        </select>
-                                        <div class="form-text text-muted mt-2">
-                                            <i class="bi bi-info-circle me-1"></i> When a client has no specific assigned team member, support tickets from their portal will default to this agent.
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Right Column -->
-                        <div class="col-lg-4">
-                            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm text-center">
-                                <div class="card-icon bg-primary-light text-primary mx-auto mb-3">
-                                    <i class="bi bi-cloud-arrow-up"></i>
-                                </div>
-                                <h5 class="fw-bold mb-2">Self-Hosted Update</h5>
-                                <p class="text-muted small">Current Version: <strong>v1.0.4-beta</strong></p>
-                                <button class="btn btn-light btn-sm w-100" disabled>No updates available</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
+                {% block dashboard_content %}{% endblock %}
             </div>
         </div>
     </div>
@@ -647,7 +116,7 @@
 
     <!-- ==============================================
          MODAL: CREATE NEW TICKET
-         ============================================== -->
+         ============================================= -->
     <div class="modal fade" id="newTicketModal" tabindex="-1" aria-labelledby="newTicketModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -717,7 +186,7 @@
 
     <!-- ==============================================
          MODAL: ADD CLIENT
-         ============================================== -->
+         ============================================= -->
     <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -760,7 +229,7 @@
 
     <!-- ==============================================
          MODAL: ADD AGENT (INVITE EMAIL & ROLE SELECTION)
-         ============================================== -->
+         ============================================= -->
     <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -794,7 +263,7 @@
 
     <!-- ==============================================
          MODAL: WIDGET EMBED CODE & INSTRUCTIONS
-         ============================================== -->
+         ============================================= -->
     <div class="modal fade" id="widgetEmbedModal" tabindex="-1" aria-labelledby="widgetEmbedModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">

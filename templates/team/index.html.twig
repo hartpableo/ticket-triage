@@ -1,20 +1,40 @@
-{% extends 'base.html.twig' %}
+{% extends 'dashboard/base.html.twig' %}
 
-{% block title %}Hello TeamController!{% endblock %}
+{% block page_title %}Agency Team Roster{% endblock %}
 
-{% block body %}
-<style>
-    .example-wrapper { margin: 1em auto; max-width: 800px; width: 95%; font: 18px/1.5 sans-serif; }
-    .example-wrapper code { background: #F5F5F5; padding: 2px 6px; }
-</style>
+{% block dashboard_content %}
+    <!-- VIEW: TEAM -->
+    <div id="view-team" class="view-content active-view">
+        <div class="row g-4">
+            <!-- Left Column: Team List -->
+            <div class="col-lg-8">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h5 class="fw-bold mb-0 text-dark">Agency Team Members (Support Agents)</h5>
+                        <button class="btn btn-outline-primary btn-sm" onclick="showAddAgentModal()">
+                            <i class="bi bi-envelope-plus me-1"></i> Invite Team Member
+                        </button>
+                    </div>
+                    <div class="list-group list-group-flush mb-3" id="agents-settings-list">
+                        <!-- Dynamic render of agents -->
+                    </div>
+                </div>
+            </div>
 
-<div class="example-wrapper">
-    <h1>Hello {{ controller_name }}! ✅</h1>
-
-    This friendly message is coming from:
-    <ul>
-        <li>Your controller at <code>/var/www/html/src/Controller/TeamController.php</code></li>
-        <li>Your template at <code>/var/www/html/templates/team/index.html.twig</code></li>
-    </ul>
-</div>
+            <!-- Right Column: Team Stats Overview -->
+            <div class="col-lg-4">
+                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
+                    <h5 class="fw-bold mb-3 text-dark">Roster Analytics</h5>
+                    <div class="p-3 bg-light rounded-3 mb-3">
+                        <div class="text-muted stats-roster-label">Active Staff Members</div>
+                        <h2 class="fw-bold mb-0 mt-1" id="team-stat-active">3</h2>
+                    </div>
+                    <div class="p-3 bg-light rounded-3">
+                        <div class="text-muted stats-roster-label">Pending Invitations</div>
+                        <h2 class="fw-bold mb-0 mt-1" id="team-stat-pending">0</h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}

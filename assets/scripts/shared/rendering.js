@@ -19,7 +19,7 @@ function renderTicketsTable(dataToRender = tickets) {
 
   scopedData.forEach(ticket => {
     const tr = document.createElement('tr');
-    tr.onclick = () => openTicketDetails(ticket.id);
+    tr.onclick = () => window.location.href = '/dashboard/tickets/' + ticket.id;
 
     const statusClass = `status-${ticket.status.toLowerCase().replace(' ', '-')}`;
     const priorityClass = `priority-${ticket.priority.toLowerCase()}`;
@@ -260,3 +260,7 @@ function renderDetailTimeline(ticket) {
     timeline.appendChild(item);
   });
 }
+
+window.renderTicketsTable = renderTicketsTable;
+window.renderClientsTable = renderClientsTable;
+window.renderAgentsList = renderAgentsList;

@@ -25,6 +25,10 @@ window.onload = function() {
   updateMetrics(); // Triggers updateAnalytics()
   setTimeframe(currentAnalyticsTimeframe); // Initialize charts & metrics with Today scope
 
+  if (window.selectedTicketId) {
+    openTicketDetails(window.selectedTicketId);
+  }
+
   // Smart defaults: set ticket assignee when client is selected in new ticket modal
   const newClientSelect = document.getElementById('new-client');
   if (newClientSelect) {

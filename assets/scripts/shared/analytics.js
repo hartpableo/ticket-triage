@@ -242,3 +242,7 @@ function updateMetrics() {
   // Trigger updates
   updateAnalytics();
 }
+
+window.updateMetrics = updateMetrics;
+window.setTimeframe = setTimeframe;
+window.updateAnalytics = updateAnalytics;
