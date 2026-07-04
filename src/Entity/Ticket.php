@@ -2,6 +2,9 @@
 
 namespace App\Entity;
 
+use App\Enum\TicketCategoryEnum;
+use App\Enum\TicketPriorityEnum;
+use App\Enum\TicketStatusEnum;
 use App\Repository\TicketRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
@@ -35,6 +38,15 @@ class Ticket
 
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
+
+    #[ORM\Column(enumType: TicketCategoryEnum::class)]
+    private ?TicketCategoryEnum $category = null;
+
+    #[ORM\Column(enumType: TicketStatusEnum::class)]
+    private ?TicketStatusEnum $status = null;
+
+    #[ORM\Column(enumType: TicketPriorityEnum::class)]
+    private ?TicketPriorityEnum $priority = null;
 
     public function __construct()
     {
@@ -127,6 +139,42 @@ class Ticket
     public function setUpdatedAt(\DateTimeImmutable $updated_at): static
     {
         $this->updated_at = $updated_at;
+
+        return $this;
+    }
+
+    public function getCategory(): ?TicketCategoryEnum
+    {
+        return $this->category;
+    }
+
+    public function setCategory(TicketCategoryEnum $category): static
+    {
+        $this->category = $category;
+
+        return $this;
+    }
+
+    public function getStatus(): ?TicketStatusEnum
+    {
+        return $this->status;
+    }
+
+    public function setStatus(TicketStatusEnum $status): static
+    {
+        $this->status = $status;
+
+        return $this;
+    }
+
+    public function getPriority(): ?TicketPriorityEnum
+    {
+        return $this->priority;
+    }
+
+    public function setPriority(TicketPriorityEnum $priority): static
+    {
+        $this->priority = $priority;
 
         return $this;
     }
