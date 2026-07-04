@@ -102,7 +102,7 @@ function updateDetailTicketStatus() {
   renderDetailTimeline(ticket);
   renderTicketsTable();
   updateMetrics();
-  showToast(`Ticket status updated to ${newStatus}`);
+  showToast(`Ticket status updated to ${newStatus}`, 'success');
 }
 
 // Update detail view priority
@@ -123,7 +123,7 @@ function updateDetailTicketPriority() {
 
   renderDetailTimeline(ticket);
   renderTicketsTable();
-  showToast(`Ticket priority set to ${newPriority}`);
+  showToast(`Ticket priority set to ${newPriority}`, 'success');
 }
 
 // Update detail view assignee
@@ -159,7 +159,7 @@ function updateDetailTicketAssignee() {
   renderTicketsTable();
   if (typeof renderAgentsList === 'function') renderAgentsList();
   updateMetrics();
-  showToast(`Ticket assigned to ${newAssignee}`);
+  showToast(`Ticket assigned to ${newAssignee}`, 'success');
 }
 
 // Comment submission in detail view
@@ -190,7 +190,7 @@ function submitDetailComment() {
   renderAttachmentPreviews();
 
   renderDetailTimeline(ticket);
-  showToast('Reply posted successfully!');
+  showToast('Reply posted successfully!', 'success');
 }
 
 window.applyFilters = applyFilters;

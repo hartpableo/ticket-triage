@@ -63,7 +63,7 @@ function saveProfile(event) {
         if (userProfile.avatarColor) mobileAvatar.style.backgroundColor = userProfile.avatarColor;
     }
 
-    showToast("Profile updated successfully!");
+    showToast("Profile updated successfully!", "success");
 }
 
 // window.login = login;

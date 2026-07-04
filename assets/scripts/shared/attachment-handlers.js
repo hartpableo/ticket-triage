@@ -44,7 +44,7 @@ function renderAttachmentPreviews() {
 function clearAttachments() {
   activeCommentAttachments = [];
   renderAttachmentPreviews();
-  showToast('All attachments cleared.');
+  showToast('All attachments cleared.', 'info');
 }
 
 function removeAttachmentByIndex(index) {
@@ -60,7 +60,7 @@ function simulateMediaAttachment(type) {
       name: 'agent_debug_screenshot.png'
     });
     renderAttachmentPreviews();
-    showToast('Mock screenshot attached to response.');
+    showToast('Mock screenshot attached to response.', 'success');
   } else if (type === 'video') {
     activeCommentAttachments.push({
       type: 'video',
@@ -68,7 +68,7 @@ function simulateMediaAttachment(type) {
       name: 'agent_screen_recording.mp4'
     });
     renderAttachmentPreviews();
-    showToast('Mock screen recording attached to response.');
+    showToast('Mock screen recording attached to response.', 'success');
   }
 }
 

@@ -1,11 +1,34 @@
-<div class="toast-container-custom">
+<div class="toast-container toast-container-custom">
     <div id="toastNotification" class="toast align-items-center text-white bg-dark border-0" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body d-flex align-items-center">
                 <i class="bi bi-info-circle-fill me-2 text-primary fs-5" id="toast-icon"></i>
-                <span id="toast-message">Operation Completed!</span>
+                <span id="toast-message"></span>
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
     </div>
+
+    {% for type, messages in app.flashes %}
+        {% for message in messages %}
+            {% set icon_class = 'bi-info-circle-fill text-primary' %}
+            {% if type == 'success' %}
+                {% set icon_class = 'bi-check-circle-fill text-success' %}
+            {% elseif type in ['error', 'danger'] %}
+                {% set icon_class = 'bi-exclamation-triangle-fill text-danger' %}
+            {% elseif type == 'warning' %}
+                {% set icon_class = 'bi-exclamation-circle-fill text-warning' %}
+            {% endif %}
+
+            <div class="toast flash-toast align-items-center text-white bg-dark border-0 mb-2" role="alert" aria-live="assertive" aria-atomic="true" data-bs-delay="5000">
+                <div class="d-flex">
+                    <div class="toast-body d-flex align-items-center">
+                        <i class="bi {{ icon_class }} me-2 fs-5"></i>
+                        <span>{{ message }}</span>
+                    </div>
+                    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+                </div>
+            </div>
+        {% endfor %}
+    {% endfor %}
 </div>
