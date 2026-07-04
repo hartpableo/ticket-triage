@@ -1,0 +1,62 @@
+User
+- id
+- name
+- email
+- roles
+- is_verified
+- otp
+- otp_expiry
+- title
+- status
+- avatar_color
+- created_at
+- updated_at
+
+Client
+- id
+- name
+- domain
+- integration_status
+- api_key
+- assigned_agent_id
+- created_at
+- updated_at
+
+Ticket
+- id
+- ticket_code
+- title
+- description
+- client_id
+- category
+- status
+- priority
+- assigned_agent_id
+- created_at
+- updated_at
+
+Comment
+- id
+- ticket_id
+- author_id
+- author_name_override
+- content
+- is_internal
+- is_system
+- created_at
+
+Attachment
+- id
+- ticket_id
+- comment_id
+- file_name
+- file_type
+- url
+- created_at
+
+SystemSetting
+- id
+- setting_key
+- setting_value
+- created_at
+- updated_at
