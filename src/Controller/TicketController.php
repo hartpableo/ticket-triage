@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Ticket;
 use App\Enum\TicketStatusEnum;
+use App\Form\TicketsFilterType;
 use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -18,6 +19,7 @@ final class TicketController extends DashboardController {
         EntityManagerInterface $entityManager,
         TicketRepository       $ticketRepository,
     ): Response {
+        // Create ticket form
         $ticket = new Ticket();
         $createTicketForm = $this->createForm(TicketType::class, $ticket);
         $createTicketForm->handleRequest($request);
@@ -57,6 +59,19 @@ final class TicketController extends DashboardController {
                 'status' => TicketStatusEnum::Resolved
             ])
         ];
+
+        // Filter tickets form
+        $filterTicketsForm = $this->createForm(TicketsFilterType::class);
+        $filterTicketsForm->handleRequest($request);
+        if ($filterTicketsForm->isSubmitted() && $filterTicketsForm->isValid()) {
+            $filterData = $filterTicketsForm->getData();
+
+            /**
+             * TODO:
+             *  Continue filtering logic
+             *  Implement pagination (15 items/rows)
+             */
+        }
 
         return $this->render('ticket/index.html.twig', array_merge(
             self::ADMIN_MENU,
