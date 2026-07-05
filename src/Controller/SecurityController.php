@@ -15,13 +15,15 @@ use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
+use SymfonyCasts\Bundle\VerifyEmail\VerifyEmailHelperInterface;
 
 class SecurityController extends AbstractController {
 
     public function __construct(
-        private readonly UserRepository         $userRepository,
-        private readonly EntityManagerInterface $entityManager,
-        private readonly MailerInterface        $mailer,
+        private readonly UserRepository             $userRepository,
+        private readonly EntityManagerInterface     $entityManager,
+        private readonly MailerInterface            $mailer,
+        private readonly VerifyEmailHelperInterface $verifyEmailHelper,
     ) {
     }
 
@@ -49,8 +51,28 @@ class SecurityController extends AbstractController {
             }
 
             if (!$user->isVerified()) {
-                // TODO: Handle resending of verification
-                $this->addFlash('error', 'You\'re not yet verified. Please verify your email.');
+                // Automatically send a new verification
+                $signature = $this->verifyEmailHelper->generateSignature(
+                    'app_verify_email',
+                    (string)$user->getId(),
+                    $user->getEmail(),
+                    [
+                        'id' => $user->getId(),
+                    ]
+                );
+
+                $email = new TemplatedEmail()
+                    ->from($this->getParameter('system.email'))
+                    ->to($user->getEmail())
+                    ->subject('Verify your email address')
+                    ->htmlTemplate('emails/verify_email.html.twig')
+                    ->context([
+                        'signedUrl' => $signature->getSignedUrl(),
+                    ]);
+
+                $this->mailer->send($email);
+
+                $this->addFlash('warning', 'You\'re not yet verified. We have sent you another verification email. Please check your inbox.');
                 return $this->redirectToRoute('app_login');
             }
 
