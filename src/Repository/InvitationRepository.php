@@ -9,10 +9,8 @@ use Doctrine\Persistence\ManagerRegistry;
 /**
  * @extends ServiceEntityRepository<Invitation>
  */
-class InvitationRepository extends ServiceEntityRepository
-{
-    public function __construct(ManagerRegistry $registry)
-    {
+class InvitationRepository extends ServiceEntityRepository {
+    public function __construct(ManagerRegistry $registry) {
         parent::__construct($registry, Invitation::class);
     }
 
@@ -31,13 +29,22 @@ class InvitationRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Invitation
-    //    {
-    //        return $this->createQueryBuilder('i')
-    //            ->andWhere('i.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+//        public function findOneBySomeField($value): ?Invitation
+//        {
+//            return $this->createQueryBuilder('i')
+//                ->andWhere('i.exampleField = :val')
+//                ->setParameter('val', $value)
+//                ->getQuery()
+//                ->getOneOrNullResult()
+//            ;
+//        }
+
+    public function deleteOldUnusedInvites(string $email) {
+        return $this->createQueryBuilder('i')
+            ->delete($this->getEntityName(), 'i')
+            ->andWhere('i.email = :email')
+            ->setParameter('email', $email)
+            ->getQuery()
+            ->execute();
+    }
 }

@@ -26,6 +26,9 @@ class Invitation
     #[ORM\Column]
     private ?\DateTimeImmutable $expires_at = null;
 
+    #[ORM\Column(length: 20)]
+    private ?string $role = null;
+
     /**
      * @throws DateMalformedStringExceptionAlias
      */
@@ -83,6 +86,18 @@ class Invitation
     public function setExpiresAt(\DateTimeImmutable $expires_at): static
     {
         $this->expires_at = $expires_at;
+
+        return $this;
+    }
+
+    public function getRole(): ?string
+    {
+        return $this->role;
+    }
+
+    public function setRole(string $role): static
+    {
+        $this->role = $role;
 
         return $this;
     }

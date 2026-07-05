@@ -31,4 +31,5 @@ return [
     'dashboard.settings' => ['path' => './assets/dashboard.settings.js', 'entrypoint' => TRUE],
     'dashboard.tickets' => ['path' => './assets/dashboard.tickets.js', 'entrypoint' => TRUE],
     'dashboard.clients' => ['path' => './assets/dashboard.clients.js', 'entrypoint' => TRUE],
+    'dashboard.agents' => ['path' => './assets/dashboard.agents.js', 'entrypoint' => TRUE],
 ];

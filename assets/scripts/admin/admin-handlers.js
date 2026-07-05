@@ -6,40 +6,6 @@ function assignClientToAgent(clientKey, agentName) {
   showToast(`Client "${client.name}" assigned to ${agentName}`, 'success');
 }
 
-// Invite Agent Handler (Email and Role selection)
-function createNewAgent(event) {
-  event.preventDefault();
-  const email = document.getElementById('agent-email-input').value.trim();
-  const role = document.getElementById('agent-role-input').value;
-
-  // Check if email already invited/exists
-  if (agents.some(a => a.email === email)) {
-    showToast('This email has already been invited or is already active.', 'warning');
-    return;
-  }
-
-  // Split email prefix for a placeholder name
-  const prefix = email.split('@')[0];
-  const nameStr = prefix.charAt(0).toUpperCase() + prefix.slice(1);
-
-  agents.push({
-    name: nameStr,
-    email: email,
-    role: role,
-    activeTickets: 0,
-    status: 'Invite Sent (Pending)'
-  });
-
-  // Re-populate selects
-  // populateAssigneesList();
-
-  document.getElementById('new-agent-form').reset();
-  bootstrap.Modal.getInstance(document.getElementById('addAgentModal')).hide();
-
-  renderAgentsList();
-  showToast(`Invitation email dispatched to ${email}!`, 'success');
-}
-
 // Remove Agent
 function removeAgent(email) {
   agents = agents.filter(a => a.email !== email);
@@ -56,6 +22,5 @@ function updateDefaultAgent(agentName) {
 }
 
 window.assignClientToAgent = assignClientToAgent;
-window.createNewAgent = createNewAgent;
 window.removeAgent = removeAgent;
 window.updateDefaultAgent = updateDefaultAgent;

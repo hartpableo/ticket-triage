@@ -1,0 +1,26 @@
+{% extends 'emails/base.html.twig' %}
+
+{% block subject %}Invitation to access workspace | {{ app_name }}{% endblock %}
+
+{% block content %}
+    <h2 style="margin-top: 0; margin-bottom: 12px; font-size: 22px; font-weight: 700; color: #0f172a; line-height: 30px;">
+        Workspace Invitation
+    </h2>
+    <p style="margin-top: 0; margin-bottom: 24px; font-size: 15px; line-height: 24px; color: #475569;">
+        You have been invited to the <strong><u>{{ app_workspace_name }}</u></strong> workspace.
+    </p>
+
+    <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-bottom: 28px;">
+        <tr>
+            <td align="center">
+                <a href="{{ rego_url }}" style="display: inline-block; padding: 12px 32px; background-color: #0d6efd; color: #ffffff; font-size: 15px; font-weight: 600; text-decoration: none; border-radius: 8px; box-shadow: 0 4px 6px -1px rgba(13, 110, 253, 0.2), 0 2px 4px -2px rgba(13, 110, 253, 0.2);">
+                    Click here to access
+                </a>
+            </td>
+        </tr>
+    </table>
+
+    <p style="margin-top: 0; margin-bottom: 0; font-size: 14px; line-height: 22px; color: #475569; text-align: center;">
+        This invitation is valid for <strong>1 week</strong>.
+    </p>
+{% endblock %}
