@@ -45,9 +45,13 @@
                                         <tr>
                                             <td>{{ client.name }}</td>
                                             <td>{{ client.domain }}</td>
-                                            <td>@todo</td>
+                                            <td>{{ client.openTicketsCount }}</td>
                                             <td>{{ client.assignedAgent.name }}</td>
-                                            <td>@todo</td>
+                                            <td>
+                                                <button class="btn btn-outline-secondary btn-sm" onclick="selectWidgetSnippet('{{ client.name|escape('js') }}', '{{ client.apiKey|escape('js') }}', '{{ client.domain|escape('js') }}')">
+                                                    <i class="bi bi-code-slash me-1"></i> Get Widget
+                                                </button>
+                                            </td>
                                         </tr>
                                     {% endfor %}
                                 {% else %}

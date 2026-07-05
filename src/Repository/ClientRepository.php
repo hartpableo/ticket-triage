@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Entity\Client;
+use App\Enum\TicketStatusEnum;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
@@ -14,6 +15,30 @@ class ClientRepository extends ServiceEntityRepository
     public function __construct(ManagerRegistry $registry)
     {
         parent::__construct($registry, Client::class);
+    }
+
+    /**
+     * @return Client[]
+     */
+    public function findAllWithOpenTicketsCount(): array
+    {
+        $results = $this->createQueryBuilder('c')
+            ->select('c', 'COUNT(t.id) as openCount')
+            ->leftJoin('c.tickets', 't', 'WITH', 't.status = :status')
+            ->setParameter('status', TicketStatusEnum::Open)
+            ->groupBy('c.id')
+            ->getQuery()
+            ->getResult();
+
+        $clients = [];
+        foreach ($results as $row) {
+            /** @var Client $client */
+            $client = $row[0];
+            $client->setOpenTicketsCount((int) $row['openCount']);
+            $clients[] = $client;
+        }
+
+        return $clients;
     }
 
     //    /**

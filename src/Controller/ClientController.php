@@ -42,7 +42,7 @@ final class ClientController extends DashboardController {
             self::ADMIN_MENU,
             [
                 'add_client_form' => $addClientForm->createView(),
-                'clients' => $clientRepository->findAll(),
+                'clients' => $clientRepository->findAllWithOpenTicketsCount(),
             ]
         ), new Response(NULL, $responseStatus));
     }

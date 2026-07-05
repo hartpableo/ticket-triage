@@ -2,6 +2,7 @@
 
 namespace App\Entity;
 
+use App\Enum\TicketStatusEnum;
 use App\Repository\ClientRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -33,6 +34,8 @@ class Client
      */
     #[ORM\OneToMany(targetEntity: Ticket::class, mappedBy: 'client')]
     private Collection $tickets;
+
+    private ?int $openTicketsCount = null;
 
     public function __construct()
     {
@@ -98,6 +101,31 @@ class Client
     public function getTickets(): Collection
     {
         return $this->tickets;
+    }
+
+    /**
+     * Get the number of open tickets for this client.
+     */
+    public function getOpenTicketsCount(): int
+    {
+        if ($this->openTicketsCount !== null) {
+            return $this->openTicketsCount;
+        }
+
+        $count = 0;
+        foreach ($this->tickets as $ticket) {
+            if ($ticket->getStatus() === TicketStatusEnum::Open) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
+    public function setOpenTicketsCount(int $openTicketsCount): static
+    {
+        $this->openTicketsCount = $openTicketsCount;
+
+        return $this;
     }
 
     public function addTicket(Ticket $ticket): static
