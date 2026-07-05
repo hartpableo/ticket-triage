@@ -6,12 +6,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
-final class TeamController extends DashboardController
+final class InvitationController extends AbstractController
 {
-    #[Route('/dashboard/team', name: 'app_team')]
+    #[Route('/invitation', name: 'app_invitation')]
     public function index(): Response
     {
-
-        return $this->render('team/index.html.twig', self::ADMIN_MENU);
+        return $this->render('invitation/index.html.twig', [
+            'controller_name' => 'InvitationController',
+        ]);
     }
 }

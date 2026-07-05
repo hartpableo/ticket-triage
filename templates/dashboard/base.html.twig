@@ -131,43 +131,6 @@
         </div>
     </div>
 
-    <!-- ==============================================
-         MODAL: ADD AGENT (INVITE EMAIL & ROLE SELECTION)
-         ============================================= -->
-    <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="addAgentModalLabel">Invite New Support Agent</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="new-agent-form" onsubmit="createNewAgent(event)">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="agent-email-input" class="form-label fw-semibold text-dark">Team Member Email Address</label>
-                            <input type="email" class="form-control" id="agent-email-input" required placeholder="e.g. colleague@agency.com">
-                        </div>
-                        <div class="mb-3">
-                            <label for="agent-role-input" class="form-label fw-semibold text-dark">Access Role / Permission Level</label>
-                            <select class="form-select" id="agent-role-input" required>
-                                <option value="Regular Member" selected>Regular Member</option>
-                                <option value="Admin">Admin</option>
-                            </select>
-                            <div class="form-text">Admins can adjust dashboard configurations, manage integrations, and invite other members. Regular members have access only to handle tickets.</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Send Invitation</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==============================================
-         MODAL: WIDGET EMBED CODE & INSTRUCTIONS
-         ============================================= -->
     <div class="modal fade" id="widgetEmbedModal" tabindex="-1" aria-labelledby="widgetEmbedModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
