@@ -27,7 +27,7 @@ class User implements UserInterface
     private array $roles = [];
 
     #[ORM\Column]
-    private ?bool $is_verified = null;
+    private bool $is_verified = FALSE;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $otp = null;

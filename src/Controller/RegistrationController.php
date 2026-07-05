@@ -2,9 +2,12 @@
 
 namespace App\Controller;
 
+use App\Entity\Invitation;
 use App\Entity\User;
 use App\Repository\UserRepository;
+use DateTimeImmutable;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,11 +27,13 @@ final class RegistrationController extends AbstractController {
     ) {
     }
 
-    #[Route('/register', name: 'app_register')]
+    #[Route('/register/{token}', name: 'app_register')]
     public function register(
-        Request $request
+        Request                                                $request,
+        #[MapEntity(mapping: ['token' => 'token'])] Invitation $invitation
     ): RedirectResponse|Response {
         if ($this->getUser()) {
+            $this->addFlash('info', 'You are already registered.');
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -48,6 +53,8 @@ final class RegistrationController extends AbstractController {
             if (empty($user)) {
                 $user = new User();
                 $user->setEmail($email);
+                $user->setName($request->request->get('name'));
+                $user->setTitle($request->request->get('title'));
                 $user->setIsVerified(FALSE);
                 $this->entityManager->persist($user);
                 $this->entityManager->flush();
@@ -62,7 +69,7 @@ final class RegistrationController extends AbstractController {
                 ]
             );
 
-            $email = (new TemplatedEmail())
+            $email = new TemplatedEmail()
                 ->from($this->getParameter('system.email'))
                 ->to($user->getEmail())
                 ->subject('Verify your email address')
@@ -78,12 +85,26 @@ final class RegistrationController extends AbstractController {
                 return $this->redirectToRoute('app_register');
             }
 
+            // Mark the invitation as "used" to prevent reusing
+            $invitation->setIsUsed(TRUE);
+            $this->entityManager->flush();
+
             $this->addFlash('success', 'Verification email sent.');
             return $this->redirectToRoute('app_login');
         }
 
+        // Validate the token
+        if ($invitation->isUsed() || $invitation->getExpiresAt() < new DateTimeImmutable()) {
+            $this->addFlash('error', 'Invitation is now invalid.');
+            return $this->redirectToRoute('app_login');
+        }
+
         // Handle GET request
-        return $this->render('registration/register.html.twig');
+        return $this->render('registration/register.html.twig', [
+            'prefill' => [
+                'email' => $invitation->getEmail(),
+            ]
+        ]);
     }
 
     #[Route('/verify/email', name: 'app_verify_email')]

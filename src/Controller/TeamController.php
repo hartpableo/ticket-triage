@@ -22,6 +22,7 @@ final class TeamController extends DashboardController {
         private readonly MailerInterface        $mailer,
         private readonly UrlGeneratorInterface  $urlGenerator,
         private readonly InvitationRepository   $invitationRepository,
+        private readonly UserRepository         $userRepository,
     ) {
     }
 
@@ -38,11 +39,19 @@ final class TeamController extends DashboardController {
         $inviteForm->handleRequest($request);
 
         if ($inviteForm->isSubmitted() && $inviteForm->isValid()) {
+            $emailAddress = $inviteForm->get('email')->getData();
+            // Check if that user is already part of the team
+            // Bail if true
+            if (!empty($this->userRepository->findOneBy([
+                'email' => $emailAddress,
+            ]))) {
+                $this->addFlash('warning', 'That user is already a member of this team.');
+                return $this->redirectToRoute('app_team');
+            }
+
             // Ensure only a single invite is valid
             // Delete older unused ones
-            $this->invitationRepository->deleteOldUnusedInvites(
-                $inviteForm->get('email')->getData(),
-            );
+            $this->invitationRepository->deleteOldUnusedInvites($emailAddress);
 
             // Persist the invitation
             $invitation->setToken(bin2hex(random_bytes(32)));

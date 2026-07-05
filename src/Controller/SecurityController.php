@@ -36,6 +36,7 @@ class SecurityController extends AbstractController {
         AuthenticationUtils $authenticationUtils,
     ): Response {
         if ($this->getUser()) {
+            $this->addFlash('info', 'You are already logged in.');
             return $this->redirectToRoute('app_dashboard');
         }
 
@@ -48,6 +49,7 @@ class SecurityController extends AbstractController {
             }
 
             if (!$user->isVerified()) {
+                // TODO: Handle resending of verification
                 $this->addFlash('error', 'You\'re not yet verified. Please verify your email.');
                 return $this->redirectToRoute('app_login');
             }
