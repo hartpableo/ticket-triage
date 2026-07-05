@@ -7,4 +7,13 @@ enum TicketCategoryEnum: string {
     case FeatureRequest = 'feature_request';
     case Question = 'question';
     case Task = 'task';
+
+    public function label(): string {
+        return match ($this) {
+            self::BugReport => 'Bug Report',
+            self::FeatureRequest => 'Feature Request',
+            self::Question => 'Question',
+            self::Task => 'Task',
+        };
+    }
 }

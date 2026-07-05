@@ -14,7 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ProfileSettingsType extends AbstractType {
     public function buildForm(FormBuilderInterface $builder, array $options): void {
         $builder
-            // TODO: Implement image upload: https://symfony.com/doc/current/controller/upload_file.html
             ->add('photo', FileType::class, [
                 'mapped' => FALSE,
                 'required' => FALSE,

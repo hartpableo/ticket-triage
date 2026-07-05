@@ -1,67 +1,67 @@
 // Ticket creation handler
-function createNewTicket(event) {
-  event.preventDefault();
-  
-  const newId = `TKT-${tickets.length + 101}`;
-  const title = document.getElementById('new-title').value;
-  const client = document.getElementById('new-client').value;
-  const category = document.getElementById('new-category').value;
-  const priority = document.getElementById('new-priority').value;
-  let assignee = document.getElementById('new-assignee').value;
-  const description = document.getElementById('new-description').value;
-
-  // Fallback assignee to client's assigned agent or default client agent if Unassigned
-  if (assignee === 'Unassigned') {
-    const clientObj = clients.find(c => c.name === client);
-    if (clientObj && clientObj.assignedAgent && clientObj.assignedAgent !== 'Unassigned') {
-      assignee = clientObj.assignedAgent;
-    } else if (window.defaultClientAgent && window.defaultClientAgent !== 'Unassigned') {
-      assignee = window.defaultClientAgent;
-    }
-  }
-
-  const newTicket = {
-    id: newId,
-    title: title,
-    client: client,
-    category: category,
-    status: 'Open',
-    priority: priority,
-    assignee: assignee,
-    createdAt: 'Just now',
-    description: description,
-    comments: [
-      { author: 'System', text: 'Ticket registered manually via admin panel', time: 'Just now', isSystem: true }
-    ]
-  };
-
-  tickets.unshift(newTicket); // Add to beginning of array
-  
-  // Update Client tickets count
-  const clientObj = clients.find(c => c.name === client);
-  if(clientObj) clientObj.tickets++;
-
-  // Update Agent active tickets count
-  if (assignee !== 'Unassigned') {
-    const agentObj = agents.find(a => a.name === assignee);
-    if (agentObj) agentObj.activeTickets++;
-  }
-  
-  // Reset Form
-  document.getElementById('new-ticket-form').reset();
-  
-  // Close Modal
-  const modal = bootstrap.Modal.getInstance(document.getElementById('newTicketModal'));
-  modal.hide();
-
-  // Refresh UI
-  renderTicketsTable();
-  renderClientsTable();
-  if (typeof renderAgentsList === 'function') renderAgentsList();
-  updateMetrics();
-  
-  showToast(`Ticket ${newId} Created successfully!`, 'success');
-}
+// function createNewTicket(event) {
+//   event.preventDefault();
+//
+//   const newId = `TKT-${tickets.length + 101}`;
+//   const title = document.getElementById('new-title').value;
+//   const client = document.getElementById('new-client').value;
+//   const category = document.getElementById('new-category').value;
+//   const priority = document.getElementById('new-priority').value;
+//   let assignee = document.getElementById('new-assignee').value;
+//   const description = document.getElementById('new-description').value;
+//
+//   // Fallback assignee to client's assigned agent or default client agent if Unassigned
+//   if (assignee === 'Unassigned') {
+//     const clientObj = clients.find(c => c.name === client);
+//     if (clientObj && clientObj.assignedAgent && clientObj.assignedAgent !== 'Unassigned') {
+//       assignee = clientObj.assignedAgent;
+//     } else if (window.defaultClientAgent && window.defaultClientAgent !== 'Unassigned') {
+//       assignee = window.defaultClientAgent;
+//     }
+//   }
+//
+//   const newTicket = {
+//     id: newId,
+//     title: title,
+//     client: client,
+//     category: category,
+//     status: 'Open',
+//     priority: priority,
+//     assignee: assignee,
+//     createdAt: 'Just now',
+//     description: description,
+//     comments: [
+//       { author: 'System', text: 'Ticket registered manually via admin panel', time: 'Just now', isSystem: true }
+//     ]
+//   };
+//
+//   tickets.unshift(newTicket); // Add to beginning of array
+//
+//   // Update Client tickets count
+//   const clientObj = clients.find(c => c.name === client);
+//   if(clientObj) clientObj.tickets++;
+//
+//   // Update Agent active tickets count
+//   if (assignee !== 'Unassigned') {
+//     const agentObj = agents.find(a => a.name === assignee);
+//     if (agentObj) agentObj.activeTickets++;
+//   }
+//
+//   // Reset Form
+//   document.getElementById('new-ticket-form').reset();
+//
+//   // Close Modal
+//   const modal = bootstrap.Modal.getInstance(document.getElementById('newTicketModal'));
+//   modal.hide();
+//
+//   // Refresh UI
+//   renderTicketsTable();
+//   renderClientsTable();
+//   if (typeof renderAgentsList === 'function') renderAgentsList();
+//   updateMetrics();
+//
+//   showToast(`Ticket ${newId} Created successfully!`, 'success');
+// }
 
 // Client creation handler
 function createNewClient(event) {
@@ -100,7 +100,7 @@ function createNewClient(event) {
 
   document.getElementById('new-client-form').reset();
   bootstrap.Modal.getInstance(document.getElementById('addClientModal')).hide();
-  
+
   renderClientsTable();
   updateMetrics(); // Triggers updateAnalytics redraw
   showToast(`Client "${name}" registered successfully!`, 'success');
@@ -119,7 +119,7 @@ function createNewAgent(event) {
   event.preventDefault();
   const email = document.getElementById('agent-email-input').value.trim();
   const role = document.getElementById('agent-role-input').value;
-  
+
   // Check if email already invited/exists
   if (agents.some(a => a.email === email)) {
     showToast('This email has already been invited or is already active.', 'warning');
@@ -139,7 +139,7 @@ function createNewAgent(event) {
   });
 
   // Re-populate selects
-  populateAssigneesList();
+  // populateAssigneesList();
 
   document.getElementById('new-agent-form').reset();
   bootstrap.Modal.getInstance(document.getElementById('addAgentModal')).hide();
@@ -151,7 +151,7 @@ function createNewAgent(event) {
 // Remove Agent
 function removeAgent(email) {
   agents = agents.filter(a => a.email !== email);
-  populateAssigneesList();
+  // populateAssigneesList();
   renderAgentsList();
   showToast(`Agent invitation / account removed.`, 'info');
 }
@@ -163,7 +163,7 @@ function updateDefaultAgent(agentName) {
   showToast(`Default agent for unassigned clients updated to: ${agentName}`, 'success');
 }
 
-window.createNewTicket = createNewTicket;
+// window.createNewTicket = createNewTicket;
 window.createNewClient = createNewClient;
 window.assignClientToAgent = assignClientToAgent;
 window.createNewAgent = createNewAgent;

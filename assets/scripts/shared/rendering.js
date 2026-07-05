@@ -4,7 +4,7 @@ function renderTicketsTable(dataToRender = tickets) {
   const tableBody = document.getElementById('tickets-table-body');
   const emptyState = document.getElementById('empty-state');
   if (!tableBody) return;
-  
+
   tableBody.innerHTML = '';
 
   // Filter to show only tickets assigned to the logged-in member if it is a member dashboard
@@ -53,13 +53,13 @@ function renderClientsTable() {
   const tableBody = document.getElementById('clients-table-body');
   if (!tableBody) return;
   tableBody.innerHTML = '';
-  
+
   clients.forEach(client => {
     const tr = document.createElement('tr');
-    const statusBadge = client.status === 'Active' 
+    const statusBadge = client.status === 'Active'
       ? '<span class="badge bg-success-subtle text-success">Active Portal</span>'
       : '<span class="badge bg-secondary-subtle text-secondary">Inactive</span>';
-    
+
     const assigned = client.assignedAgent || 'Unassigned';
     let selectHtml = `<select class="form-select form-select-sm" style="max-width: 185px;" onchange="assignClientToAgent('${client.key}', this.value)">`;
     const defaultText = window.defaultClientAgent && window.defaultClientAgent !== 'Unassigned'
@@ -72,7 +72,7 @@ function renderClientsTable() {
       selectHtml += `<option value="${agent.name}" ${selectedAttr}>${label}</option>`;
     });
     selectHtml += `</select>`;
-    
+
     tr.innerHTML = `
       <td class="fw-semibold text-dark" data-label="Client Name">${client.name}</td>
       <td data-label="Widget Domain"><code>${client.domain}</code></td>
@@ -93,20 +93,20 @@ function renderAgentsList() {
   const listContainer = document.getElementById('agents-settings-list');
   if (!listContainer) return;
   listContainer.innerHTML = '';
-  
+
   agents.forEach(agent => {
     const item = document.createElement('div');
     item.className = 'list-group-item d-flex align-items-center justify-content-between py-3 border-light-subtle';
-    
+
     const initials = agent.name ? agent.name.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : 'AG';
     const isPending = agent.status !== 'Active';
     const isAdmin = agent.role === 'Admin';
-    
+
     const roleBadgeClass = isAdmin ? 'bg-primary-subtle text-primary' : 'bg-secondary-subtle text-secondary';
-    const statusBadge = isPending 
+    const statusBadge = isPending
       ? `<span class="badge bg-warning-subtle text-warning ms-2" style="font-size: 0.7rem;">Invite Sent (${agent.role})</span>`
       : `<span class="badge ${roleBadgeClass} ms-2" style="font-size: 0.7rem;">${agent.role}</span>`;
-    
+
     item.innerHTML = `
       <div class="d-flex align-items-center">
         <div class="avatar text-white me-3 bg-primary bg-opacity-75 text-uppercase" style="font-weight:700;">${initials}</div>
@@ -136,54 +136,54 @@ function updateTeamStats() {
 }
 
 // Populate Assignees List inside Select Dropdown
-function populateAssigneesList() {
-  const detailSelect = document.getElementById('detail-assignee-select');
-  if (detailSelect) {
-    detailSelect.innerHTML = '<option value="Unassigned">Unassigned</option>';
-    agents.forEach(agent => {
-      const opt = document.createElement('option');
-      opt.value = agent.name;
-      opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
-      detailSelect.appendChild(opt);
-    });
-  }
-
-  const newTicketSelect = document.getElementById('new-assignee');
-  if (newTicketSelect) {
-    newTicketSelect.innerHTML = '<option value="Unassigned">Leave Unassigned</option>';
-    agents.forEach(agent => {
-      const opt = document.createElement('option');
-      opt.value = agent.name;
-      opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
-      newTicketSelect.appendChild(opt);
-    });
-  }
-
-  const newClientSelect = document.getElementById('client-assignee-input');
-  if (newClientSelect) {
-    newClientSelect.innerHTML = '<option value="Unassigned">Unassigned</option>';
-    agents.forEach(agent => {
-      const opt = document.createElement('option');
-      opt.value = agent.name;
-      opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
-      newClientSelect.appendChild(opt);
-    });
-  }
-
-  const defaultAgentSelect = document.getElementById('default-agent-select');
-  if (defaultAgentSelect) {
-    defaultAgentSelect.innerHTML = '<option value="Unassigned">None (Leave Unassigned)</option>';
-    agents.forEach(agent => {
-      const opt = document.createElement('option');
-      opt.value = agent.name;
-      opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
-      if (agent.name === window.defaultClientAgent) {
-        opt.selected = true;
-      }
-      defaultAgentSelect.appendChild(opt);
-    });
-  }
-}
+// function populateAssigneesList() {
+//   const detailSelect = document.getElementById('detail-assignee-select');
+//   if (detailSelect) {
+//     detailSelect.innerHTML = '<option value="Unassigned">Unassigned</option>';
+//     agents.forEach(agent => {
+//       const opt = document.createElement('option');
+//       opt.value = agent.name;
+//       opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
+//       detailSelect.appendChild(opt);
+//     });
+//   }
+//
+//   const newTicketSelect = document.getElementById('new-assignee');
+//   if (newTicketSelect) {
+//     newTicketSelect.innerHTML = '<option value="Unassigned">Leave Unassigned</option>';
+//     agents.forEach(agent => {
+//       const opt = document.createElement('option');
+//       opt.value = agent.name;
+//       opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
+//       newTicketSelect.appendChild(opt);
+//     });
+//   }
+//
+//   const newClientSelect = document.getElementById('client-assignee-input');
+//   if (newClientSelect) {
+//     newClientSelect.innerHTML = '<option value="Unassigned">Unassigned</option>';
+//     agents.forEach(agent => {
+//       const opt = document.createElement('option');
+//       opt.value = agent.name;
+//       opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
+//       newClientSelect.appendChild(opt);
+//     });
+//   }
+//
+//   const defaultAgentSelect = document.getElementById('default-agent-select');
+//   if (defaultAgentSelect) {
+//     defaultAgentSelect.innerHTML = '<option value="Unassigned">None (Leave Unassigned)</option>';
+//     agents.forEach(agent => {
+//       const opt = document.createElement('option');
+//       opt.value = agent.name;
+//       opt.text = agent.status === 'Active' ? agent.name : `${agent.name} (Invited)`;
+//       if (agent.name === window.defaultClientAgent) {
+//         opt.selected = true;
+//       }
+//       defaultAgentSelect.appendChild(opt);
+//     });
+//   }
+// }
 
 // Render detail view timeline activity comments
 function renderDetailTimeline(ticket) {
@@ -194,7 +194,7 @@ function renderDetailTimeline(ticket) {
   ticket.comments.forEach(comment => {
     const item = document.createElement('div');
     item.className = 'timeline-item';
-    
+
     let bubbleClass = 'bg-light text-dark border';
     let badgeClass = '';
     let headerHtml = '';
