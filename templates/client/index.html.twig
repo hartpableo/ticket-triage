@@ -1,9 +1,23 @@
 {% extends 'dashboard/base.html.twig' %}
 
-{% block page_title %}Clients Directory{% endblock %}
+{% block page_title %}Clients | {{ app_name }}{% endblock %}
+
+{% block javascripts %}
+    {{ importmap('dashboard.clients') }}
+    {% if not add_client_form.vars.valid %}
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                const modalEl = document.getElementById('addClientModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.show();
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}
 
 {% block dashboard_content %}
-    <!-- VIEW: CLIENTS -->
     <div id="view-clients" class="view-content active-view">
         <div class="row g-4 mb-4">
             <div class="col-12">
@@ -20,18 +34,77 @@
                             <tr>
                                 <th>Client Name</th>
                                 <th>Widget URL Domain</th>
-                                <th>Integration Status</th>
                                 <th>Open Tickets</th>
                                 <th>Assigned Agent</th>
                                 <th>Actions</th>
                             </tr>
                             </thead>
                             <tbody id="clients-table-body">
-                            <!-- Client rows will render here -->
+                                {% if clients is not empty %}
+                                    {% for client in clients %}
+                                        <tr>
+                                            <td>{{ client.name }}</td>
+                                            <td>{{ client.domain }}</td>
+                                            <td>@todo</td>
+                                            <td>{{ client.assignedAgent.name }}</td>
+                                            <td>@todo</td>
+                                        </tr>
+                                    {% endfor %}
+                                {% else %}
+                                    <tr>
+                                        <td colspan="5" class="text-center py-5 text-muted">
+                                            <i class="bi bi-building fs-1 opacity-50 mb-3 d-block"></i>
+                                            <h5 class="fw-semibold text-dark">No clients registered yet</h5>
+                                            <p class="text-muted small mb-0">Register a client to start tracking their support tickets.</p>
+                                        </td>
+                                    </tr>
+                                {% endif %}
                             </tbody>
                         </table>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="addClientModalLabel">Register New Client Website</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                {{ form_start(add_client_form) }}
+                    {{ form_errors(add_client_form) }}
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="client-name-input" class="form-label fw-semibold">Client / Company Name</label>
+                            {{ form_widget(add_client_form.name, { id: 'client-name-input' }) }}
+                            {{ form_errors(add_client_form.name) }}
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="client-domain-input" class="form-label fw-semibold">Allowed Domain (for CORS widget security)</label>
+                            <div class="input-group">
+                                <span class="input-group-text">https://</span>
+                                {{ form_widget(add_client_form.domain, { id: 'client-domain-input' }) }}
+                                {{ form_errors(add_client_form.domain) }}
+                            </div>
+                            <div class="form-text">The widget will only process requests sent from this domain.</div>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="client-assignee-input" class="form-label fw-semibold">Assign Agent / Team Member</label>
+                            {{ form_widget(add_client_form.assigned_agent, { id: 'client-assignee-input' }) }}
+                            {{ form_errors(add_client_form.assigned_agent) }}
+                            <div class="form-text">Select the primary agent responsible for managing this client.</div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                        {{ form_widget(add_client_form.submit) }}
+                    </div>
+                {{ form_end(add_client_form) }}
             </div>
         </div>
     </div>

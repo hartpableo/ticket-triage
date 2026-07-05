@@ -100,7 +100,7 @@ function updateDetailTicketStatus() {
   });
 
   renderDetailTimeline(ticket);
-  renderTicketsTable();
+  // renderTicketsTable();
   updateMetrics();
   showToast(`Ticket status updated to ${newStatus}`, 'success');
 }
@@ -122,7 +122,7 @@ function updateDetailTicketPriority() {
   });
 
   renderDetailTimeline(ticket);
-  renderTicketsTable();
+  // renderTicketsTable();
   showToast(`Ticket priority set to ${newPriority}`, 'success');
 }
 
@@ -156,7 +156,7 @@ function updateDetailTicketAssignee() {
   });
 
   renderDetailTimeline(ticket);
-  renderTicketsTable();
+  // renderTicketsTable();
   if (typeof renderAgentsList === 'function') renderAgentsList();
   updateMetrics();
   showToast(`Ticket assigned to ${newAssignee}`, 'success');

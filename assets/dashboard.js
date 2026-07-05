@@ -3,11 +3,9 @@ window.bootstrap = bootstrap;
 
 import "./styles/dashboard.css";
 
-import "./scripts/shared/state.js";
 import "./scripts/shared/ui-utils.js";
 import "./scripts/shared/auth.js";
 import "./scripts/shared/analytics.js";
-import "./scripts/shared/rendering.js";
 import "./scripts/shared/ticket-handlers.js";
 import "./scripts/shared/attachment-handlers.js";
 import "./scripts/admin/admin-handlers.js";

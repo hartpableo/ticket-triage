@@ -17,11 +17,6 @@ window.onload = function() {
     dateEl.innerText = new Date().toLocaleDateString(undefined, { month: 'long', day: 'numeric', year: 'numeric' });
   }
 
-  // populateAssigneesList();
-  renderTicketsTable();
-  if (typeof renderClientsTable === 'function') renderClientsTable();
-  if (typeof renderAgentsList === 'function') renderAgentsList();
-
   updateMetrics(); // Triggers updateAnalytics()
   setTimeframe(currentAnalyticsTimeframe); // Initialize charts & metrics with Today scope
 

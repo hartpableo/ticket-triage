@@ -30,4 +30,5 @@ return [
     'bootstrap/dist/css/bootstrap.min.css' => ['version' => '5.3.8', 'type' => 'css'],
     'dashboard.settings' => ['path' => './assets/dashboard.settings.js', 'entrypoint' => TRUE],
     'dashboard.tickets' => ['path' => './assets/dashboard.tickets.js', 'entrypoint' => TRUE],
+    'dashboard.clients' => ['path' => './assets/dashboard.clients.js', 'entrypoint' => TRUE],
 ];

@@ -6,7 +6,6 @@
     {{ importmap('dashboard.tickets') }}
     {% if not create_ticket_form.vars.valid %}
         <script>
-            console.log('HELLO WORLD');
             document.addEventListener('DOMContentLoaded', () => {
                 const modalEl = document.getElementById('newTicketModal');
                 if (modalEl) {

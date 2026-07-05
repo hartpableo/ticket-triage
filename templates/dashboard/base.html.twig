@@ -132,49 +132,6 @@
     </div>
 
     <!-- ==============================================
-         MODAL: ADD CLIENT
-         ============================================= -->
-    <div class="modal fade" id="addClientModal" tabindex="-1" aria-labelledby="addClientModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="addClientModalLabel">Register New Client Website</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="new-client-form" onsubmit="createNewClient(event)">
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="client-name-input" class="form-label fw-semibold">Client / Company Name</label>
-                            <input type="text" class="form-control" id="client-name-input" required placeholder="e.g. Acme Corp">
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="client-domain-input" class="form-label fw-semibold">Allowed Domain (for CORS widget security)</label>
-                            <div class="input-group">
-                                <span class="input-group-text">https://</span>
-                                <input type="text" class="form-control" id="client-domain-input" required placeholder="acmecorp.com">
-                            </div>
-                            <div class="form-text">The widget will only process requests sent from this domain.</div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="client-assignee-input" class="form-label fw-semibold">Assign Agent / Team Member</label>
-                            <select class="form-select" id="client-assignee-input">
-                                <!-- Loaded dynamically from JS -->
-                            </select>
-                            <div class="form-text">Select the primary agent responsible for managing this client.</div>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-primary">Register Client</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
-
-    <!-- ==============================================
          MODAL: ADD AGENT (INVITE EMAIL & ROLE SELECTION)
          ============================================= -->
     <div class="modal fade" id="addAgentModal" tabindex="-1" aria-labelledby="addAgentModalLabel" aria-hidden="true">

@@ -20,7 +20,6 @@ final class TicketController extends DashboardController {
     ): Response {
         $ticket = new Ticket();
         $createTicketForm = $this->createForm(TicketType::class, $ticket);
-
         $createTicketForm->handleRequest($request);
 
         if ($createTicketForm->isSubmitted() && $createTicketForm->isValid()) {
