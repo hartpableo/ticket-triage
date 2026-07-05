@@ -41,6 +41,7 @@ class TicketType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank()
                 ],
+                'required' => TRUE,
                 'choice_label' => fn($i) => $i->label(),
                 'class' => TicketCategoryEnum::class
             ])
@@ -54,18 +55,21 @@ class TicketType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank()
                 ],
+                'required' => TRUE,
                 'choice_label' => fn($i) => $i->label(),
                 'class' => TicketPriorityEnum::class
             ])
             ->add('client', EntityType::class, [
                 'class' => Client::class,
-                'choice_label' => 'name',
+                'required' => TRUE,
+                'choice_label' => fn($i) => $i->getName(),
                 'constraints' => [
                     new Assert\NotBlank()
                 ],
             ])
             ->add('assigned_agent', EntityType::class, [
                 'class' => User::class,
+                'required' => TRUE,
                 'choice_label' => 'name',
                 'constraints' => [
                     new Assert\NotBlank()

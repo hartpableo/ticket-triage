@@ -2,6 +2,22 @@
 
 {% block page_title %}Tickets Queue{% endblock %}
 
+{% block javascripts %}
+    {{ importmap('dashboard.tickets') }}
+    {% if not create_ticket_form.vars.valid %}
+        <script>
+            console.log('HELLO WORLD');
+            document.addEventListener('DOMContentLoaded', () => {
+                const modalEl = document.getElementById('newTicketModal');
+                if (modalEl) {
+                    const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
+                    modal.show();
+                }
+            });
+        </script>
+    {% endif %}
+{% endblock %}
+
 {% block dashboard_content %}
     <div id="view-tickets" class="view-content active-view">
         <div
@@ -22,7 +38,7 @@
                     </div>
                     <div>
                         <div class="text-muted card-label text-uppercase">Total Tickets</div>
-                        <h3 class="fw-bold mb-0 mt-1" id="stat-total">0</h3>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-total">{{ tickets_data.total }}</h3>
                     </div>
                 </div>
             </div>
@@ -34,7 +50,7 @@
                     </div>
                     <div>
                         <div class="text-muted card-label text-uppercase">Open / Active</div>
-                        <h3 class="fw-bold mb-0 mt-1" id="stat-open">0</h3>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-open">{{ tickets_data.open }}</h3>
                     </div>
                 </div>
             </div>
@@ -45,8 +61,8 @@
                         <i class="bi bi-hourglass-split"></i>
                     </div>
                     <div>
-                        <div class="text-muted card-label text-uppercase">Pending Client</div>
-                        <h3 class="fw-bold mb-0 mt-1" id="stat-pending">0</h3>
+                        <div class="text-muted card-label text-uppercase">Waiting on client</div>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-pending">{{ tickets_data.pending }}</h3>
                     </div>
                 </div>
             </div>
@@ -58,7 +74,7 @@
                     </div>
                     <div>
                         <div class="text-muted card-label text-uppercase">Resolved</div>
-                        <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">0</h3>
+                        <h3 class="fw-bold mb-0 mt-1" id="stat-resolved">{{ tickets_data.resolved }}</h3>
                     </div>
                 </div>
             </div>
@@ -163,22 +179,19 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="new-title" class="form-label fw-semibold">Subject / Issue Title</label>
-                            {% set title_class = 'form-control' ~ (create_ticket_form.title.vars.errors|length > 0 ? ' is-invalid' : '') %}
-                            {{ form_widget(create_ticket_form.title, { id: 'new-title', attr: { class: title_class } }) }}
+                            {{ form_widget(create_ticket_form.title, { id: 'new-title' }) }}
                             {{ form_errors(create_ticket_form.title) }}
                         </div>
 
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label for="new-client" class="form-label fw-semibold">Client Site</label>
-                                {% set client_class = 'form-control' ~ (create_ticket_form.client.vars.errors|length > 0 ? ' is-invalid' : '') %}
-                                {{ form_widget(create_ticket_form.client, { id: 'new-client', attr: { class: client_class } }) }}
+                                {{ form_widget(create_ticket_form.client, { id: 'new-client' }) }}
                                 {{ form_errors(create_ticket_form.client) }}
                             </div>
                             <div class="col-md-6">
                                 <label for="new-category" class="form-label fw-semibold">Category</label>
-                                {% set cat_class = 'form-control' ~ (create_ticket_form.category.vars.errors|length > 0 ? ' is-invalid' : '') %}
-                                {{ form_widget(create_ticket_form.category, { id: 'new-category', attr: { class: cat_class } }) }}
+                                {{ form_widget(create_ticket_form.category, { id: 'new-category' }) }}
                                 {{ form_errors(create_ticket_form.category) }}
                             </div>
                         </div>
@@ -186,22 +199,19 @@
                         <div class="row g-3 mb-3">
                             <div class="col-md-6">
                                 <label for="new-priority" class="form-label fw-semibold">Priority</label>
-                                {% set prio_class = 'form-control' ~ (create_ticket_form.priority.vars.errors|length > 0 ? ' is-invalid' : '') %}
-                                {{ form_widget(create_ticket_form.priority, { id: 'new-priority', attr: { class: prio_class } }) }}
+                                {{ form_widget(create_ticket_form.priority, { id: 'new-priority' }) }}
                                 {{ form_errors(create_ticket_form.priority) }}
                             </div>
                             <div class="col-md-6">
                                 <label for="new-assignee" class="form-label fw-semibold">Assign Agent</label>
-                                {% set assignee_class = 'form-control' ~ (create_ticket_form.assigned_agent.vars.errors|length > 0 ? ' is-invalid' : '') %}
-                                {{ form_widget(create_ticket_form.assigned_agent, { id: 'new-assignee', attr: { class: assignee_class } }) }}
+                                {{ form_widget(create_ticket_form.assigned_agent, { id: 'new-assignee' }) }}
                                 {{ form_errors(create_ticket_form.assigned_agent) }}
                             </div>
                         </div>
 
                         <div class="mb-3">
                             <label for="new-description" class="form-label fw-semibold">Description / Error Details</label>
-                            {% set desc_class = 'form-control' ~ (create_ticket_form.description.vars.errors|length > 0 ? ' is-invalid' : '') %}
-                            {{ form_widget(create_ticket_form.description, { id: 'new-description', attr: { class: desc_class } }) }}
+                            {{ form_widget(create_ticket_form.description, { id: 'new-description' }) }}
                             {{ form_errors(create_ticket_form.description) }}
                         </div>
                     </div>

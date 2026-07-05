@@ -5,13 +5,6 @@
 {#{% block title %}Dashboard | {{ app_name }}{% endblock %}#}
 
 {% block javascripts %}
-    <script>
-        window.userProfile = {
-            name: "{{ app.user.name|default('Member')|escape('js') }}",
-            role: "{{ app.user.title|default('Member')|escape('js') }}",
-            email: "{{ app.user.email|escape('js') }}",
-        };
-    </script>
     {{ importmap('dashboard') }}
 {% endblock %}
 

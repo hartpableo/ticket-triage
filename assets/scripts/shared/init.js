@@ -29,22 +29,23 @@ window.onload = function() {
     openTicketDetails(window.selectedTicketId);
   }
 
-  // Smart defaults: set ticket assignee when client is selected in new ticket modal
-  const newClientSelect = document.getElementById('new-client');
-  if (newClientSelect) {
-    newClientSelect.addEventListener('change', function() {
-      const selectedClientName = this.value;
-      const client = clients.find(c => c.name === selectedClientName);
-      const newAssigneeSelect = document.getElementById('new-assignee');
-      if (client && newAssigneeSelect) {
-        if (client.assignedAgent && client.assignedAgent !== 'Unassigned') {
-          newAssigneeSelect.value = client.assignedAgent;
-        } else if (window.defaultClientAgent) {
-          newAssigneeSelect.value = window.defaultClientAgent;
-        } else {
-          newAssigneeSelect.value = 'Unassigned';
-        }
-      }
-    });
-  }
 };
+
+// Event delegation for new client select defaults
+document.addEventListener('change', function(e) {
+  if (e.target && e.target.id === 'new-client') {
+    const selectedClientName = e.target.options[e.target.selectedIndex] ? e.target.options[e.target.selectedIndex].text : '';
+    const client = clients.find(c => c.name === selectedClientName);
+    const newAssigneeSelect = document.getElementById('new-assignee');
+    if (client && newAssigneeSelect) {
+      if (client.assignedAgent && client.assignedAgent !== 'Unassigned') {
+        newAssigneeSelect.value = client.assignedAgent;
+      } else if (window.defaultClientAgent) {
+        newAssigneeSelect.value = window.defaultClientAgent;
+      } else {
+        newAssigneeSelect.value = 'Unassigned';
+      }
+    }
+  }
+});
+

@@ -1,25 +1,25 @@
 // shared/ticket-handlers.js
 
 // Filter & Search Functionality
-function applyFilters() {
-  const query = document.getElementById('search-input').value.toLowerCase();
-  const clientVal = document.getElementById('filter-client').value;
-  const statusVal = document.getElementById('filter-status').value;
-  const priorityVal = document.getElementById('filter-priority').value;
-
-  const filtered = tickets.filter(ticket => {
-    const matchesSearch = ticket.id.toLowerCase().includes(query) || 
-                          ticket.title.toLowerCase().includes(query) || 
-                          ticket.description.toLowerCase().includes(query);
-    const matchesClient = clientVal === '' || ticket.client === clientVal;
-    const matchesStatus = statusVal === '' || ticket.status === statusVal;
-    const matchesPriority = priorityVal === '' || ticket.priority === priorityVal;
-
-    return matchesSearch && matchesClient && matchesStatus && matchesPriority;
-  });
-
-  renderTicketsTable(filtered);
-}
+// function applyFilters() {
+//   const query = document.getElementById('search-input').value.toLowerCase();
+//   const clientVal = document.getElementById('filter-client').value;
+//   const statusVal = document.getElementById('filter-status').value;
+//   const priorityVal = document.getElementById('filter-priority').value;
+//
+//   const filtered = tickets.filter(ticket => {
+//     const matchesSearch = ticket.id.toLowerCase().includes(query) ||
+//                           ticket.title.toLowerCase().includes(query) ||
+//                           ticket.description.toLowerCase().includes(query);
+//     const matchesClient = clientVal === '' || ticket.client === clientVal;
+//     const matchesStatus = statusVal === '' || ticket.status === statusVal;
+//     const matchesPriority = priorityVal === '' || ticket.priority === priorityVal;
+//
+//     return matchesSearch && matchesClient && matchesStatus && matchesPriority;
+//   });
+//
+//   renderTicketsTable(filtered);
+// }
 
 // Open & View Ticket Details (Full Page)
 function openTicketDetails(id) {
@@ -34,7 +34,7 @@ function openTicketDetails(id) {
   document.getElementById('detail-category').innerText = ticket.category;
   document.getElementById('detail-created-at').innerText = ticket.createdAt;
   document.getElementById('detail-description').innerText = ticket.description;
-  
+
   // Load description attachments
   const descAttachmentsEl = document.getElementById('detail-description-attachments');
   if (descAttachmentsEl) {
@@ -63,7 +63,7 @@ function openTicketDetails(id) {
       });
     }
   }
-  
+
   // Set selects values
   document.getElementById('detail-status-select').value = ticket.status;
   document.getElementById('detail-priority-select').value = ticket.priority;
@@ -76,8 +76,8 @@ function openTicketDetails(id) {
   const pageTitleEl = document.getElementById('page-title');
   if (pageTitleEl) {
     pageTitleEl.innerHTML = `
-      <span class="text-muted fw-normal" style="cursor: pointer;" onclick="window.location.href='/dashboard/tickets'">Tickets Queue</span> 
-      <span class="text-secondary mx-2">/</span> 
+      <span class="text-muted fw-normal" style="cursor: pointer;" onclick="window.location.href='/dashboard/tickets'">Tickets Queue</span>
+      <span class="text-secondary mx-2">/</span>
       <span class="text-dark">${ticket.id}</span>
     `;
   }
@@ -87,11 +87,11 @@ function openTicketDetails(id) {
 function updateDetailTicketStatus() {
   const ticket = tickets.find(t => t.id === selectedTicketId);
   if (!ticket) return;
-  
+
   const oldStatus = ticket.status;
   const newStatus = document.getElementById('detail-status-select').value;
   ticket.status = newStatus;
-  
+
   ticket.comments.push({
     author: 'System',
     text: `Status changed from "${oldStatus}" to "${newStatus}"`,
@@ -133,13 +133,13 @@ function updateDetailTicketAssignee() {
 
   const oldAssignee = ticket.assignee;
   const newAssignee = document.getElementById('detail-assignee-select').value;
-  
+
   // Decrement tickets on old agent
   if(oldAssignee !== 'Unassigned') {
     const oldAg = agents.find(a => a.name === oldAssignee);
     if(oldAg) oldAg.activeTickets = Math.max(0, oldAg.activeTickets - 1);
   }
-  
+
   // Increment tickets on new agent
   if(newAssignee !== 'Unassigned') {
     const newAg = agents.find(a => a.name === newAssignee);
@@ -193,7 +193,7 @@ function submitDetailComment() {
   showToast('Reply posted successfully!', 'success');
 }
 
-window.applyFilters = applyFilters;
+// window.applyFilters = applyFilters;
 window.openTicketDetails = openTicketDetails;
 window.updateDetailTicketStatus = updateDetailTicketStatus;
 window.updateDetailTicketPriority = updateDetailTicketPriority;
