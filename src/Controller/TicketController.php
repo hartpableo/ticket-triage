@@ -35,9 +35,9 @@ final class TicketController extends DashboardController {
     }
 
     #[Route('/dashboard/tickets/{id}', name: 'app_ticket_detail')]
-    public function detail(string $id): Response {
+    public function detail(Ticket $ticket): Response {
         return $this->render('ticket/detail.html.twig', array_merge(self::ADMIN_MENU, [
-            'ticket_id' => $id,
+            'ticket' => $ticket,
         ]));
     }
 }
