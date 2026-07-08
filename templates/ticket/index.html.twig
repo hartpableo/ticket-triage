@@ -6,8 +6,8 @@
     {{ importmap('dashboard.tickets') }}
     {% if not create_ticket_form.vars.valid %}
         <script>
-            document.addEventListener('DOMContentLoaded', () => {
-                const modalEl = document.getElementById('newTicketModal');
+            document.addEventListener("DOMContentLoaded", () => {
+                const modalEl = document.getElementById("newTicketModal");
                 if (modalEl) {
                     const modal = bootstrap.Modal.getOrCreateInstance(modalEl);
                     modal.show();
@@ -23,9 +23,8 @@
             class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
             <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
             <span class="text-muted small">
-                Metrics display shown below represents ticket activities for the current day: <strong class="text-dark" id="today-date-str">
-                    {{- 'now'|date('d M, Y') -}}
-                </strong>.
+                Metrics display shown below represents ticket activities for the current day: <strong
+                    id="today-date-str" class="text-dark">{{- 'now'|date('d M, Y') -}}</strong>.
             </span>
         </div>
 
@@ -79,62 +78,88 @@
             </div>
         </div>
 
-        <!-- Filters & Action Bar -->
         <div class="card border border-light-subtle rounded-3 p-3 mb-4 bg-white shadow-sm">
-            <div class="row g-3 align-items-center">
-                <!-- Search bar -->
-                <div class="col-12 col-md-4">
-                    <div class="input-group">
+            {{ form_start(filter_form) }}
+            <div class="col-12 col-md-4">
+                <div class="input-group">
                         <span class="input-group-text bg-light border-end-0 text-muted"><i
                                 class="bi bi-search"></i></span>
-                        <input type="text" id="search-input" class="form-control bg-light border-start-0"
-                               placeholder="Search tickets..." onkeyup="applyFilters()">
-                    </div>
-                </div>
-
-                <!-- Filter Client -->
-                <div class="col-6 col-md-2">
-                    <select id="filter-client" class="form-select bg-light border-light-subtle"
-                            onchange="applyFilters()">
-                        <option value="">All Clients</option>
-                        <option value="Aura Cosmetics">Aura Cosmetics</option>
-                        <option value="Vertex SaaS">Vertex SaaS</option>
-                        <option value="Greenfield Real Estate">Greenfield Real Estate</option>
-                    </select>
-                </div>
-
-                {# Filter Status #}
-                <div class="col-6 col-md-2">
-                    <select id="filter-status" class="form-select bg-light border-light-subtle"
-                            onchange="applyFilters()">
-                        <option value="">All Statuses</option>
-                        {% for status in enum_cases('App\\Enum\\TicketStatusEnum') %}
-                            <option
-                                value="{{ status.value }}"
-                            >{{ status.label() }}</option>
-                        {% endfor %}
-                    </select>
-                </div>
-
-                <!-- Filter Priority -->
-                <div class="col-6 col-md-2">
-                    <select id="filter-priority" class="form-select bg-light border-light-subtle"
-                            onchange="applyFilters()">
-                        <option value="">All Priorities</option>
-                        <option value="Critical">Critical</option>
-                        <option value="High">High</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Low">Low</option>
-                    </select>
-                </div>
-
-                <!-- Add Ticket Trigger -->
-                <div class="col-6 col-md-2 text-md-end">
-                    <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
-                        <i class="bi bi-plus-lg me-1"></i> New Ticket
-                    </button>
+                    {{ form_widget(filter_form.title, {
+                        id: 'ticket-title-input',
+                        attr: {
+                            'aria-label': 'Search by ticket title',
+                            class: 'form-control bg-light border-start-0'
+                        }
+                    }) }}
+                    {{ form_errors(filter_form.title) }}
                 </div>
             </div>
+
+            <div class="col-6 col-md-2">
+                {{ form_widget(filter_form.client, {
+                    id: 'ticket-client-input',
+                    attr: {
+                        'aria-label': 'Filter by client name',
+                        class: 'form-select bg-light border-light-subtle'
+                    }
+                }) }}
+                {{ form_errors(filter_form.client) }}
+            </div>
+
+            <div class="col-6 col-md-2">
+                {{ form_widget(filter_form.status, {
+                    id: 'ticket-status-input',
+                    attr: {
+                        'aria-label': 'Filter by status',
+                        class: 'form-select bg-light border-light-subtle'
+                    }
+                }) }}
+                {{ form_errors(filter_form.status) }}
+            </div>
+
+            <div class="col-6 col-md-2">
+                {{ form_widget(filter_form.priority, {
+                    id: 'ticket-priority-input',
+                    attr: {
+                        'aria-label': 'Filter by priority',
+                        class: 'form-select bg-light border-light-subtle'
+                    }
+                }) }}
+                {{ form_errors(filter_form.priority) }}
+            </div>
+
+            <div class="col-6 col-md-2">
+                {{ form_widget(filter_form.category, {
+                    id: 'ticket-category-input',
+                    attr: {
+                        'aria-label': 'Filter by category',
+                        class: 'form-select bg-light border-light-subtle'
+                    }
+                }) }}
+                {{ form_errors(filter_form.category) }}
+            </div>
+
+            <div class="col-6 col-md-2">
+                {{ form_widget(filter_form.assigned_agent, {
+                    id: 'ticket-assigned-agent-input',
+                    attr: {
+                        'aria-label': 'Filter by assigned agent',
+                        class: 'form-select bg-light border-light-subtle'
+                    }
+                }) }}
+                {{ form_errors(filter_form.assigned_agent) }}
+            </div>
+
+            <div>
+                {{ form_widget(filter_form.submit) }}
+            </div>
+
+            <div class="col-6 col-md-2 text-md-end">
+                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                    <i class="bi bi-plus-lg me-1"></i> New Ticket
+                </button>
+            </div>
+            {{ form_end(filter_form) }}
         </div>
 
         <!-- Tickets Table Container -->
@@ -174,50 +199,50 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {{ form_start(create_ticket_form) }}
-                    {{ form_errors(create_ticket_form) }}
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="new-title" class="form-label fw-semibold">Subject / Issue Title</label>
-                            {{ form_widget(create_ticket_form.title, { id: 'new-title' }) }}
-                            {{ form_errors(create_ticket_form.title) }}
-                        </div>
+                {{ form_errors(create_ticket_form) }}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="new-title" class="form-label fw-semibold">Subject / Issue Title</label>
+                        {{ form_widget(create_ticket_form.title, { id: 'new-title' }) }}
+                        {{ form_errors(create_ticket_form.title) }}
+                    </div>
 
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="new-client" class="form-label fw-semibold">Client Site</label>
-                                {{ form_widget(create_ticket_form.client, { id: 'new-client' }) }}
-                                {{ form_errors(create_ticket_form.client) }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="new-category" class="form-label fw-semibold">Category</label>
-                                {{ form_widget(create_ticket_form.category, { id: 'new-category' }) }}
-                                {{ form_errors(create_ticket_form.category) }}
-                            </div>
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="new-client" class="form-label fw-semibold">Client Site</label>
+                            {{ form_widget(create_ticket_form.client, { id: 'new-client' }) }}
+                            {{ form_errors(create_ticket_form.client) }}
                         </div>
-
-                        <div class="row g-3 mb-3">
-                            <div class="col-md-6">
-                                <label for="new-priority" class="form-label fw-semibold">Priority</label>
-                                {{ form_widget(create_ticket_form.priority, { id: 'new-priority' }) }}
-                                {{ form_errors(create_ticket_form.priority) }}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="new-assignee" class="form-label fw-semibold">Assign Agent</label>
-                                {{ form_widget(create_ticket_form.assigned_agent, { id: 'new-assignee' }) }}
-                                {{ form_errors(create_ticket_form.assigned_agent) }}
-                            </div>
-                        </div>
-
-                        <div class="mb-3">
-                            <label for="new-description" class="form-label fw-semibold">Description / Error Details</label>
-                            {{ form_widget(create_ticket_form.description, { id: 'new-description' }) }}
-                            {{ form_errors(create_ticket_form.description) }}
+                        <div class="col-md-6">
+                            <label for="new-category" class="form-label fw-semibold">Category</label>
+                            {{ form_widget(create_ticket_form.category, { id: 'new-category' }) }}
+                            {{ form_errors(create_ticket_form.category) }}
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
-                        {{ form_widget(create_ticket_form.submit) }}
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="new-priority" class="form-label fw-semibold">Priority</label>
+                            {{ form_widget(create_ticket_form.priority, { id: 'new-priority' }) }}
+                            {{ form_errors(create_ticket_form.priority) }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="new-assignee" class="form-label fw-semibold">Assign Agent</label>
+                            {{ form_widget(create_ticket_form.assigned_agent, { id: 'new-assignee' }) }}
+                            {{ form_errors(create_ticket_form.assigned_agent) }}
+                        </div>
                     </div>
+
+                    <div class="mb-3">
+                        <label for="new-description" class="form-label fw-semibold">Description / Error Details</label>
+                        {{ form_widget(create_ticket_form.description, { id: 'new-description' }) }}
+                        {{ form_errors(create_ticket_form.description) }}
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                    {{ form_widget(create_ticket_form.submit) }}
+                </div>
                 {{ form_end(create_ticket_form) }}
             </div>
         </div>

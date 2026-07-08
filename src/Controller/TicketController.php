@@ -71,13 +71,15 @@ final class TicketController extends DashboardController {
              *  Continue filtering logic
              *  Implement pagination (15 items/rows)
              */
+            dd($filterData);
         }
 
         return $this->render('ticket/index.html.twig', array_merge(
             self::ADMIN_MENU,
             [
+                'filter_form' => $filterTicketsForm->createView(),
                 'create_ticket_form' => $createTicketForm->createView(),
-                'tickets_data' => $ticketsNumbersData
+                'tickets_data' => $ticketsNumbersData,
             ]
         ), new Response(NULL, $responseStatus));
     }

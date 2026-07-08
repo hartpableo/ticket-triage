@@ -1,26 +1,3 @@
-// shared/ticket-handlers.js
-
-// Filter & Search Functionality
-// function applyFilters() {
-//   const query = document.getElementById('search-input').value.toLowerCase();
-//   const clientVal = document.getElementById('filter-client').value;
-//   const statusVal = document.getElementById('filter-status').value;
-//   const priorityVal = document.getElementById('filter-priority').value;
-//
-//   const filtered = tickets.filter(ticket => {
-//     const matchesSearch = ticket.id.toLowerCase().includes(query) ||
-//                           ticket.title.toLowerCase().includes(query) ||
-//                           ticket.description.toLowerCase().includes(query);
-//     const matchesClient = clientVal === '' || ticket.client === clientVal;
-//     const matchesStatus = statusVal === '' || ticket.status === statusVal;
-//     const matchesPriority = priorityVal === '' || ticket.priority === priorityVal;
-//
-//     return matchesSearch && matchesClient && matchesStatus && matchesPriority;
-//   });
-//
-//   renderTicketsTable(filtered);
-// }
-
 // Open & View Ticket Details (Full Page)
 function openTicketDetails(id) {
   selectedTicketId = id;
@@ -69,9 +46,6 @@ function openTicketDetails(id) {
   document.getElementById('detail-priority-select').value = ticket.priority;
   document.getElementById('detail-assignee-select').value = ticket.assignee;
 
-  // Render Timeline Activity
-  renderDetailTimeline(ticket);
-
   // Set header breadcrumb title
   const pageTitleEl = document.getElementById('page-title');
   if (pageTitleEl) {
@@ -99,8 +73,6 @@ function updateDetailTicketStatus() {
     isSystem: true
   });
 
-  renderDetailTimeline(ticket);
-  // renderTicketsTable();
   updateMetrics();
   showToast(`Ticket status updated to ${newStatus}`, 'success');
 }
@@ -121,8 +93,6 @@ function updateDetailTicketPriority() {
     isSystem: true
   });
 
-  renderDetailTimeline(ticket);
-  // renderTicketsTable();
   showToast(`Ticket priority set to ${newPriority}`, 'success');
 }
 
@@ -155,9 +125,7 @@ function updateDetailTicketAssignee() {
     isSystem: true
   });
 
-  renderDetailTimeline(ticket);
   // renderTicketsTable();
-  if (typeof renderAgentsList === 'function') renderAgentsList();
   updateMetrics();
   showToast(`Ticket assigned to ${newAssignee}`, 'success');
 }
@@ -189,11 +157,9 @@ function submitDetailComment() {
   activeCommentAttachments = [];
   renderAttachmentPreviews();
 
-  renderDetailTimeline(ticket);
   showToast('Reply posted successfully!', 'success');
 }
 
-// window.applyFilters = applyFilters;
 window.openTicketDetails = openTicketDetails;
 window.updateDetailTicketStatus = updateDetailTicketStatus;
 window.updateDetailTicketPriority = updateDetailTicketPriority;
