@@ -19,13 +19,21 @@
 
 {% block dashboard_content %}
     <div id="view-tickets" class="view-content active-view">
-        <div
-            class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-3 shadow-sm py-2">
-            <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
-            <span class="text-muted small">
-                Metrics display shown below represents ticket activities for the current day: <strong
-                    id="today-date-str" class="text-dark">{{- 'now'|date('d M, Y') -}}</strong>.
-            </span>
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-4">
+            <div
+                class="alert alert-light border border-light-subtle rounded-3 d-flex align-items-center mb-0 shadow-sm py-2 flex-grow-1">
+                <i class="bi bi-calendar-event text-primary me-2 fs-5"></i>
+                <span class="text-muted small">
+                    Metrics display shown below represents ticket activities for the current day: <strong
+                        id="today-date-str" class="text-dark">{{- 'now'|date('d M, Y') -}}</strong>.
+                </span>
+            </div>
+            <button type="button"
+                    class="btn btn-primary shadow-sm px-4 py-2 d-inline-flex align-items-center gap-2 flex-shrink-0"
+                    data-bs-toggle="modal" data-bs-target="#newTicketModal">
+                <i class="bi bi-plus-lg fs-5"></i>
+                <span class="fw-semibold">New Ticket</span>
+            </button>
         </div>
 
         <div class="row g-3 mb-4">
@@ -78,91 +86,125 @@
             </div>
         </div>
 
-        <div class="card border border-light-subtle rounded-3 p-3 mb-4 bg-white shadow-sm">
-            {{ form_start(filter_form) }}
-            <div class="col-12 col-md-4">
+        <div class="card border border-light-subtle rounded-3 p-4 mb-4 bg-white shadow-sm">
+            {{ form_start(filter_form, {'attr': {'class': 'row g-3'}}) }}
+            <!-- Title Search -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <label class="form-label text-uppercase text-muted fw-bold mb-1"
+                       style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                    <i class="bi bi-search me-1 text-primary"></i> Search Keyword
+                </label>
                 <div class="input-group">
-                        <span class="input-group-text bg-light border-end-0 text-muted"><i
-                                class="bi bi-search"></i></span>
+                    <span class="input-group-text bg-white border-end-0 text-muted"
+                          style="border-color: var(--border-color);"><i class="bi bi-search"></i></span>
                     {{ form_widget(filter_form.title, {
                         id: 'ticket-title-input',
                         attr: {
                             'aria-label': 'Search by ticket title',
-                            class: 'form-control bg-light border-start-0'
+                            class: 'form-control bg-white border-start-0 ps-0',
+                            placeholder: 'Search by subject...'
                         }
                     }) }}
-                    {{ form_errors(filter_form.title) }}
                 </div>
+                {{ form_errors(filter_form.title) }}
             </div>
 
-            <div class="col-6 col-md-2">
+            <!-- Client Filter -->
+            <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label text-uppercase text-muted fw-bold mb-1"
+                       style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                    <i class="bi bi-building me-1 text-primary"></i> Client
+                </label>
                 {{ form_widget(filter_form.client, {
                     id: 'ticket-client-input',
                     attr: {
-                        'aria-label': 'Filter by client name',
-                        class: 'form-select bg-light border-light-subtle'
+                        'aria-label': 'Filter by client',
+                        class: 'form-select bg-white border-light-subtle',
+                        onchange: 'this.form.submit()'
                     }
                 }) }}
                 {{ form_errors(filter_form.client) }}
             </div>
 
-            <div class="col-6 col-md-2">
+            <!-- Status Filter -->
+            <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label text-uppercase text-muted fw-bold mb-1"
+                       style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                    <i class="bi bi-activity me-1 text-primary"></i> Status
+                </label>
                 {{ form_widget(filter_form.status, {
                     id: 'ticket-status-input',
                     attr: {
                         'aria-label': 'Filter by status',
-                        class: 'form-select bg-light border-light-subtle'
+                        class: 'form-select bg-white border-light-subtle',
+                        onchange: 'this.form.submit()'
                     }
                 }) }}
                 {{ form_errors(filter_form.status) }}
             </div>
 
-            <div class="col-6 col-md-2">
+            <!-- Priority Filter -->
+            <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label text-uppercase text-muted fw-bold mb-1"
+                       style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                    <i class="bi bi-flag me-1 text-primary"></i> Priority
+                </label>
                 {{ form_widget(filter_form.priority, {
                     id: 'ticket-priority-input',
                     attr: {
                         'aria-label': 'Filter by priority',
-                        class: 'form-select bg-light border-light-subtle'
+                        class: 'form-select bg-white border-light-subtle',
+                        onchange: 'this.form.submit()'
                     }
                 }) }}
                 {{ form_errors(filter_form.priority) }}
             </div>
 
-            <div class="col-6 col-md-2">
+            <!-- Category Filter -->
+            <div class="col-6 col-md-3 col-lg-2">
+                <label class="form-label text-uppercase text-muted fw-bold mb-1"
+                       style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                    <i class="bi bi-tag me-1 text-primary"></i> Category
+                </label>
                 {{ form_widget(filter_form.category, {
                     id: 'ticket-category-input',
                     attr: {
                         'aria-label': 'Filter by category',
-                        class: 'form-select bg-light border-light-subtle'
+                        class: 'form-select bg-white border-light-subtle',
+                        onchange: 'this.form.submit()'
                     }
                 }) }}
                 {{ form_errors(filter_form.category) }}
             </div>
 
-            <div class="col-6 col-md-2">
+            <!-- Agent Filter -->
+            <div class="col-12 col-md-6 col-lg-4">
+                <label class="form-label text-uppercase text-muted fw-bold mb-1"
+                       style="font-size: 0.72rem; letter-spacing: 0.05em;">
+                    <i class="bi bi-person me-1 text-primary"></i> Assigned Agent
+                </label>
                 {{ form_widget(filter_form.assigned_agent, {
                     id: 'ticket-assigned-agent-input',
                     attr: {
                         'aria-label': 'Filter by assigned agent',
-                        class: 'form-select bg-light border-light-subtle'
+                        class: 'form-select bg-white border-light-subtle',
+                        onchange: 'this.form.submit()'
                     }
                 }) }}
                 {{ form_errors(filter_form.assigned_agent) }}
             </div>
 
-            <div>
+            <!-- Actions -->
+            <div class="col-12 col-md-6 col-lg-8 d-flex align-items-end justify-content-md-end gap-2 mt-2 mt-md-0">
+                <a href="{{ path('app_tickets') }}"
+                   class="btn btn-light border px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 transition-all">
+                    <i class="bi bi-arrow-counterclockwise text-secondary"></i> Reset
+                </a>
                 {{ form_widget(filter_form.submit) }}
             </div>
-
-            <div class="col-6 col-md-2 text-md-end">
-                <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#newTicketModal">
-                    <i class="bi bi-plus-lg me-1"></i> New Ticket
-                </button>
-            </div>
-            {{ form_end(filter_form) }}
+            {{ form_end(filter_form, {'render_rest': false}) }}
         </div>
 
-        <!-- Tickets Table Container -->
         <div class="table-container">
             <div class="table-responsive">
                 <table class="table mb-0">
@@ -177,16 +219,81 @@
                     </tr>
                     </thead>
                     <tbody id="tickets-table-body">
-                    <!-- Dynamic Content injected via JS -->
+                    {% for ticket in tickets %}
+                        <tr onclick="window.location.href='{{ path('app_ticket_detail', { id: ticket.id }) }}'">
+                            <td data-label="ID">
+                                <code class="text-secondary fw-semibold">{{ ticket.code }}</code>
+                            </td>
+                            <td data-label="Subject">
+                                <div class="fw-semibold text-dark subject-title">{{ ticket.title }}</div>
+                                <div class="text-muted small text-truncate subject-desc"
+                                     style="max-width: 280px;">{{ ticket.description }}</div>
+                            </td>
+                            <td data-label="Client">
+                                <span class="fw-medium text-dark">{{ ticket.client.name }}</span>
+                            </td>
+                            <td data-label="Status">
+                                {% set status_class = '' %}
+                                {% if ticket.status.value == 'open' %}
+                                    {% set status_class = 'status-open' %}
+                                {% elseif ticket.status.value == 'in_progress' %}
+                                    {% set status_class = 'status-progress' %}
+                                {% elseif ticket.status.value == 'waiting_on_client' %}
+                                    {% set status_class = 'status-pending' %}
+                                {% elseif ticket.status.value == 'resolved' %}
+                                    {% set status_class = 'status-resolved' %}
+                                {% else %}
+                                    {% set status_class = 'status-closed' %}
+                                {% endif %}
+                                <span class="badge-custom {{ status_class }}">{{ ticket.status.label() }}</span>
+                            </td>
+                            <td data-label="Priority">
+                                {% set priority_class = '' %}
+                                {% if ticket.priority.value == 'critical' %}
+                                    {% set priority_class = 'priority-critical' %}
+                                {% elseif ticket.priority.value == 'high' %}
+                                    {% set priority_class = 'priority-high' %}
+                                {% elseif ticket.priority.value == 'medium' %}
+                                    {% set priority_class = 'priority-medium' %}
+                                {% else %}
+                                    {% set priority_class = 'priority-low' %}
+                                {% endif %}
+                                <span class="badge-custom {{ priority_class }}">{{ ticket.priority.label() }}</span>
+                            </td>
+                            <td data-label="Assigned To">
+                                <div class="d-flex align-items-center">
+                                    {% if ticket.assignedAgent %}
+                                        <div class="avatar bg-primary text-white me-2 small-avatar"
+                                             style="width: 1.5rem; height: 1.5rem; font-size: 0.7rem;">
+                                            {% set name_parts = ticket.assignedAgent.name|split(' ') %}
+                                            {% if name_parts|length > 1 %}
+                                                {{ (name_parts[0]|slice(0, 1) ~ name_parts[name_parts|length - 1]|slice(0, 1))|upper }}
+                                            {% else %}
+                                                {{ ticket.assignedAgent.name|slice(0, 2)|upper }}
+                                            {% endif %}
+                                        </div>
+                                        <span class="small">{{ ticket.assignedAgent.name }}</span>
+                                    {% else %}
+                                        <span class="text-muted small">Unassigned</span>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                    {% endfor %}
                     </tbody>
                 </table>
+                <div class="navigation">
+                    {{ knp_pagination_render(tickets) }}
+                </div>
             </div>
-            <!-- Empty State -->
-            <div id="empty-state" class="text-center py-5 d-none">
-                <i class="bi bi-ticket-detailed fs-1 text-muted opacity-50 mb-3 d-block"></i>
-                <h5 class="fw-semibold">No tickets found</h5>
-                <p class="text-muted">Try adjusting your filters or search keywords.</p>
-            </div>
+
+            {% if tickets is empty %}
+                <div id="empty-state" class="text-center py-5 {% if tickets|length > 0 %}d-none{% endif %}">
+                    <i class="bi bi-ticket-detailed fs-1 text-muted opacity-50 mb-3 d-block"></i>
+                    <h5 class="fw-semibold">No tickets found</h5>
+                    <p class="text-muted">Try adjusting your filters or search keywords.</p>
+                </div>
+            {% endif %}
         </div>
     </div>
 
@@ -195,7 +302,10 @@
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title fw-bold" id="newTicketModalLabel">Submit Support Ticket</h5>
+                    <h5 class="modal-title fw-bold d-flex align-items-center gap-2" id="newTicketModalLabel">
+                        <i class="bi bi-ticket-detailed text-primary fs-4"></i>
+                        <span>Submit Support Ticket</span>
+                    </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 {{ form_start(create_ticket_form) }}

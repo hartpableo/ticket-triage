@@ -15,6 +15,7 @@ use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Twig\Markup;
 
 class TicketsFilterType extends AbstractType
 {
@@ -80,8 +81,9 @@ class TicketsFilterType extends AbstractType
                 ]
             ])
             ->add('submit', SubmitType::class, [
-                'label' => 'Filter',
-                'attr' => ['class' => 'btn btn-primary'],
+                'label' => '<i class="bi bi-funnel-fill"></i> Filter Queue',
+                'label_html' => TRUE,
+                'attr' => ['class' => 'btn btn-primary px-4 py-2 fw-semibold d-inline-flex align-items-center gap-2 shadow-sm transition-all'],
             ]);;
         ;
     }

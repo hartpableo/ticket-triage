@@ -8,6 +8,7 @@ use App\Form\TicketsFilterType;
 use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
@@ -18,6 +19,7 @@ final class TicketController extends DashboardController {
         Request                $request,
         EntityManagerInterface $entityManager,
         TicketRepository       $ticketRepository,
+        PaginatorInterface     $paginator
     ): Response {
         // Create ticket form
         $ticket = new Ticket();
@@ -63,16 +65,44 @@ final class TicketController extends DashboardController {
         // Filter tickets form
         $filterTicketsForm = $this->createForm(TicketsFilterType::class);
         $filterTicketsForm->handleRequest($request);
+
+        $qb = $ticketRepository->createQueryBuilder('t')
+            ->orderBy('t.created_at', 'DESC');
+
         if ($filterTicketsForm->isSubmitted() && $filterTicketsForm->isValid()) {
             $filterData = $filterTicketsForm->getData();
 
-            /**
-             * TODO:
-             *  Continue filtering logic
-             *  Implement pagination (15 items/rows)
-             */
-            dd($filterData);
+            if ($filterData->getTitle()) {
+                $qb->andWhere('t.title LIKE :title')
+                    ->setParameter('title', '%' . $filterData->getTitle() . '%');
+            }
+            if ($filterData->getClient()) {
+                $qb->andWhere('t.client = :client')
+                    ->setParameter('client', $filterData->getClient());
+            }
+            if ($filterData->getStatus()) {
+                $qb->andWhere('t.status = :status')
+                    ->setParameter('status', $filterData->getStatus());
+            }
+            if ($filterData->getPriority()) {
+                $qb->andWhere('t.priority = :priority')
+                    ->setParameter('priority', $filterData->getPriority());
+            }
+            if ($filterData->getCategory()) {
+                $qb->andWhere('t.category = :category')
+                    ->setParameter('category', $filterData->getCategory());
+            }
+            if ($filterData->getAssignedAgent()) {
+                $qb->andWhere('t.assigned_agent = :assigned_agent')
+                    ->setParameter('assigned_agent', $filterData->getAssignedAgent());
+            }
         }
+
+        $tickets = $paginator->paginate(
+            $qb,
+            $request->query->getInt('page', 1),
+            15
+        );
 
         return $this->render('ticket/index.html.twig', array_merge(
             self::ADMIN_MENU,
@@ -80,6 +110,7 @@ final class TicketController extends DashboardController {
                 'filter_form' => $filterTicketsForm->createView(),
                 'create_ticket_form' => $createTicketForm->createView(),
                 'tickets_data' => $ticketsNumbersData,
+                'tickets' => $tickets,
             ]
         ), new Response(NULL, $responseStatus));
     }
