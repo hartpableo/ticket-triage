@@ -19,7 +19,8 @@
                 <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
                     <div class="d-flex align-items-center justify-content-between flex-wrap gap-2 mb-3">
                         <h3 class="fw-bold mb-0 text-dark" id="detail-ticket-title">{{ ticket.title }}</h3>
-                        <span class="badge bg-light text-secondary border px-3 py-2" id="detail-ticket-id">{{ ticket.code }}</span>
+                        <span class="badge bg-light text-secondary border px-3 py-2"
+                              id="detail-ticket-id">{{ ticket.code }}</span>
                     </div>
 
                     <div class="mb-2">
@@ -42,19 +43,23 @@
                     <div>
                         <h6 class="fw-bold text-dark mb-2">Post a Response</h6>
                         <div class="mb-3">
-                            <textarea class="form-control" id="detail-comment-input" rows="4" placeholder="Type your response to the client or an internal note..."></textarea>
+                            <textarea class="form-control" id="detail-comment-input" rows="4"
+                                      placeholder="Type your response to the client or an internal note..."></textarea>
                         </div>
                         <div class="mb-3 border rounded-3 p-3 bg-light">
                             <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
                                 <div class="d-flex align-items-center gap-2">
-                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('image')">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            onclick="simulateMediaAttachment('image')">
                                         <i class="bi bi-image me-1"></i> Attach Screenshot
                                     </button>
-                                    <button class="btn btn-outline-secondary btn-sm" type="button" onclick="simulateMediaAttachment('video')">
+                                    <button class="btn btn-outline-secondary btn-sm" type="button"
+                                            onclick="simulateMediaAttachment('video')">
                                         <i class="bi bi-play-btn me-1"></i> Attach Recording
                                     </button>
                                 </div>
-                                <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link" id="clear-attachments-btn" type="button" onclick="clearAttachments()">
+                                <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link"
+                                        id="clear-attachments-btn" type="button" onclick="clearAttachments()">
                                     <i class="bi bi-trash3 me-1"></i> Clear all
                                 </button>
                             </div>
@@ -77,59 +82,50 @@
 
             <!-- Right Column: Settings & Metadata -->
             <div class="col-lg-4">
-                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mb-4">
-                    <h5 class="fw-bold mb-3 text-dark">Ticket Settings</h5>
+                {{ form_start(update_ticket_form) }}
+                {{ form_errors(update_ticket_form) }}
+                    <p class="fw-bold mb-3 text-dark fs-5">Ticket Settings</p>
 
                     <div class="mb-3">
-                        <label class="form-label text-muted small fw-semibold">Status</label>
-                        <select class="form-select" id="detail-status-select" onchange="updateDetailTicketStatus()">
-                            <option value="Open">Open</option>
-                            <option value="In Progress">In Progress</option>
-                            <option value="Pending Client">Pending Client</option>
-                            <option value="Resolved">Resolved</option>
-                            <option value="Closed">Closed</option>
-                        </select>
+                        <label for="detail-status-select" class="form-label text-muted small fw-semibold">Status</label>
+                        {{ form_widget(update_ticket_form.status, { id: 'detail-status-select' }) }}
+                        {{ form_errors(update_ticket_form.status) }}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-muted small fw-semibold">Priority</label>
-                        <select class="form-select" id="detail-priority-select" onchange="updateDetailTicketPriority()">
-                            <option value="Critical">Critical</option>
-                            <option value="High">High</option>
-                            <option value="Medium">Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
+                        <label for="detail-priority-select" class="form-label text-muted small fw-semibold">Priority</label>
+                        {{ form_widget(update_ticket_form.priority, { id: 'detail-priority-select' }) }}
+                        {{ form_errors(update_ticket_form.priority) }}
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label text-muted small fw-semibold">Assign Agent</label>
-                        <select class="form-select" id="detail-assignee-select" onchange="updateDetailTicketAssignee()">
-                            <!-- Options loaded dynamically -->
-                        </select>
+                        <label for="detail-agent-select" class="form-label text-muted small fw-semibold">Assign Agent</label>
+                        {{ form_widget(update_ticket_form.assigned_agent, { id: 'detail-agent-select' }) }}
+                        {{ form_errors(update_ticket_form.assigned_agent) }}
                     </div>
+                {{ form_end(update_ticket_form) }}
+            </div>
+
+            <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
+                <h5 class="fw-bold mb-3 text-dark">Ticket Metadata</h5>
+
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted small">Client Name</span>
+                    <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
                 </div>
-
-                <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
-                    <h5 class="fw-bold mb-3 text-dark">Ticket Metadata</h5>
-
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small">Client Name</span>
-                        <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
-                    </div>
-                    <div class="d-flex justify-content-between mb-2">
-                        <span class="text-muted small">Category</span>
-                        <span class="fw-semibold small" id="detail-category">Bug</span>
-                    </div>
-                    <div class="d-flex justify-content-between">
-                        <span class="text-muted small">Created</span>
-                        <span class="fw-semibold small" id="detail-created-at">2 hours ago</span>
-                    </div>
+                <div class="d-flex justify-content-between mb-2">
+                    <span class="text-muted small">Category</span>
+                    <span class="fw-semibold small" id="detail-category">Bug</span>
+                </div>
+                <div class="d-flex justify-content-between">
+                    <span class="text-muted small">Created</span>
+                    <span class="fw-semibold small" id="detail-created-at">2 hours ago</span>
                 </div>
             </div>
         </div>
     </div>
 
-{#    <script>#}
-{#        window.selectedTicketId = "{{ ticket_id }}";#}
-{#    </script>#}
+    {#    <script> #}
+    {#        window.selectedTicketId = "{{ ticket_id }}"; #}
+    {#    </script> #}
 {% endblock %}

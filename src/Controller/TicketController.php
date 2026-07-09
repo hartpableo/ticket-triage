@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Ticket;
 use App\Enum\TicketStatusEnum;
 use App\Form\TicketsFilterType;
+use App\Form\TicketSettingsType;
 use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -119,10 +120,35 @@ final class TicketController extends DashboardController {
 
     #[Route('/dashboard/tickets/{code}', name: 'app_ticket_detail')]
     public function detail(
-        #[MapEntity(mapping: ['code' => 'code'])] Ticket $ticket
+        #[MapEntity(mapping: ['code' => 'code'])] Ticket $ticket,
+        Request                                          $request,
+        EntityManagerInterface                           $entityManager,
     ): Response {
-        return $this->render('ticket/detail.html.twig', array_merge(self::ADMIN_MENU, [
-            'ticket' => $ticket,
-        ]));
+        $updateTicketForm = $this->createForm(TicketSettingsType::class, $ticket);
+        $updateTicketForm->handleRequest($request);
+
+        if ($updateTicketForm->isSubmitted() && $updateTicketForm->isValid()) {
+            $entityManager->flush();
+            $this->addFlash(
+                'success',
+                \sprintf('Ticket "%s" updated successfully!', $ticket->getCode())
+            );
+            return $this->redirectToRoute('app_ticket_detail', [
+                'code' => $ticket->getCode()
+            ]);
+        }
+
+        // Return 422 Unprocessable Entity status if the form has validation errors
+        $responseStatus = ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid())
+            ? Response::HTTP_UNPROCESSABLE_ENTITY
+            : Response::HTTP_OK;
+
+        return $this->render('ticket/detail.html.twig', array_merge(
+            self::ADMIN_MENU,
+            [
+                'ticket' => $ticket,
+                'update_ticket_form' => $updateTicketForm->createView(),
+            ]
+        ), new Response(NULL, $responseStatus));
     }
 }

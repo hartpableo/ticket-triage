@@ -57,79 +57,6 @@ function openTicketDetails(id) {
   }
 }
 
-// Update field handlers in detailed view
-function updateDetailTicketStatus() {
-  const ticket = tickets.find(t => t.id === selectedTicketId);
-  if (!ticket) return;
-
-  const oldStatus = ticket.status;
-  const newStatus = document.getElementById('detail-status-select').value;
-  ticket.status = newStatus;
-
-  ticket.comments.push({
-    author: 'System',
-    text: `Status changed from "${oldStatus}" to "${newStatus}"`,
-    time: 'Just now',
-    isSystem: true
-  });
-
-  updateMetrics();
-  showToast(`Ticket status updated to ${newStatus}`, 'success');
-}
-
-// Update detail view priority
-function updateDetailTicketPriority() {
-  const ticket = tickets.find(t => t.id === selectedTicketId);
-  if (!ticket) return;
-
-  const oldPriority = ticket.priority;
-  const newPriority = document.getElementById('detail-priority-select').value;
-  ticket.priority = newPriority;
-
-  ticket.comments.push({
-    author: 'System',
-    text: `Priority changed from "${oldPriority}" to "${newPriority}"`,
-    time: 'Just now',
-    isSystem: true
-  });
-
-  showToast(`Ticket priority set to ${newPriority}`, 'success');
-}
-
-// Update detail view assignee
-function updateDetailTicketAssignee() {
-  const ticket = tickets.find(t => t.id === selectedTicketId);
-  if (!ticket) return;
-
-  const oldAssignee = ticket.assignee;
-  const newAssignee = document.getElementById('detail-assignee-select').value;
-
-  // Decrement tickets on old agent
-  if(oldAssignee !== 'Unassigned') {
-    const oldAg = agents.find(a => a.name === oldAssignee);
-    if(oldAg) oldAg.activeTickets = Math.max(0, oldAg.activeTickets - 1);
-  }
-
-  // Increment tickets on new agent
-  if(newAssignee !== 'Unassigned') {
-    const newAg = agents.find(a => a.name === newAssignee);
-    if(newAg) newAg.activeTickets++;
-  }
-
-  ticket.assignee = newAssignee;
-
-  ticket.comments.push({
-    author: 'System',
-    text: `Assigned changed from "${oldAssignee}" to "${newAssignee}"`,
-    time: 'Just now',
-    isSystem: true
-  });
-
-  // renderTicketsTable();
-  updateMetrics();
-  showToast(`Ticket assigned to ${newAssignee}`, 'success');
-}
-
 // Comment submission in detail view
 function submitDetailComment() {
   const textInput = document.getElementById('detail-comment-input');
@@ -161,7 +88,4 @@ function submitDetailComment() {
 }
 
 window.openTicketDetails = openTicketDetails;
-window.updateDetailTicketStatus = updateDetailTicketStatus;
-window.updateDetailTicketPriority = updateDetailTicketPriority;
-window.updateDetailTicketAssignee = updateDetailTicketAssignee;
 window.submitDetailComment = submitDetailComment;
