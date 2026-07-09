@@ -8,6 +8,7 @@ use App\Enum\CommentTypeEnum;
 use App\Repository\TicketRepository;
 use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -62,14 +63,9 @@ class CommentType extends AbstractType {
                     new Assert\Length(min: 10, max: 1024)
                 ]
             ])
-            ->add('type', EnumType::class, [
-                'constraints' => [
-                    new Assert\NotBlank()
-                ],
-                'required' => TRUE,
-                'choice_label' => fn($i) => $i->__toString(),
-                'class' => CommentTypeEnum::class,
-                'data' => CommentTypeEnum::System
+            ->add('type', CheckboxType::class, [
+                'mapped' => FALSE,
+                'data' => FALSE
             ]);
 
         // Securely set the context-aware values directly on the entity
