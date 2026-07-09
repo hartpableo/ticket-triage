@@ -35,7 +35,7 @@ Comment
 - id
 - ticket_id
 - author_id
-- author_name_override
+- author_name_override???
 - content
 - is_internal
 - is_system
