@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\Ticket;
 use App\Enum\TicketStatusEnum;
+use App\Form\CommentType;
 use App\Form\TicketsFilterType;
 use App\Form\TicketSettingsType;
 use App\Form\TicketType;
@@ -124,9 +126,9 @@ final class TicketController extends DashboardController {
         Request                                          $request,
         EntityManagerInterface                           $entityManager,
     ): Response {
+        // Update ticket settings form
         $updateTicketForm = $this->createForm(TicketSettingsType::class, $ticket);
         $updateTicketForm->handleRequest($request);
-
         if ($updateTicketForm->isSubmitted() && $updateTicketForm->isValid()) {
             $entityManager->flush();
             $this->addFlash(
@@ -138,8 +140,23 @@ final class TicketController extends DashboardController {
             ]);
         }
 
+        // Comment form
+        $comment = new Comment();
+        $commentForm = $this->createForm(CommentType::class, $comment);
+        $commentForm->handleRequest($request);
+        if ($commentForm->isSubmitted() && $commentForm->isValid()) {
+            $entityManager->persist($comment);
+            $entityManager->flush();
+            $this->addFlash('success', 'Comment has been posted');
+            return $this->redirectToRoute('app_ticket_detail', [
+                'code' => $ticket->getCode()
+            ]);
+        }
+
         // Return 422 Unprocessable Entity status if the form has validation errors
-        $responseStatus = ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid())
+        $responseStatus =
+            ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid())
+            || ($commentForm->isSubmitted() && !$commentForm->isValid())
             ? Response::HTTP_UNPROCESSABLE_ENTITY
             : Response::HTTP_OK;
 
@@ -148,6 +165,7 @@ final class TicketController extends DashboardController {
             [
                 'ticket' => $ticket,
                 'update_ticket_form' => $updateTicketForm->createView(),
+                'comment_form' => $commentForm->createView(),
             ]
         ), new Response(NULL, $responseStatus));
     }
