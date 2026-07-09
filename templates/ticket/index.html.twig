@@ -220,7 +220,7 @@
                     </thead>
                     <tbody id="tickets-table-body">
                     {% for ticket in tickets %}
-                        <tr onclick="window.location.href='{{ path('app_ticket_detail', { id: ticket.id }) }}'">
+                        <tr onclick="window.location.href='{{ path('app_ticket_detail', { code: ticket.code|lower }) }}'">
                             <td data-label="ID">
                                 <code class="text-secondary fw-semibold">{{ ticket.code }}</code>
                             </td>

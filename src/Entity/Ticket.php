@@ -48,6 +48,8 @@ class Ticket
     #[ORM\Column(enumType: TicketPriorityEnum::class)]
     private ?TicketPriorityEnum $priority = null;
 
+    public static string $codePrefix = 'TKT-';
+
     public function __construct()
     {
         $this->created_at = new \DateTimeImmutable();

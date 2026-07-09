@@ -9,11 +9,13 @@ use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bridge\Doctrine\Attribute\MapEntity;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 
 final class TicketController extends DashboardController {
+
     #[Route('/dashboard/tickets', name: 'app_tickets')]
     public function ticketsIndex(
         Request                $request,
@@ -37,7 +39,7 @@ final class TicketController extends DashboardController {
             $entityManager->flush();
 
             // Generate final code based on the auto-incremented database ID
-            $ticket->setCode('TKT-' . (100 + $ticket->getId()));
+            $ticket->setCode(Ticket::$codePrefix . (100 + $ticket->getId()));
             $entityManager->flush();
 
             $this->addFlash('success', 'Ticket created successfully!');
@@ -115,8 +117,10 @@ final class TicketController extends DashboardController {
         ), new Response(NULL, $responseStatus));
     }
 
-    #[Route('/dashboard/tickets/{id}', name: 'app_ticket_detail')]
-    public function detail(Ticket $ticket): Response {
+    #[Route('/dashboard/tickets/{code}', name: 'app_ticket_detail')]
+    public function detail(
+        #[MapEntity(mapping: ['code' => 'code'])] Ticket $ticket
+    ): Response {
         return $this->render('ticket/detail.html.twig', array_merge(self::ADMIN_MENU, [
             'ticket' => $ticket,
         ]));
