@@ -19,7 +19,7 @@ class UserRepository extends ServiceEntityRepository {
      */
     public function findByRoles(array $roles): array {
         return $this->createQueryBuilder('u')
-            ->andWhere('u.role IN :roles')
+            ->andWhere('u.roles IN (:roles)')
             ->setParameter('roles', $roles)
             ->orderBy('u.id', 'ASC')
             ->getQuery()
