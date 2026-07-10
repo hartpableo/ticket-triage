@@ -10,6 +10,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -61,12 +62,31 @@ class CommentType extends AbstractType {
                 'constraints' => [
                     new Assert\NotBlank(),
                     new Assert\Length(min: 10, max: 1024)
+                ],
+                'attr' => [
+                    'id' => 'comment-content',
+                    'rows' => 6,
+                    'aria-label' => 'Comment content'
                 ]
             ])
             ->add('type', CheckboxType::class, [
                 'mapped' => FALSE,
-                'data' => FALSE
-            ]);
+                'data' => FALSE,
+                'label' => 'Internal Agent Note (Visible only to team members)',
+                'label_attr' => [
+                    'class' => 'form-check-label small text-muted'
+                ],
+                'attr' => [
+                    'id' => 'comment-type',
+                    'class' => 'form-check-input'
+                ]
+            ])
+            ->add('submit', SubmitType::class, [
+                'label' => '<i class="bi bi-send me-1"></i> Send Reply',
+                'label_html' => TRUE,
+                'attr' => ['class' => 'btn btn-primary px-4'],
+            ])
+        ;
 
         // Securely set the context-aware values directly on the entity
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($ticket, $user) {

@@ -57,35 +57,4 @@ function openTicketDetails(id) {
   }
 }
 
-// Comment submission in detail view
-function submitDetailComment() {
-  const textInput = document.getElementById('detail-comment-input');
-  if (!textInput) return;
-  const commentText = textInput.value.trim();
-  if (commentText === '' && activeCommentAttachments.length === 0) return;
-
-  const isInternalCheck = document.getElementById('detail-comment-is-internal');
-  const isInternal = isInternalCheck ? isInternalCheck.checked : false;
-  const ticket = tickets.find(t => t.id === selectedTicketId);
-  if (!ticket) return;
-
-  const author = isInternal ? `${userProfile.name} (Internal Note)` : userProfile.name;
-
-  ticket.comments.push({
-    author: author,
-    text: commentText,
-    time: 'Just now',
-    isSystem: isInternal,
-    attachments: [...activeCommentAttachments]
-  });
-
-  textInput.value = '';
-  if (isInternalCheck) isInternalCheck.checked = false;
-  activeCommentAttachments = [];
-  renderAttachmentPreviews();
-
-  showToast('Reply posted successfully!', 'success');
-}
-
 window.openTicketDetails = openTicketDetails;
-window.submitDetailComment = submitDetailComment;
