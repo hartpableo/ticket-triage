@@ -17,14 +17,14 @@ class UserRepository extends ServiceEntityRepository {
     /**
      * @return User[] Returns an array of User objects
      */
-    public function findByRoles(array $roles): array {
-        return $this->createQueryBuilder('u')
-            ->andWhere('u.roles IN (:roles)')
-            ->setParameter('roles', $roles)
-            ->orderBy('u.id', 'ASC')
-            ->getQuery()
-            ->getResult();
-    }
+//    public function findByRoles(array $roles): array {
+//        return $this->createQueryBuilder('u')
+//            ->andWhere('u.roles IN (:roles)')
+//            ->setParameter('roles', $roles)
+//            ->orderBy('u.id', 'ASC')
+//            ->getQuery()
+//            ->getResult();
+//    }
 
     //    public function findOneBySomeField($value): ?User
     //    {
