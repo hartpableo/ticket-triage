@@ -47,7 +47,7 @@ Attachment
 - comment_id
 - file_name
 - file_type
-- url
+- path
 - created_at
 
 SystemSetting
