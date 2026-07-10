@@ -71,6 +71,9 @@
                                                             System
                                                         {% endif %}
                                                     </span>
+                                                    {% if comment.author and app.user and comment.author.id == app.user.id %}
+                                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle px-2 py-1" style="font-size: 0.7rem;">You</span>
+                                                    {% endif %}
                                                     {% if comment.type.value == 'internal' %}
                                                         <span class="badge bg-warning-subtle text-warning border border-warning-subtle px-2 py-1" style="font-size: 0.7rem;">Internal Note</span>
                                                     {% endif %}
@@ -78,7 +81,7 @@
                                                 <small class="text-muted">{{ comment.createdAt|date('M d, Y \\a\\t H:i') }}</small>
                                             </div>
                                             <div class="comment-content text-secondary small">
-                                                {{ comment.content|nl2br }}
+                                                {{ comment.content|nl2br|raw }}
                                             </div>
 
                                             {% if comment.attachments is not empty %}
