@@ -1,4 +1,6 @@
 .idea
+public/uploads/**/*
+!public/uploads/.gitkeep
 ###> symfony/framework-bundle ###
 /.env.local
 /.env.local.php
