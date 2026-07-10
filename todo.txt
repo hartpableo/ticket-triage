@@ -1,2 +1,0 @@
-- implement middleware
-- ✔ remove register feature - all members should have a valid invitation to the dashboard/workspace
