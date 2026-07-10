@@ -66,16 +66,19 @@
                 <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm mt-4">
                     <h5 class="fw-bold mb-4 text-dark">System Configurations</h5>
                     <div class="row g-3">
+                        {% if team_members is not empty %}
                         <div class="col-md-12">
                             <label for="default-agent-select" class="form-label fw-semibold text-dark">Default Agent for Unassigned Clients</label>
-                            {# TODO: show team members as options #}
                             <select class="form-select" id="default-agent-select" onchange="updateDefaultAgent(this.value)">
-                                <!-- Loaded dynamically from JS -->
+                                {% for member in team_members %}
+                                    <option value="{{ member.id }}">{{ member.name }}</option>
+                                {% endfor %}
                             </select>
                             <div class="form-text text-muted mt-2">
                                 <i class="bi bi-info-circle me-1"></i> When a client has no specific assigned team member, support tickets from their portal will default to this agent.
                             </div>
                         </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>

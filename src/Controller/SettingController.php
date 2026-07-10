@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Form\ProfileSettingsType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,6 +15,7 @@ final class SettingController extends DashboardController {
     public function settingsPage(
         Request                $request,
         EntityManagerInterface $entityManager,
+        UserRepository         $userRepository,
     ): Response {
         $user = $this->getUser();
         $form = $this->createForm(
@@ -86,7 +88,8 @@ final class SettingController extends DashboardController {
         return $this->render('setting/index.html.twig', array_merge(
             self::ADMIN_MENU,
             [
-                'form' => $form
+                'form' => $form,
+                'team_members' => $userRepository->findByRoles(['ROLE_TEAM_MEMBER']),
             ]
         ), new Response(NULL, $responseStatus));
     }
