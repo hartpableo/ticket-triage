@@ -34,6 +34,7 @@
         {% endfor %}
 
         <form method="post">
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}">
             <div class="mb-4">
                 <label for="email" class="form-label fw-medium text-body-secondary small">Work Email</label>
                 <div class="input-group">

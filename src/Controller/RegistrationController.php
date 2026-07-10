@@ -38,10 +38,16 @@ final class RegistrationController extends AbstractController {
         }
 
         if ($request->isMethod('POST')) {
+            $submittedToken = $request->request->get('_csrf_token');
+            if (!$this->isCsrfTokenValid('register', $submittedToken)) {
+                $this->addFlash('error', 'Invalid CSRF token. Please try again.');
+                return $this->redirectToRoute('app_register', ['token' => $invitation->getToken()]);
+            }
+
             $email = $request->request->get('email');
             if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
                 $this->addFlash('error', 'Invalid email');
-                return $this->redirectToRoute('app_register');
+                return $this->redirectToRoute('app_register', ['token' => $invitation->getToken()]);
             }
 
             $user = $this->userRepository->findOneBy(['email' => $email]);
@@ -82,7 +88,7 @@ final class RegistrationController extends AbstractController {
                 $this->mailer->send($email);
             } catch (TransportExceptionInterface $e) {
                 $this->addFlash('error', $e->getMessage());
-                return $this->redirectToRoute('app_register');
+                return $this->redirectToRoute('app_register', ['token' => $invitation->getToken()]);
             }
 
             // Mark the invitation as "used" to prevent reusing

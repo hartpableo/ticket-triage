@@ -43,6 +43,12 @@ class SecurityController extends AbstractController {
         }
 
         if ($request->isMethod('POST')) {
+            $submittedToken = $request->request->get('_csrf_token');
+            if (!$this->isCsrfTokenValid('login_request', $submittedToken)) {
+                $this->addFlash('error', 'Invalid CSRF token. Please try again.');
+                return $this->redirectToRoute('app_login');
+            }
+
             $email = $request->request->get('email');
             $user = $this->userRepository->findOneBy(['email' => $email]);
             if (empty($user)) {
