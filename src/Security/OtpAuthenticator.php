@@ -67,6 +67,10 @@ class OtpAuthenticator extends AbstractAuthenticator {
             throw new CustomUserMessageAuthenticationException('Verification code is expired. Please request a new one.');
         }
 
+        if ($user->getOtp() !== (string) $otp) {
+            throw new CustomUserMessageAuthenticationException('Invalid verification code.');
+        }
+
         return new SelfValidatingPassport(
             new UserBadge($email),
             [
