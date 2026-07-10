@@ -187,15 +187,17 @@
 
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted small">Client Name</span>
-                    <span class="fw-semibold small" id="detail-client-name">Aura Cosmetics</span>
+                    <span class="fw-semibold small" id="detail-client-name">{{ ticket.client.name }}</span>
                 </div>
                 <div class="d-flex justify-content-between mb-2">
                     <span class="text-muted small">Category</span>
-                    <span class="fw-semibold small" id="detail-category">Bug</span>
+                    <span class="fw-semibold small" id="detail-category">{{ ticket.category.label }}</span>
                 </div>
                 <div class="d-flex justify-content-between">
                     <span class="text-muted small">Created</span>
-                    <span class="fw-semibold small" id="detail-created-at">2 hours ago</span>
+                    <span class="fw-semibold small" id="detail-created-at">
+                        {{ ticket.createdAt|date('d M Y \\a\\t h:i a') }} ({{ ticket.createdAt|time_diff }})
+                    </span>
                 </div>
             </div>
         </div>
