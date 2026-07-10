@@ -1,5 +1,9 @@
 {% extends 'dashboard/base.html.twig' %}
 
+{% block javascripts %}
+    {{ importmap('dashboard.tickets.single') }}
+{% endblock %}
+
 {% block page_title %}
     <span class="text-muted fw-normal">Tickets Queue</span>
     <span class="text-secondary mx-2">/</span>
@@ -41,38 +45,39 @@
                     <hr class="my-4 border-light-subtle">
 
                     {{ form_start(comment_form) }}
-                        {{ form_errors(comment_form) }}
-                        <h6 class="fw-bold text-dark mb-2">Post a Response</h6>
-                        <div class="mb-3">
-                            {{ form_widget(comment_form.content, { id: 'comment-content' }) }}
-                            {{ form_errors(comment_form.content) }}
-                        </div>
-                        <div class="mb-3 border rounded-3 p-3 bg-light">
-                            <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
-                                <div class="d-flex align-items-center gap-2">
-                                    <button class="btn btn-outline-secondary btn-sm" type="button"
-                                            onclick="simulateMediaAttachment('image')">
-                                        <i class="bi bi-image me-1"></i> Attach Screenshot
-                                    </button>
-                                    <button class="btn btn-outline-secondary btn-sm" type="button"
-                                            onclick="simulateMediaAttachment('video')">
-                                        <i class="bi bi-play-btn me-1"></i> Attach Recording
-                                    </button>
-                                </div>
-                                <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link"
-                                        id="clear-attachments-btn" type="button" onclick="clearAttachments()">
-                                    <i class="bi bi-trash3 me-1"></i> Clear all
+                    {{ form_errors(comment_form) }}
+                    <h6 class="fw-bold text-dark mb-2">Post a Response</h6>
+                    <div class="mb-3">
+                        {{ form_widget(comment_form.content, { id: 'comment-content' }) }}
+                        {{ form_errors(comment_form.content) }}
+                    </div>
+                    <div class="mb-3 border rounded-3 p-3 bg-light">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-outline-secondary btn-sm" type="button"
+                                        onclick="handleMediaAttachment('image')">
+                                    <i class="bi bi-image me-1"></i> Attach Screenshot
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm" type="button"
+                                        onclick="handleMediaAttachment('video')">
+                                    <i class="bi bi-play-btn me-1"></i> Attach Recording
                                 </button>
                             </div>
-                            <div id="attachment-preview-container" class="d-flex flex-wrap gap-2 mt-2"></div>
+                            <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link"
+                                    id="clear-attachments-btn" type="button" onclick="clearAttachments()">
+                                <i class="bi bi-trash3 me-1"></i> Clear all
+                            </button>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
-                            <div class="form-check">
-                                {{ form_widget(comment_form.type, { id: 'is-internal' }) }}
-                                {{ form_errors(comment_form.type) }}
-                            </div>
-                            {{ form_widget(comment_form.submit) }}
-                        </div>
+                        <div id="attachment-preview-container" class="d-flex flex-wrap gap-2 mt-2"></div>
+                    </div>
+
+                    {{ form_widget(comment_form.attachments) }}
+
+                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                        {{ form_widget(comment_form.type, { id: 'is-internal' }) }}
+                        {{ form_errors(comment_form.type) }}
+                        {{ form_widget(comment_form.submit) }}
+                    </div>
                     {{ form_end(comment_form) }}
                 </div>
             </div>
@@ -81,25 +86,26 @@
             <div class="col-lg-4">
                 {{ form_start(update_ticket_form) }}
                 {{ form_errors(update_ticket_form) }}
-                    <p class="fw-bold mb-3 text-dark fs-5">Ticket Settings</p>
+                <p class="fw-bold mb-3 text-dark fs-5">Ticket Settings</p>
 
-                    <div class="mb-3">
-                        <label for="detail-status-select" class="form-label text-muted small fw-semibold">Status</label>
-                        {{ form_widget(update_ticket_form.status, { id: 'detail-status-select' }) }}
-                        {{ form_errors(update_ticket_form.status) }}
-                    </div>
+                <div class="mb-3">
+                    <label for="detail-status-select" class="form-label text-muted small fw-semibold">Status</label>
+                    {{ form_widget(update_ticket_form.status, { id: 'detail-status-select' }) }}
+                    {{ form_errors(update_ticket_form.status) }}
+                </div>
 
-                    <div class="mb-3">
-                        <label for="detail-priority-select" class="form-label text-muted small fw-semibold">Priority</label>
-                        {{ form_widget(update_ticket_form.priority, { id: 'detail-priority-select' }) }}
-                        {{ form_errors(update_ticket_form.priority) }}
-                    </div>
+                <div class="mb-3">
+                    <label for="detail-priority-select" class="form-label text-muted small fw-semibold">Priority</label>
+                    {{ form_widget(update_ticket_form.priority, { id: 'detail-priority-select' }) }}
+                    {{ form_errors(update_ticket_form.priority) }}
+                </div>
 
-                    <div class="mb-3">
-                        <label for="detail-agent-select" class="form-label text-muted small fw-semibold">Assign Agent</label>
-                        {{ form_widget(update_ticket_form.assigned_agent, { id: 'detail-agent-select' }) }}
-                        {{ form_errors(update_ticket_form.assigned_agent) }}
-                    </div>
+                <div class="mb-3">
+                    <label for="detail-agent-select" class="form-label text-muted small fw-semibold">Assign
+                        Agent</label>
+                    {{ form_widget(update_ticket_form.assigned_agent, { id: 'detail-agent-select' }) }}
+                    {{ form_errors(update_ticket_form.assigned_agent) }}
+                </div>
                 {{ form_end(update_ticket_form) }}
             </div>
 

@@ -11,6 +11,7 @@ parameters:
     app.desc: '%env(APP_DESC)%'
     system.email: '%env(APP_SYSTEM_EMAIL)%'
     profile_photos_directory: '%kernel.project_dir%/public/uploads/profile_photos'
+    attachments_directory: '%kernel.project_dir%/public/uploads/attachments'
 
 services:
     # default configuration for services in *this* file

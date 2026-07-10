@@ -10,6 +10,7 @@ use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -64,7 +65,6 @@ class CommentType extends AbstractType {
                     new Assert\Length(min: 10, max: 1024)
                 ],
                 'attr' => [
-                    'id' => 'comment-content',
                     'rows' => 6,
                     'aria-label' => 'Comment content'
                 ]
@@ -72,14 +72,35 @@ class CommentType extends AbstractType {
             ->add('type', CheckboxType::class, [
                 'mapped' => FALSE,
                 'data' => FALSE,
+                'required' => FALSE,
                 'label' => 'Internal Agent Note (Visible only to team members)',
                 'label_attr' => [
                     'class' => 'form-check-label small text-muted'
                 ],
                 'attr' => [
-                    'id' => 'comment-type',
                     'class' => 'form-check-input'
                 ]
+            ])
+            ->add('attachments', FileType::class, [
+                'required'  => FALSE,
+                'mapped' => FALSE,
+                'multiple' => TRUE,
+                'label' => 'Attachments',
+                'label_attr' => [
+                    'class' => 'd-none'
+                ],
+                'attr' => [
+                    'class' => 'd-none',
+                ],
+                'constraints' => [
+                    new Assert\All([
+                        new Assert\File(
+                            maxSize: '3M',
+                            extensions: ['mp4', 'avi', 'jpg', 'jpeg', 'gif', 'png', 'webp'],
+                        )
+                    ])
+                ],
+
             ])
             ->add('submit', SubmitType::class, [
                 'label' => '<i class="bi bi-send me-1"></i> Send Reply',
@@ -103,6 +124,9 @@ class CommentType extends AbstractType {
     public function configureOptions(OptionsResolver $resolver): void {
         $resolver->setDefaults([
             'data_class' => Comment::class,
+            'attr' => [
+                'enctype' => 'multipart/form-data',
+            ]
         ]);
     }
 }

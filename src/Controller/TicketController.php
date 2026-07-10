@@ -2,8 +2,10 @@
 
 namespace App\Controller;
 
+use App\Entity\Attachment;
 use App\Entity\Comment;
 use App\Entity\Ticket;
+use App\Enum\CommentTypeEnum;
 use App\Enum\TicketStatusEnum;
 use App\Form\CommentType;
 use App\Form\TicketsFilterType;
@@ -12,10 +14,12 @@ use App\Form\TicketType;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
-use Symfony\Bridge\Doctrine\Attribute\MapEntity;
+use Symfony\Component\Form\FormError;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 final class TicketController extends DashboardController {
 
@@ -122,10 +126,16 @@ final class TicketController extends DashboardController {
 
     #[Route('/dashboard/tickets/{code}', name: 'app_ticket_detail')]
     public function detail(
-        #[MapEntity(mapping: ['code' => 'code'])] Ticket $ticket,
-        Request                                          $request,
-        EntityManagerInterface                           $entityManager,
+        string                 $code,
+        Request                $request,
+        EntityManagerInterface $entityManager,
+        SluggerInterface       $slugger,
     ): Response {
+        $ticket = $entityManager->getRepository(Ticket::class)->findOneBy(['code' => strtoupper($code)]);
+        if (!$ticket) {
+            throw $this->createNotFoundException('Ticket not found.');
+        }
+
         // Update ticket settings form
         $updateTicketForm = $this->createForm(TicketSettingsType::class, $ticket);
         $updateTicketForm->handleRequest($request);
@@ -136,7 +146,7 @@ final class TicketController extends DashboardController {
                 \sprintf('Ticket "%s" updated successfully!', $ticket->getCode())
             );
             return $this->redirectToRoute('app_ticket_detail', [
-                'code' => $ticket->getCode()
+                'code' => strtolower($ticket->getCode())
             ]);
         }
 
@@ -145,20 +155,89 @@ final class TicketController extends DashboardController {
         $commentForm = $this->createForm(CommentType::class, $comment);
         $commentForm->handleRequest($request);
         if ($commentForm->isSubmitted() && $commentForm->isValid()) {
-            $entityManager->persist($comment);
-            $entityManager->flush();
-            $this->addFlash('success', 'Comment has been posted');
-            return $this->redirectToRoute('app_ticket_detail', [
-                'code' => $ticket->getCode()
-            ]);
+            /**
+             * Handle the persistence of uploaded media files
+             * - Save the file locally
+             * - Save the file as an attachment entity
+             * - Assign the new attachment to the comment
+             */
+            $attachments = $commentForm->get('attachments')->getData();
+            $movedFiles = [];
+            $uploadError = NULL;
+
+            if (!empty($attachments)) {
+                foreach ($attachments as $attachment) {
+                    $originalFilename = pathinfo($attachment->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $attachment->guessExtension();
+                    $targetPath = $this->getParameter('attachments_directory') . '/' . $newFilename;
+                    $mimeType = $attachment->getMimeType() ?? 'application/octet-stream';
+
+                    // Move the file to the directory where brochures are stored
+                    try {
+                        $attachment->move($this->getParameter('attachments_directory'), $newFilename);
+                        $movedFiles[] = $targetPath;
+                    } catch (FileException $e) {
+                        $uploadError = $e->getMessage();
+                        break;
+                    }
+
+                    // Persist attachment entity
+                    $attachmentEntity = new Attachment();
+                    $attachmentEntity->setFileName($newFilename);
+                    $attachmentEntity->setFileType($mimeType);
+                    $attachmentEntity->setFilePath($targetPath);
+                    $attachmentEntity->setTicket($ticket);
+                    $attachmentEntity->setComment($comment);
+                    $entityManager->persist($attachmentEntity);
+
+                    // Add attachment to the comment
+                    $comment->addAttachment($attachmentEntity);
+                }
+            }
+
+            if ($uploadError !== NULL) {
+                foreach ($movedFiles as $fileToCleanup) {
+                    if (file_exists($fileToCleanup)) {
+                        @unlink($fileToCleanup);
+                    }
+                }
+                $commentForm->addError(new FormError('Could not upload photo: ' . $uploadError));
+            }
+            else {
+                // Handle comment type (whether internal or system)
+                $isInternal = $commentForm->get('type')->getData();
+                $comment->setType(
+                    $isInternal ? CommentTypeEnum::Internal : CommentTypeEnum::System
+                );
+
+                $entityManager->persist($comment);
+                $entityManager->flush();
+                $this->addFlash('success', 'Comment has been posted');
+                return $this->redirectToRoute('app_ticket_detail', [
+                    'code' => strtolower($ticket->getCode())
+                ]);
+            }
         }
+
+        // Flash validation errors as toasts for user feedback
+//        if ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid()) {
+//            foreach ($updateTicketForm->getErrors(true) as $error) {
+//                $this->addFlash('error', $error->getMessage());
+//            }
+//        }
+//        if ($commentForm->isSubmitted() && !$commentForm->isValid()) {
+//            foreach ($commentForm->getErrors(true) as $error) {
+//                $this->addFlash('error', $error->getMessage());
+//            }
+//        }
 
         // Return 422 Unprocessable Entity status if the form has validation errors
         $responseStatus =
             ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid())
             || ($commentForm->isSubmitted() && !$commentForm->isValid())
-            ? Response::HTTP_UNPROCESSABLE_ENTITY
-            : Response::HTTP_OK;
+                ? Response::HTTP_UNPROCESSABLE_ENTITY
+                : Response::HTTP_OK;
 
         return $this->render('ticket/detail.html.twig', array_merge(
             self::ADMIN_MENU,
