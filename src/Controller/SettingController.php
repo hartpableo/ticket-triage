@@ -89,7 +89,7 @@ final class SettingController extends DashboardController {
             self::ADMIN_MENU,
             [
                 'form' => $form,
-                'team_members' => $userRepository->findByRoles(['ROLE_TEAM_MEMBER']),
+                'team_members' => $userRepository->findAll(),
             ]
         ), new Response(NULL, $responseStatus));
     }
