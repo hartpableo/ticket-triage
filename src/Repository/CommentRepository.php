@@ -40,4 +40,13 @@ class CommentRepository extends ServiceEntityRepository
     //            ->getOneOrNullResult()
     //        ;
     //    }
+
+    public function findAllForClientView() {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.type != :type')
+            ->setParameter('type', 'internal')
+            ->orderBy('c.createdAt', 'DESC')
+            ->getQuery()
+            ->getResult();
+    }
 }

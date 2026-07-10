@@ -15,6 +15,7 @@ use App\Repository\CommentRepository;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
@@ -131,6 +132,8 @@ final class TicketController extends DashboardController {
         Request                $request,
         EntityManagerInterface $entityManager,
         SluggerInterface       $slugger,
+        Security               $security,
+        CommentRepository      $commentRepository,
     ): Response {
         $ticket = $entityManager->getRepository(Ticket::class)->findOneBy(['code' => strtoupper($code)]);
         if (!$ticket) {
@@ -221,6 +224,15 @@ final class TicketController extends DashboardController {
             }
         }
 
+        // Get the comments of the current ticket
+        $comments = [];
+        if (in_array('ROLE_CLIENT', $security->getUser()->getRoles())) {
+            $comments = $commentRepository->findAllForClientView();
+        }
+        else {
+            $comments = $ticket->getComments();
+        }
+
         // Return 422 Unprocessable Entity status if the form has validation errors
         $responseStatus =
             ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid())
@@ -234,7 +246,7 @@ final class TicketController extends DashboardController {
                 'ticket' => $ticket,
                 'update_ticket_form' => $updateTicketForm->createView(),
                 'comment_form' => $commentForm->createView(),
-                'comments' => $ticket->getComments(),
+                'comments' => $comments,
             ]
         ), new Response(NULL, $responseStatus));
     }
