@@ -11,6 +11,7 @@ use App\Form\CommentType;
 use App\Form\TicketsFilterType;
 use App\Form\TicketSettingsType;
 use App\Form\TicketType;
+use App\Repository\CommentRepository;
 use App\Repository\TicketRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Knp\Component\Pager\PaginatorInterface;
@@ -220,18 +221,6 @@ final class TicketController extends DashboardController {
             }
         }
 
-        // Flash validation errors as toasts for user feedback
-//        if ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid()) {
-//            foreach ($updateTicketForm->getErrors(true) as $error) {
-//                $this->addFlash('error', $error->getMessage());
-//            }
-//        }
-//        if ($commentForm->isSubmitted() && !$commentForm->isValid()) {
-//            foreach ($commentForm->getErrors(true) as $error) {
-//                $this->addFlash('error', $error->getMessage());
-//            }
-//        }
-
         // Return 422 Unprocessable Entity status if the form has validation errors
         $responseStatus =
             ($updateTicketForm->isSubmitted() && !$updateTicketForm->isValid())
@@ -245,6 +234,7 @@ final class TicketController extends DashboardController {
                 'ticket' => $ticket,
                 'update_ticket_form' => $updateTicketForm->createView(),
                 'comment_form' => $commentForm->createView(),
+                'comments' => $ticket->getComments(),
             ]
         ), new Response(NULL, $responseStatus));
     }
