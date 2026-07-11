@@ -11,7 +11,6 @@
 {% endblock %}
 
 {% block dashboard_content %}
-    {{ dump(ticket.attachments|length) }}
     <div id="view-ticket-detail" class="view-content active-view">
         <div class="mb-4">
             <a href="{{ path('app_tickets') }}" class="btn btn-light btn-sm border">
