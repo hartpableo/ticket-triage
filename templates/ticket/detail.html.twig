@@ -11,6 +11,7 @@
 {% endblock %}
 
 {% block dashboard_content %}
+    {{ dump(ticket.attachments|length) }}
     <div id="view-ticket-detail" class="view-content active-view">
         <div class="mb-4">
             <a href="{{ path('app_tickets') }}" class="btn btn-light btn-sm border">
@@ -32,7 +33,23 @@
                         <div class="detail-description-box" id="detail-description">
                             {{- ticket.description|raw -}}
                         </div>
-                        <div id="detail-description-attachments" class="d-flex flex-wrap gap-2"></div>
+                        {% if ticket.attachments is not empty %}
+                            <div class="d-flex flex-wrap gap-2 mt-2">
+                                {% for attachment in ticket.attachments %}
+                                    {% set file_ext = attachment.fileName|split('.')|last|lower %}
+                                    {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
+                                        <a href="{{ asset('uploads/attachments/' ~ attachment.fileName) }}" target="_blank" class="d-inline-block border rounded overflow-hidden" style="max-width: 150px; max-height: 150px;">
+                                            <img src="{{ asset('uploads/attachments/' ~ attachment.fileName) }}" class="img-fluid" alt="{{ attachment.fileName }}" style="object-fit: cover; width: 100%; height: 100%;">
+                                        </a>
+                                    {% else %}
+                                        <a href="{{ asset('uploads/attachments/' ~ attachment.fileName) }}" target="_blank" class="btn btn-sm btn-outline-secondary d-inline-flex align-items-center gap-1">
+                                            <i class="bi bi-file-earmark-arrow-down"></i>
+                                            {{ attachment.fileName }}
+                                        </a>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
 
@@ -128,21 +145,19 @@
                     <div class="mb-3 border rounded-3 p-3 bg-light">
                         <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
                             <div class="d-flex align-items-center gap-2">
-                                <button class="btn btn-outline-secondary btn-sm" type="button"
-                                        onclick="handleMediaAttachment('image')">
+                                <button class="btn btn-outline-secondary btn-sm attach-image-btn" type="button">
                                     <i class="bi bi-image me-1"></i> Attach Screenshot
                                 </button>
-                                <button class="btn btn-outline-secondary btn-sm" type="button"
-                                        onclick="handleMediaAttachment('video')">
+                                <button class="btn btn-outline-secondary btn-sm attach-video-btn" type="button">
                                     <i class="bi bi-play-btn me-1"></i> Attach Recording
                                 </button>
                             </div>
-                            <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-link"
-                                    id="clear-attachments-btn" type="button" onclick="clearAttachments()">
+                            <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-btn clear-attachments-link"
+                                    type="button">
                                 <i class="bi bi-trash3 me-1"></i> Clear all
                             </button>
                         </div>
-                        <div id="attachment-preview-container" class="d-flex flex-wrap gap-2 mt-2"></div>
+                        <div class="attachment-preview-container d-flex flex-wrap gap-2 mt-2"></div>
                     </div>
 
                     {{ form_widget(comment_form.attachments) }}

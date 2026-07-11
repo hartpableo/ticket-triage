@@ -18,7 +18,7 @@ class Attachment
     private ?Ticket $ticket = null;
 
     #[ORM\ManyToOne(inversedBy: 'attachments')]
-    #[ORM\JoinColumn(nullable: false)]
+    #[ORM\JoinColumn(nullable: true)]
     private ?Comment $comment = null;
 
     #[ORM\Column(length: 255)]

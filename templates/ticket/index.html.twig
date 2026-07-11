@@ -348,6 +348,26 @@
                         {{ form_widget(create_ticket_form.description, { id: 'new-description' }) }}
                         {{ form_errors(create_ticket_form.description) }}
                     </div>
+
+                    <div class="mb-3 border rounded-3 p-3 bg-light">
+                        <div class="d-flex align-items-center justify-content-between flex-wrap gap-3 mb-2">
+                            <div class="d-flex align-items-center gap-2">
+                                <button class="btn btn-outline-secondary btn-sm attach-image-btn" type="button">
+                                    <i class="bi bi-image me-1"></i> Attach Screenshot
+                                </button>
+                                <button class="btn btn-outline-secondary btn-sm attach-video-btn" type="button">
+                                    <i class="bi bi-play-btn me-1"></i> Attach Recording
+                                </button>
+                            </div>
+                            <button class="btn btn-link btn-sm text-danger p-0 d-none clear-attachments-btn clear-attachments-link"
+                                    type="button">
+                                <i class="bi bi-trash3 me-1"></i> Clear all
+                            </button>
+                        </div>
+                        <div class="attachment-preview-container d-flex flex-wrap gap-2 mt-2"></div>
+                    </div>
+
+                    {{ form_widget(create_ticket_form.attachments) }}
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>

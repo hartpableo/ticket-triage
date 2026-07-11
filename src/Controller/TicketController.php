@@ -30,7 +30,8 @@ final class TicketController extends DashboardController {
         Request                $request,
         EntityManagerInterface $entityManager,
         TicketRepository       $ticketRepository,
-        PaginatorInterface     $paginator
+        PaginatorInterface     $paginator,
+        SluggerInterface       $slugger
     ): Response {
         // Create ticket form
         $ticket = new Ticket();
@@ -38,21 +39,71 @@ final class TicketController extends DashboardController {
         $createTicketForm->handleRequest($request);
 
         if ($createTicketForm->isSubmitted() && $createTicketForm->isValid()) {
-            // Set default status to Open
-            $ticket->setStatus(TicketStatusEnum::Open);
+            /**
+             * Handle the persistence of uploaded media files
+             * - Save the file locally
+             * - Save the file as an attachment entity
+             * - Assign the new attachment to the comment
+             */
+            $attachments = $createTicketForm->get('attachments')->getData();
+            $movedFiles = [];
+            $uploadError = NULL;
 
-            // Generate a temporary code before persisting to database
-            $ticket->setCode('TKT-TEMP-' . uniqid());
+            if (!empty($attachments)) {
+                foreach ($attachments as $attachment) {
+                    $originalFilename = pathinfo($attachment->getClientOriginalName(), PATHINFO_FILENAME);
+                    $safeFilename = $slugger->slug($originalFilename);
+                    $newFilename = $safeFilename . '-' . uniqid() . '.' . $attachment->guessExtension();
+                    $targetPath = $this->getParameter('attachments_directory') . '/' . $newFilename;
+                    $mimeType = $attachment->getMimeType() ?? 'application/octet-stream';
 
-            $entityManager->persist($ticket);
-            $entityManager->flush();
+                    // Move the file to the directory where brochures are stored
+                    try {
+                        $attachment->move($this->getParameter('attachments_directory'), $newFilename);
+                        $movedFiles[] = $targetPath;
+                    } catch (FileException $e) {
+                        $uploadError = $e->getMessage();
+                        break;
+                    }
 
-            // Generate final code based on the auto-incremented database ID
-            $ticket->setCode(Ticket::$codePrefix . (100 + $ticket->getId()));
-            $entityManager->flush();
+                    // Persist attachment entity
+                    $attachmentEntity = new Attachment();
+                    $attachmentEntity->setFileName($newFilename);
+                    $attachmentEntity->setFileType($mimeType);
+                    $attachmentEntity->setFilePath($targetPath);
+                    $attachmentEntity->setTicket($ticket);
+                    $entityManager->persist($attachmentEntity);
 
-            $this->addFlash('success', 'Ticket created successfully!');
-            return $this->redirectToRoute('app_tickets');
+                    // Add attachment to the comment
+                    $ticket->addAttachment($attachmentEntity);
+                }
+            }
+
+            if ($uploadError !== NULL) {
+                foreach ($movedFiles as $fileToCleanup) {
+                    if (file_exists($fileToCleanup)) {
+                        @unlink($fileToCleanup);
+                    }
+                }
+                $createTicketForm->addError(new FormError('Could not upload photo: ' . $uploadError));
+            }
+            else {
+                // Set default status to Open
+                $ticket->setStatus(TicketStatusEnum::Open);
+
+                // Generate a temporary code before persisting to database
+                $ticket->setCode('TKT-TEMP-' . uniqid());
+
+                $entityManager->persist($ticket);
+                $entityManager->flush();
+
+                // Generate final code based on the auto-incremented database ID
+                $ticket->setCode(Ticket::$codePrefix . (100 + $ticket->getId()));
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Ticket created successfully!');
+                return $this->redirectToRoute('app_tickets');
+            }
         }
 
         // Return 422 Unprocessable Entity status if the form has validation errors

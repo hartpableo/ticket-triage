@@ -10,6 +10,7 @@ use App\Enum\TicketPriorityEnum;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EnumType;
+use Symfony\Component\Form\Extension\Core\Type\FileType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextareaType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -44,12 +45,6 @@ class TicketType extends AbstractType
                 'choice_label' => fn($i) => $i->label(),
                 'class' => TicketCategoryEnum::class
             ])
-//            ->add('status', EnumType::class, [
-//                'constraints' => [
-//                    new Assert\NotBlank()
-//                ],
-//                'class' => TicketStatusEnum::class
-//            ])
             ->add('priority', EnumType::class, [
                 'constraints' => [
                     new Assert\NotBlank()
@@ -73,6 +68,27 @@ class TicketType extends AbstractType
                 'constraints' => [
                     new Assert\NotBlank()
                 ],
+            ])
+            ->add('attachments', FileType::class, [
+                'required'  => FALSE,
+                'mapped' => FALSE,
+                'multiple' => TRUE,
+                'label' => 'Attachments',
+                'label_attr' => [
+                    'class' => 'd-none'
+                ],
+                'attr' => [
+                    'class' => 'd-none',
+                ],
+                'constraints' => [
+                    new Assert\All([
+                        new Assert\File(
+                            maxSize: '3M',
+                            extensions: ['mp4', 'avi', 'jpg', 'jpeg', 'gif', 'png', 'webp'],
+                        )
+                    ])
+                ],
+
             ])
             ->add('submit', SubmitType::class, [
                 'label' => 'Create Ticket',
