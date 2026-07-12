@@ -181,11 +181,21 @@
                     {{ form_errors(update_ticket_form.status) }}
                 </div>
 
+                {% if update_ticket_form.priority is defined %}
                 <div class="mb-3">
                     <label for="detail-priority-select" class="form-label text-muted small fw-semibold">Priority</label>
                     {{ form_widget(update_ticket_form.priority, { id: 'detail-priority-select' }) }}
                     {{ form_errors(update_ticket_form.priority) }}
                 </div>
+                {% endif %}
+
+                {% if update_ticket_form.category is defined %}
+                    <div class="mb-3">
+                        <label for="detail-category-select" class="form-label text-muted small fw-semibold">Category</label>
+                        {{ form_widget(update_ticket_form.category, { id: 'detail-category-select' }) }}
+                        {{ form_errors(update_ticket_form.category) }}
+                    </div>
+                {% endif %}
 
                 <div class="mb-3">
                     <label for="detail-agent-select" class="form-label text-muted small fw-semibold">Assign
