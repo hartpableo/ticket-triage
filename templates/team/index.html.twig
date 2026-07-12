@@ -3,18 +3,60 @@
 {% block title %}Team | {{ app_name }}{% endblock %}
 {% block page_title %}Agency Team Roster{% endblock %}
 
+{% block javascripts %}
+    {{ importmap('dashboard.team') }}
+{% endblock %}
+
 {% block dashboard_content %}
     <div id="view-team" class="view-content active-view">
         <div class="row g-4">
             <div class="col-lg-8">
                 <div class="card border border-light-subtle rounded-3 p-4 bg-white shadow-sm">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 class="fw-bold mb-0 text-dark">Agency Team Members (Support Agents)</h5>
+                        <h5 class="fw-bold mb-0 text-dark">Agency Team Members</h5>
                         <button class="btn btn-outline-primary btn-sm" onclick="showAddAgentModal()">
                             <i class="bi bi-envelope-plus me-1"></i> Invite Team Member
                         </button>
                     </div>
-                    <div class="list-group list-group-flush mb-3" id="agents-settings-list">
+                    <div class="list-group list-group-flush mb-3" id="agents-list">
+                        <div class="list-group-item d-flex align-items-center justify-content-between py-3 px-0 border-0 border-bottom bg-transparent">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar bg-primary text-white me-3 text-uppercase d-flex align-items-center justify-content-center fw-semibold rounded-circle shadow-sm"
+                                     style="width: 2.5rem; height: 2.5rem; font-size: 0.95rem;">
+                                    JD
+                                </div>
+                                <div>
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        <h6 class="fw-bold mb-0 text-dark">Jane Doe</h6>
+                                        <span class="badge bg-primary-subtle text-primary border border-primary-subtle rounded-pill small-badge px-2 py-0.5">Administrator</span>
+                                    </div>
+                                    <div class="text-muted small mt-1">
+                                        <span class="d-inline-flex align-items-center me-3">
+                                            <i class="bi bi-envelope me-1.5 text-secondary"></i> &nbsp; jane.doe@example.com
+                                        </span>
+                                        <span class="d-inline-flex align-items-center">
+                                            <i class="bi bi-person-badge me-1.5 text-secondary"></i> &nbsp; Lead Support Agent
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center gap-3">
+                                <span class="badge bg-success-subtle text-success border border-success-subtle rounded-pill px-2.5 py-1" style="font-size: 0.7rem;">
+                                    <i class="bi bi-circle-fill me-1 text-success" style="font-size: 0.5rem; vertical-align: middle;"></i> Active
+                                </span>
+                                <div class="dropdown">
+                                    <button class="btn btn-link text-muted p-0 border-0 bg-transparent" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="bi bi-three-dots-vertical fs-5"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow-sm border-light-subtle">
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-pencil me-2 text-muted"></i> Edit Profile</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-shield-lock me-2 text-muted"></i> Change Role</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item text-danger" href="#"><i class="bi bi-trash me-2"></i> Remove Agent</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

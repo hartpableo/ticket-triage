@@ -82,18 +82,8 @@ function showAddClientModal() {
   }
 }
 
-// Show Add Agent Modal
-function showAddAgentModal() {
-  const el = document.getElementById('addAgentModal');
-  if (el) {
-    const modal = new bootstrap.Modal(el);
-    modal.show();
-  }
-}
-
 window.showToast = showToast;
 window.showAddClientModal = showAddClientModal;
-window.showAddAgentModal = showAddAgentModal;
 window.copyWidgetSnippet = copyWidgetSnippet;
 window.selectWidgetSnippet = selectWidgetSnippet;
 window.copyWidgetSnippet = copyWidgetSnippet;

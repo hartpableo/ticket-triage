@@ -33,4 +33,5 @@ return [
     'dashboard.tickets.single' => ['path' => './assets/dashboard.tickets.single.js', 'entrypoint' => TRUE],
     'dashboard.clients' => ['path' => './assets/dashboard.clients.js', 'entrypoint' => TRUE],
     'dashboard.agents' => ['path' => './assets/dashboard.agents.js', 'entrypoint' => TRUE],
+    'dashboard.team' => ['path' => './assets/dashboard.team.js', 'entrypoint' => TRUE],
 ];
