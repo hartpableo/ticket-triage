@@ -77,8 +77,11 @@
                                             <li>
                                                 <hr class="dropdown-divider">
                                             </li>
-                                            <li><a class="dropdown-item text-danger" href="#"><i
-                                                        class="bi bi-trash me-2"></i> Remove Agent</a></li>
+                                            <li>
+                                                <button type="button" class="dropdown-item text-danger js-remove-agent" onclick="removeAgent({{ member.id }}, '{{ member.name }}')">
+                                                    <i class="bi bi-trash me-2"></i> Remove Agent
+                                                </button>
+                                            </li>
                                         </ul>
                                     </div>
                                 </div>
