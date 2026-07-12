@@ -98,6 +98,7 @@ final class TeamController extends DashboardController {
             [
                 'invite_form' => $inviteForm->createView(),
                 'invites_data' => $invitesData,
+                'members' => $this->userRepository->findAll(),
             ]
         ), new Response(NULL, $responseStatus));
     }

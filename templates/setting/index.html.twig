@@ -20,8 +20,13 @@
 
                         <div class="d-flex align-items-center mb-4 gap-3">
                             {% set user_initials = initials|default(app.user.name ? (app.user.name|split(' ')|length > 1 ? (app.user.name|split(' ')[0]|slice(0, 1) ~ app.user.name|split(' ')[app.user.name|split(' ')|length - 1]|slice(0, 1))|upper : app.user.name|slice(0, 2)|upper) : 'GU') %}
-                            <div class="avatar bg-primary text-white text-uppercase profile-avatar-large" id="profile-avatar-preview"
-                                 {% if app.user.photo %}style="background-image: url('{{ asset('uploads/profile_photos/' ~ app.user.photo) }}'); background-size: cover; background-position: center; color: transparent; text-shadow: none;"{% endif %}>
+                            <div
+                                class="avatar bg-primary text-white text-uppercase profile-avatar-large"
+                                id="profile-avatar-preview"
+                                {% if app.user.photo %}
+                                    style="background-image: url('{{ asset('uploads/profile_photos/' ~ app.user.photo) }}'); background-size: cover; background-position: center; color: transparent; text-shadow: none;"
+                                {% endif %}
+                            >
                                 {% if not app.user.photo %}{{ user_initials }}{% endif %}
                             </div>
                             <div>
