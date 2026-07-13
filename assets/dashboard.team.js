@@ -8,7 +8,7 @@ function showAddAgentModal() {
     }
 }
 
-async function removeAgent(userId, userName) {
+async function removeAgent(userId, userName, el) {
     if (confirm(`Are you sure you want to remove ${userName} from this workspace?`)) {
         try {
             const response = await fetch("/users", {
@@ -32,6 +32,8 @@ async function removeAgent(userId, userName) {
                 showToast(errorMsg, "error");
                 return;
             }
+
+            el.closest(".list-group-item").remove();
 
             showToast(`${userName} has been removed from this workspace.`, "success");
         } catch (error) {
